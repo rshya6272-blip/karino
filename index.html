@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>کارینو | بازار فریلنسری</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Tahoma, Arial, sans-serif;
+      background: #f5f7fb;
+      color: #182033;
+    }
+
+    header {
+      background: white;
+      border-bottom: 1px solid #e5e8ef;
+    }
+
+    .nav {
+      max-width: 1100px;
+      margin: auto;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo {
+      font-size: 26px;
+      font-weight: bold;
+      color: #5b4bdb;
+    }
+
+    .nav a {
+      color: #505a70;
+      text-decoration: none;
+    }
+
+    .space {
+      flex: 1;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 11px 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .primary {
+      background: #5b4bdb;
+      color: white;
+    }
+
+    .secondary {
+      background: #eeecff;
+      color: #5142c7;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #5544d5, #8169ed);
+      color: white;
+      padding: 65px 20px;
+    }
+
+    .hero-content {
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .hero h1 {
+      font-size: 38px;
+      margin-bottom: 15px;
+    }
+
+    .hero p {
+      line-height: 2;
+      max-width: 650px;
+    }
+
+    .search {
+      display: flex;
+      gap: 10px;
+      max-width: 700px;
+      margin-top: 25px;
+    }
+
+    .search input {
+      flex: 1;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 35px auto;
+      padding: 0 20px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #e5e8ef;
+      border-radius: 15px;
+      padding: 20px;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #efedff;
+      color: #5848cf;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+    }
+
+    .muted {
+      color: #747d90;
+      font-size: 13px;
+      line-height: 1.9;
+    }
+
+    .price {
+      color: #138b58;
+      font-weight: bold;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #e9e6ff;
+      color: #5142c7;
+      display: grid;
+      place-items: center;
+      font-weight: bold;
+    }
+
+    footer {
+      background: #171b29;
+      color: #ccd1dc;
+      text-align: center;
+      padding: 30px;
+      margin-top: 50px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #0008;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-box {
+      background: white;
+      width: min(430px, 92%);
+      padding: 25px;
+      border-radius: 16px;
+    }
+
+    .modal-box input,
+    .modal-box textarea,
+    .modal-box select {
+      width: 100%;
+      padding: 12px;
+      margin: 7px 0 12px;
+      border: 1px solid #ddd;
+      border-radius: 9px;
+      font-family: inherit;
+    }
+
+    @media (max-width: 750px) {
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .nav a {
+        display: none;
+      }
+
+      .hero h1 {
+        font-size: 28px;
+      }
+
+      .search {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="nav">
+
+    <div class="logo">کارینو</div>
+
+    <a href="#projects">پروژه‌ها</a>
+    <a href="#freelancers">فریلنسرها</a>
+    <a href="#about">درباره ما</a>
+
+    <div class="space"></div>
+
+    <button class="secondary" onclick="openLogin()">
+      ورود
+    </button>
+
+    <button class="primary" onclick="openRegister()">
+      ثبت‌نام
+    </button>
+
+  </div>
+</header>
+
+
+<section class="hero">
+
+  <div class="hero-content">
+
+    <h1>
+      کار حرفه‌ای را در کارینو پیدا کن
+    </h1>
+
+    <p>
+      کارینو بستری برای ارتباط کارفرماها و فریلنسرهاست.
+      پروژه خودت را ثبت کن یا پروژه مناسب مهارتت را پیدا کن.
+    </p>
+
+    <div class="search">
+
+      <input
+        id="searchInput"
+        type="text"
+        placeholder="مثلاً طراحی سایت، برنامه‌نویسی، تدوین..."
+      >
+
+      <button class="primary" onclick="searchProject()">
+        جستجو
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<section class="container" id="projects">
+
+  <h2>پروژه‌های جدید</h2>
+
+  <div class="cards">
+
+    <div class="card">
+
+      <span class="tag">
+        برنامه‌نویسی
+      </span>
+
+      <h3>
+        ساخت سایت فروشگاهی
+      </h3>
+
+      <p class="muted">
+        ساخت یک سایت فروشگاهی واکنش‌گرا همراه با پنل مدیریت.
+      </p>
+
+      <p>
+        بودجه:
+        <span class="price">
+          ۱۰ تا ۲۰ میلیون تومان
+        </span>
+      </p>
+
+      <button
+        class="primary"
+        onclick="sendProposal('ساخت سایت فروشگاهی')"
+      >
+        ارسال پیشنهاد
+      </button>
+
+    </div>
+
+
+    <div class="card">
+
+      <span class="tag">
+        طراحی
+      </span>
+
+      <h3>
+        طراحی لوگو
+      </h3>
+
+      <p class="muted">
+        طراحی لوگوی حرفه‌ای و مدرن برای یک کسب‌وکار اینترنتی.
+      </p>
+
+      <p>
+        بودجه:
+        <span class="price">
+          ۲ تا ۴ میلیون تومان
+        </span>
+      </p>
+
+      <button
+        class="primary"
+        onclick="sendProposal('طراحی لوگو')"
+      >
+        ارسال پیشنهاد
+      </button>
+
+    </div>
+
+
+    <div class="card">
+
+      <span class="tag">
+        تدوین
+      </span>
+
+      <h3>
+        تدوین ویدیو
+      </h3>
+
+      <p class="muted">
+        تدوین ویدیوهای کوتاه برای شبکه‌های اجتماعی.
+      </p>
+
+      <p>
+        بودجه:
+        <span class="price">
+          ۱ تا ۳ میلیون تومان
+        </span>
+      </p>
+
+      <button
+        class="primary"
+        onclick="sendProposal('تدوین ویدیو')"
+      >
+        ارسال پیشنهاد
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<section class="container" id="freelancers">
+
+  <h2>
+    فریلنسرهای برتر
+  </h2>
+
+  <div class="cards">
+
+    <div class="card profile">
+
+      <div class="avatar">
+        م
+      </div>
+
+      <div>
+        <b>
+          محمد طراح
+        </b>
+
+        <div class="muted">
+          طراحی UI/UX ⭐ 4.9
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="card profile">
+
+      <div class="avatar">
+        س
+      </div>
+
+      <div>
+        <b>
+          سارا کدنویس
+        </b>
+
+        <div class="muted">
+          برنامه‌نویسی ⭐ 4.8
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="card profile">
+
+      <div class="avatar">
+        ع
+      </div>
+
+      <div>
+        <b>
+          علی تدوینگر
+        </b>
+
+        <div class="muted">
+          تدوین ویدیو ⭐ 4.7
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<section class="container" id="about">
+
+  <div class="card">
+
+    <h2>
+      کارینو چیست؟
+    </h2>
+
+    <p class="muted">
+      کارینو یک پلتفرم فریلنسری است که به کارفرماها
+      کمک می‌کند متخصص مناسب پروژه خود را پیدا کنند
+      و فریلنسرها نیز بتوانند پروژه‌های جدید پیدا کنند.
+    </p>
+
+  </div>
+
+</section>
+
+
+<footer>
+
+  © ۱۴۰۵ کارینو
+  <br>
+  بازار کار فریلنسری
+
+</footer>
+
+
+<!-- Login -->
+
+<div class="modal" id="loginModal">
+
+  <div class="modal-box">
+
+    <h2>
+      ورود به کارینو
+    </h2>
+
+    <input
+      type="text"
+      placeholder="ایمیل یا شماره موبایل"
+    >
+
+    <input
+      type="password"
+      placeholder="رمز عبور"
+    >
+
+    <button
+      class="primary"
+      style="width:100%"
+      onclick="login()"
+    >
+      ورود
+    </button>
+
+    <button
+      style="width:100%;margin-top:8px"
+      onclick="closeLogin()"
+    >
+      بستن
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- Register -->
+
+<div class="modal" id="registerModal">
+
+  <div class="modal-box">
+
+    <h2>
+      ثبت‌نام در کارینو
+    </h2>
+
+    <input
+      type="text"
+      placeholder="نام و نام خانوادگی"
+    >
+
+    <input
+      type="text"
+      placeholder="شماره موبایل یا ایمیل"
+    >
+
+    <input
+      type="password"
+      placeholder="رمز عبور"
+    >
+
+    <select>
+      <option>
+        فریلنسر هستم
+      </option>
+
+      <option>
+        کارفرما هستم
+      </option>
+    </select>
+
+    <button
+      class="primary"
+      style="width:100%"
+      onclick="register()"
+    >
+      ساخت حساب
+    </button>
+
+    <button
+      style="width:100%;margin-top:8px"
+      onclick="closeRegister()"
+    >
+      بستن
+    </button>
+
+  </div>
+
+</div>
+
+
+<script>
+
+function openLogin() {
+  document
+    .getElementById("loginModal")
+    .classList.add("show");
+}
+
+function closeLogin() {
+  document
+    .getElementById("loginModal")
+    .classList.remove("show");
+}
+
+function openRegister() {
+  document
+    .getElementById("registerModal")
+    .classList.add("show");
+}
+
+function closeRegister() {
+  document
+    .getElementById("registerModal")
+    .classList.remove("show");
+}
+
+function login() {
+  alert("ورود آزمایشی انجام شد.");
+  closeLogin();
+}
+
+function register() {
+  alert("ثبت‌نام آزمایشی انجام شد.");
+  closeRegister();
+}
+
+function searchProject() {
+
+  const text =
+    document.getElementById("searchInput").value.trim();
+
+  if (!text) {
+    alert("لطفاً چیزی برای جستجو وارد کن.");
+    return;
+  }
+
+  alert(
+    "جستجو برای «" + text + "» انجام شد."
+  );
+}
+
+function sendProposal(project) {
+
+  alert(
+    "برای ارسال پیشنهاد برای پروژه «" +
+    project +
+    "» ابتدا وارد حساب کاربری شوید."
+  );
+
+  openLogin();
+}
+
+</script>
+
+</body>
+  </html
