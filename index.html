@@ -3,215 +3,269 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>کارینو | پلتفرم فریلنسری</title>
 
-  <title>کارینو | بازار فریلنسری</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Tahoma, Arial, sans-serif;
     }
 
     body {
-      margin: 0;
-      font-family: Tahoma, Arial, sans-serif;
       background: #f5f7fb;
-      color: #182033;
+      color: #172033;
     }
 
     header {
-      background: white;
-      border-bottom: 1px solid #e5e8ef;
-    }
-
-    .nav {
-      max-width: 1100px;
-      margin: auto;
-      padding: 15px 20px;
+      background: #111827;
+      color: white;
+      padding: 18px 7%;
       display: flex;
+      justify-content: space-between;
       align-items: center;
       gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     .logo {
-      font-size: 26px;
+      font-size: 28px;
       font-weight: bold;
-      color: #5b4bdb;
+      color: #60a5fa;
     }
 
-    .nav a {
-      color: #505a70;
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: white;
       text-decoration: none;
-    }
-
-    .space {
-      flex: 1;
+      cursor: pointer;
     }
 
     button {
       border: none;
-      border-radius: 10px;
-      padding: 11px 17px;
-      font-weight: bold;
       cursor: pointer;
+      border-radius: 10px;
+      padding: 11px 18px;
+      font-size: 15px;
     }
 
-    .primary {
-      background: #5b4bdb;
+    .btn {
+      background: #2563eb;
       color: white;
     }
 
-    .secondary {
-      background: #eeecff;
-      color: #5142c7;
+    .btn:hover {
+      background: #1d4ed8;
     }
 
     .hero {
-      background: linear-gradient(135deg, #5544d5, #8169ed);
+      text-align: center;
+      padding: 85px 20px;
+      background: linear-gradient(135deg, #172554, #2563eb);
       color: white;
-      padding: 65px 20px;
-    }
-
-    .hero-content {
-      max-width: 1100px;
-      margin: auto;
     }
 
     .hero h1 {
-      font-size: 38px;
-      margin-bottom: 15px;
+      font-size: 42px;
+      margin-bottom: 18px;
     }
 
     .hero p {
-      line-height: 2;
-      max-width: 650px;
+      font-size: 18px;
+      margin-bottom: 30px;
     }
 
     .search {
+      max-width: 650px;
+      margin: auto;
       display: flex;
-      gap: 10px;
-      max-width: 700px;
-      margin-top: 25px;
+      background: white;
+      padding: 7px;
+      border-radius: 14px;
     }
 
     .search input {
       flex: 1;
-      padding: 15px;
       border: none;
-      border-radius: 10px;
+      outline: none;
+      padding: 13px;
       font-size: 15px;
     }
 
-    .container {
-      max-width: 1100px;
-      margin: 35px auto;
-      padding: 0 20px;
+    section {
+      padding: 55px 7%;
+    }
+
+    .title {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 28px;
     }
 
     .cards {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
     }
 
     .card {
       background: white;
-      border: 1px solid #e5e8ef;
       border-radius: 15px;
-      padding: 20px;
+      padding: 25px;
+      box-shadow: 0 5px 20px rgba(0,0,0,.06);
     }
 
-    .tag {
-      display: inline-block;
-      background: #efedff;
-      color: #5848cf;
-      padding: 5px 10px;
-      border-radius: 20px;
-      font-size: 12px;
+    .card h3 {
+      margin-bottom: 12px;
     }
 
-    .muted {
-      color: #747d90;
-      font-size: 13px;
-      line-height: 1.9;
-    }
-
-    .price {
-      color: #138b58;
-      font-weight: bold;
-    }
-
-    .profile {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: #e9e6ff;
-      color: #5142c7;
-      display: grid;
-      place-items: center;
-      font-weight: bold;
+    .card p {
+      color: #64748b;
+      line-height: 1.8;
     }
 
     footer {
-      background: #171b29;
-      color: #ccd1dc;
+      background: #111827;
+      color: white;
       text-align: center;
       padding: 30px;
-      margin-top: 50px;
     }
 
     .modal {
       display: none;
       position: fixed;
       inset: 0;
-      background: #0008;
+      background: rgba(0,0,0,.65);
+      z-index: 100;
       align-items: center;
       justify-content: center;
-      z-index: 10;
-    }
-
-    .modal.show {
-      display: flex;
+      padding: 20px;
+      overflow-y: auto;
     }
 
     .modal-box {
       background: white;
-      width: min(430px, 92%);
-      padding: 25px;
-      border-radius: 16px;
+      width: 100%;
+      max-width: 430px;
+      border-radius: 18px;
+      padding: 30px;
+      position: relative;
     }
 
-    .modal-box input,
-    .modal-box textarea,
-    .modal-box select {
+    .modal-box h2 {
+      margin-bottom: 20px;
+    }
+
+    .close {
+      position: absolute;
+      left: 15px;
+      top: 12px;
+      background: transparent;
+      font-size: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 7px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
       width: 100%;
       padding: 12px;
-      margin: 7px 0 12px;
-      border: 1px solid #ddd;
+      border: 1px solid #d1d5db;
       border-radius: 9px;
-      font-family: inherit;
+      outline: none;
     }
 
-    @media (max-width: 750px) {
-      .cards {
-        grid-template-columns: 1fr;
+    .form-group textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .form-button {
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .switch {
+      margin-top: 15px;
+      text-align: center;
+      color: #2563eb;
+      cursor: pointer;
+    }
+
+    .message {
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 8px;
+      display: none;
+      line-height: 1.7;
+    }
+
+    .profile-box {
+      display: none;
+      background: white;
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 30px;
+      border-radius: 18px;
+      box-shadow: 0 5px 20px rgba(0,0,0,.08);
+    }
+
+    .profile-box h2 {
+      margin-bottom: 20px;
+    }
+
+    .profile-item {
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+      line-height: 1.8;
+    }
+
+    .user-area {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    #userName {
+      color: #93c5fd;
+      font-size: 14px;
+    }
+
+    @media(max-width:700px) {
+      header {
+        flex-direction: column;
       }
 
-      .nav a {
-        display: none;
+      nav {
+        justify-content: center;
       }
 
       .hero h1 {
-        font-size: 28px;
+        font-size: 30px;
       }
 
       .search {
         flex-direction: column;
+        gap: 7px;
       }
     }
   </style>
@@ -220,123 +274,130 @@
 <body>
 
 <header>
-  <div class="nav">
 
-    <div class="logo">کارینو</div>
+  <div class="logo">کارینو</div>
 
+  <nav>
+
+    <a href="#home">خانه</a>
     <a href="#projects">پروژه‌ها</a>
     <a href="#freelancers">فریلنسرها</a>
     <a href="#about">درباره ما</a>
 
-    <div class="space"></div>
+    <div class="user-area">
 
-    <button class="secondary" onclick="openLogin()">
-      ورود
-    </button>
+      <span id="userName"></span>
 
-    <button class="primary" onclick="openRegister()">
-      ثبت‌نام
-    </button>
+      <button
+        class="btn"
+        id="loginBtn"
+        onclick="openLogin()">
+        ورود
+      </button>
 
-  </div>
-</header>
+      <button
+        class="btn"
+        id="registerBtn"
+        onclick="openRegister()">
+        ثبت‌نام
+      </button>
 
+      <button
+        class="btn"
+        id="profileBtn"
+        onclick="showProfile()"
+        style="display:none">
+        پروفایل
+      </button>
 
-<section class="hero">
-
-  <div class="hero-content">
-
-    <h1>
-      کار حرفه‌ای را در کارینو پیدا کن
-    </h1>
-
-    <p>
-      کارینو بستری برای ارتباط کارفرماها و فریلنسرهاست.
-      پروژه خودت را ثبت کن یا پروژه مناسب مهارتت را پیدا کن.
-    </p>
-
-    <div class="search">
-
-      <input
-        id="searchInput"
-        type="text"
-        placeholder="مثلاً طراحی سایت، برنامه‌نویسی، تدوین..."
-      >
-
-      <button class="primary" onclick="searchProject()">
-        جستجو
+      <button
+        class="btn"
+        id="logoutBtn"
+        onclick="logout()"
+        style="display:none">
+        خروج
       </button>
 
     </div>
+
+  </nav>
+
+</header>
+
+
+<section class="hero" id="home">
+
+  <h1>
+    پروژه‌ات را به متخصص بسپار
+  </h1>
+
+  <p>
+    کارینو؛ جایی برای ارتباط کارفرماها و فریلنسرها
+  </p>
+
+  <div class="search">
+
+    <input
+      id="searchInput"
+      type="text"
+      placeholder="چه کاری می‌خواهید انجام دهید؟">
+
+    <button
+      class="btn"
+      onclick="searchProjects()">
+      جستجو
+    </button>
 
   </div>
 
 </section>
 
 
-<section class="container" id="projects">
+<section id="projects">
 
-  <h2>پروژه‌های جدید</h2>
+  <h2 class="title">
+    پروژه‌های محبوب
+  </h2>
 
   <div class="cards">
 
     <div class="card">
 
-      <span class="tag">
-        برنامه‌نویسی
-      </span>
-
       <h3>
-        ساخت سایت فروشگاهی
+        طراحی سایت
       </h3>
 
-      <p class="muted">
-        ساخت یک سایت فروشگاهی واکنش‌گرا همراه با پنل مدیریت.
+      <p>
+        ساخت سایت حرفه‌ای برای کسب‌وکار
       </p>
 
-      <p>
-        بودجه:
-        <span class="price">
-          ۱۰ تا ۲۰ میلیون تومان
-        </span>
-      </p>
+      <br>
 
       <button
-        class="primary"
-        onclick="sendProposal('ساخت سایت فروشگاهی')"
-      >
-        ارسال پیشنهاد
+        class="btn"
+        onclick="requireLogin()">
+        مشاهده پروژه
       </button>
 
     </div>
 
 
     <div class="card">
-
-      <span class="tag">
-        طراحی
-      </span>
 
       <h3>
         طراحی لوگو
       </h3>
 
-      <p class="muted">
-        طراحی لوگوی حرفه‌ای و مدرن برای یک کسب‌وکار اینترنتی.
+      <p>
+        طراحی لوگوی اختصاصی برای برند
       </p>
 
-      <p>
-        بودجه:
-        <span class="price">
-          ۲ تا ۴ میلیون تومان
-        </span>
-      </p>
+      <br>
 
       <button
-        class="primary"
-        onclick="sendProposal('طراحی لوگو')"
-      >
-        ارسال پیشنهاد
+        class="btn"
+        onclick="requireLogin()">
+        مشاهده پروژه
       </button>
 
     </div>
@@ -344,30 +405,20 @@
 
     <div class="card">
 
-      <span class="tag">
-        تدوین
-      </span>
-
       <h3>
-        تدوین ویدیو
+        تولید محتوا
       </h3>
 
-      <p class="muted">
-        تدوین ویدیوهای کوتاه برای شبکه‌های اجتماعی.
+      <p>
+        تولید محتوای متنی و شبکه‌های اجتماعی
       </p>
 
-      <p>
-        بودجه:
-        <span class="price">
-          ۱ تا ۳ میلیون تومان
-        </span>
-      </p>
+      <br>
 
       <button
-        class="primary"
-        onclick="sendProposal('تدوین ویدیو')"
-      >
-        ارسال پیشنهاد
+        class="btn"
+        onclick="requireLogin()">
+        مشاهده پروژه
       </button>
 
     </div>
@@ -377,67 +428,49 @@
 </section>
 
 
-<section class="container" id="freelancers">
+<section id="freelancers">
 
-  <h2>
-    فریلنسرهای برتر
+  <h2 class="title">
+    فریلنسرهای کارینو
   </h2>
 
   <div class="cards">
 
-    <div class="card profile">
+    <div class="card">
 
-      <div class="avatar">
-        م
-      </div>
+      <h3>
+        برنامه‌نویس
+      </h3>
 
-      <div>
-        <b>
-          محمد طراح
-        </b>
-
-        <div class="muted">
-          طراحی UI/UX ⭐ 4.9
-        </div>
-      </div>
+      <p>
+        توسعه وب و طراحی نرم‌افزار
+      </p>
 
     </div>
 
 
-    <div class="card profile">
+    <div class="card">
 
-      <div class="avatar">
-        س
-      </div>
+      <h3>
+        گرافیست
+      </h3>
 
-      <div>
-        <b>
-          سارا کدنویس
-        </b>
-
-        <div class="muted">
-          برنامه‌نویسی ⭐ 4.8
-        </div>
-      </div>
+      <p>
+        طراحی لوگو، بنر و محتوای گرافیکی
+      </p>
 
     </div>
 
 
-    <div class="card profile">
+    <div class="card">
 
-      <div class="avatar">
-        ع
-      </div>
+      <h3>
+        تولیدکننده محتوا
+      </h3>
 
-      <div>
-        <b>
-          علی تدوینگر
-        </b>
-
-        <div class="muted">
-          تدوین ویدیو ⭐ 4.7
-        </div>
-      </div>
+      <p>
+        تولید محتوای حرفه‌ای برای کسب‌وکارها
+      </p>
 
     </div>
 
@@ -446,18 +479,19 @@
 </section>
 
 
-<section class="container" id="about">
+<section id="about">
+
+  <h2 class="title">
+    درباره کارینو
+  </h2>
 
   <div class="card">
 
-    <h2>
-      کارینو چیست؟
-    </h2>
-
-    <p class="muted">
-      کارینو یک پلتفرم فریلنسری است که به کارفرماها
-      کمک می‌کند متخصص مناسب پروژه خود را پیدا کنند
-      و فریلنسرها نیز بتوانند پروژه‌های جدید پیدا کنند.
+    <p>
+      کارینو یک پلتفرم فریلنسری برای ارتباط بین
+      کارفرماها و متخصصان است.
+      هدف ما ایجاد محیطی ساده برای پیدا کردن پروژه
+      و همکاری با متخصصان است.
     </p>
 
   </div>
@@ -465,173 +499,917 @@
 </section>
 
 
-<footer>
+<div
+  class="profile-box"
+  id="profileBox">
 
-  © ۱۴۰۵ کارینو
-  <br>
-  بازار کار فریلنسری
+  <h2>
+    پروفایل من
+  </h2>
 
-</footer>
+  <div class="profile-item">
+
+    <strong>
+      نام:
+    </strong>
+
+    <span id="profileName"></span>
+
+  </div>
 
 
-<!-- Login -->
+  <div class="profile-item">
 
-<div class="modal" id="loginModal">
+    <strong>
+      ایمیل:
+    </strong>
+
+    <span id="profileEmail"></span>
+
+  </div>
+
+
+  <div class="profile-item">
+
+    <strong>
+      نوع حساب:
+    </strong>
+
+    <span id="profileRole"></span>
+
+  </div>
+
+
+  <div class="profile-item">
+
+    <strong>
+      مهارت‌ها:
+    </strong>
+
+    <span id="profileSkills"></span>
+
+  </div>
+
+
+  <div class="profile-item">
+
+    <strong>
+      درباره من:
+    </strong>
+
+    <span id="profileBio"></span>
+
+  </div>
+
+</div>
+
+
+<!-- LOGIN -->
+
+<div
+  class="modal"
+  id="loginModal">
 
   <div class="modal-box">
+
+    <button
+      class="close"
+      onclick="closeModals()">
+      ×
+    </button>
 
     <h2>
       ورود به کارینو
     </h2>
 
-    <input
-      type="text"
-      placeholder="ایمیل یا شماره موبایل"
-    >
+    <div class="form-group">
 
-    <input
-      type="password"
-      placeholder="رمز عبور"
-    >
+      <label>
+        ایمیل
+      </label>
+
+      <input
+        type="email"
+        id="loginEmail"
+        placeholder="example@gmail.com">
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label>
+        رمز عبور
+      </label>
+
+      <input
+        type="password"
+        id="loginPassword"
+        placeholder="رمز عبور">
+
+    </div>
+
 
     <button
-      class="primary"
-      style="width:100%"
-      onclick="login()"
-    >
+      class="btn form-button"
+      onclick="login()">
+
       ورود
+
     </button>
 
-    <button
-      style="width:100%;margin-top:8px"
-      onclick="closeLogin()"
-    >
-      بستن
-    </button>
+
+    <div
+      class="message"
+      id="loginMessage">
+    </div>
+
+
+    <div
+      class="switch"
+      onclick="switchToRegister()">
+
+      حساب ندارید؟ ثبت‌نام کنید
+
+    </div>
 
   </div>
 
 </div>
 
 
-<!-- Register -->
+<!-- REGISTER -->
 
-<div class="modal" id="registerModal">
+<div
+  class="modal"
+  id="registerModal">
 
   <div class="modal-box">
 
+    <button
+      class="close"
+      onclick="closeModals()">
+      ×
+    </button>
+
     <h2>
-      ثبت‌نام در کارینو
+      ساخت حساب کارینو
     </h2>
 
-    <input
-      type="text"
-      placeholder="نام و نام خانوادگی"
-    >
 
-    <input
-      type="text"
-      placeholder="شماره موبایل یا ایمیل"
-    >
+    <div class="form-group">
 
-    <input
-      type="password"
-      placeholder="رمز عبور"
-    >
+      <label>
+        نام و نام خانوادگی
+      </label>
 
-    <select>
-      <option>
-        فریلنسر هستم
-      </option>
+      <input
+        type="text"
+        id="registerName"
+        placeholder="نام شما">
 
-      <option>
-        کارفرما هستم
-      </option>
-    </select>
+    </div>
+
+
+    <div class="form-group">
+
+      <label>
+        ایمیل
+      </label>
+
+      <input
+        type="email"
+        id="registerEmail"
+        placeholder="example@gmail.com">
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label>
+        رمز عبور
+      </label>
+
+      <input
+        type="password"
+        id="registerPassword"
+        placeholder="حداقل ۶ کاراکتر">
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label>
+        نوع حساب
+      </label>
+
+      <select id="registerRole">
+
+        <option value="freelancer">
+          فریلنسر
+        </option>
+
+        <option value="employer">
+          کارفرما
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label>
+        مهارت‌ها
+      </label>
+
+      <input
+        type="text"
+        id="registerSkills"
+        placeholder="مثلاً طراحی سایت، فتوشاپ">
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label>
+        درباره من
+      </label>
+
+      <textarea
+        id="registerBio"
+        placeholder="کمی درباره خودتان بنویسید">
+      </textarea>
+
+    </div>
+
 
     <button
-      class="primary"
-      style="width:100%"
-      onclick="register()"
-    >
+      class="btn form-button"
+      onclick="register()">
+
       ساخت حساب
+
     </button>
 
-    <button
-      style="width:100%;margin-top:8px"
-      onclick="closeRegister()"
-    >
-      بستن
-    </button>
+
+    <div
+      class="message"
+      id="registerMessage">
+    </div>
+
+
+    <div
+      class="switch"
+      onclick="switchToLogin()">
+
+      حساب دارید؟ وارد شوید
+
+    </div>
 
   </div>
 
 </div>
+
+
+<footer>
+
+  <p>
+    © 2026 کارینو - تمامی حقوق محفوظ است.
+  </p>
+
+</footer>
 
 
 <script>
 
+/* =========================================
+   SUPABASE
+========================================= */
+
+const SUPABASE_URL =
+  "https://skruwuhwcwpujsollink.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_l75K1TFYS5_6xw44PNWM4A__gdUTtt-";
+
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* =========================================
+   MODALS
+========================================= */
+
 function openLogin() {
-  document
-    .getElementById("loginModal")
-    .classList.add("show");
+
+  closeModals();
+
+  document.getElementById("loginModal")
+    .style.display = "flex";
+
 }
 
-function closeLogin() {
-  document
-    .getElementById("loginModal")
-    .classList.remove("show");
-}
 
 function openRegister() {
-  document
-    .getElementById("registerModal")
-    .classList.add("show");
+
+  closeModals();
+
+  document.getElementById("registerModal")
+    .style.display = "flex";
+
 }
 
-function closeRegister() {
-  document
-    .getElementById("registerModal")
-    .classList.remove("show");
+
+function closeModals() {
+
+  document.getElementById("loginModal")
+    .style.display = "none";
+
+  document.getElementById("registerModal")
+    .style.display = "none";
+
 }
 
-function login() {
-  alert("ورود آزمایشی انجام شد.");
-  closeLogin();
+
+function switchToRegister() {
+
+  closeModals();
+
+  openRegister();
+
 }
 
-function register() {
-  alert("ثبت‌نام آزمایشی انجام شد.");
-  closeRegister();
-}
 
-function searchProject() {
+function switchToLogin() {
 
-  const text =
-    document.getElementById("searchInput").value.trim();
-
-  if (!text) {
-    alert("لطفاً چیزی برای جستجو وارد کن.");
-    return;
-  }
-
-  alert(
-    "جستجو برای «" + text + "» انجام شد."
-  );
-}
-
-function sendProposal(project) {
-
-  alert(
-    "برای ارسال پیشنهاد برای پروژه «" +
-    project +
-    "» ابتدا وارد حساب کاربری شوید."
-  );
+  closeModals();
 
   openLogin();
+
 }
+
+
+/* =========================================
+   MESSAGE
+========================================= */
+
+function showMessage(
+  id,
+  text,
+  success = false
+) {
+
+  const box =
+    document.getElementById(id);
+
+  box.style.display = "block";
+
+  box.textContent = text;
+
+  if (success) {
+
+    box.style.background = "#dcfce7";
+    box.style.color = "#166534";
+
+  } else {
+
+    box.style.background = "#fee2e2";
+    box.style.color = "#991b1b";
+
+  }
+
+}
+
+
+/* =========================================
+   REGISTER
+========================================= */
+
+async function register() {
+
+  const name =
+    document.getElementById("registerName")
+      .value.trim();
+
+  const email =
+    document.getElementById("registerEmail")
+      .value.trim();
+
+  const password =
+    document.getElementById("registerPassword")
+      .value;
+
+  const role =
+    document.getElementById("registerRole")
+      .value;
+
+  const skills =
+    document.getElementById("registerSkills")
+      .value.trim();
+
+  const bio =
+    document.getElementById("registerBio")
+      .value.trim();
+
+
+  if (!name || !email || !password) {
+
+    showMessage(
+      "registerMessage",
+      "لطفاً نام، ایمیل و رمز عبور را وارد کنید."
+    );
+
+    return;
+
+  }
+
+
+  if (password.length < 6) {
+
+    showMessage(
+      "registerMessage",
+      "رمز عبور باید حداقل ۶ کاراکتر باشد."
+    );
+
+    return;
+
+  }
+
+
+  showMessage(
+    "registerMessage",
+    "در حال ساخت حساب...",
+    true
+  );
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient.auth.signUp({
+
+      email: email,
+
+      password: password,
+
+      options: {
+
+        data: {
+
+          full_name: name,
+          role: role,
+          skills: skills,
+          bio: bio
+
+        }
+
+      }
+
+    });
+
+
+  if (error) {
+
+    showMessage(
+      "registerMessage",
+      "خطا: " + error.message
+    );
+
+    return;
+
+  }
+
+
+  if (!data.user) {
+
+    showMessage(
+      "registerMessage",
+      "حساب ساخته نشد."
+    );
+
+    return;
+
+  }
+
+
+  const {
+    error: profileError
+  } =
+    await supabaseClient
+      .from("profiles")
+      .insert({
+
+        id: data.user.id,
+
+        full_name: name,
+
+        role: role,
+
+        skills: skills,
+
+        bio: bio,
+
+        avatar_url: null
+
+      });
+
+
+  if (profileError) {
+
+    showMessage(
+      "registerMessage",
+      "حساب ساخته شد اما پروفایل ذخیره نشد: "
+      + profileError.message
+    );
+
+    return;
+
+  }
+
+
+  showMessage(
+    "registerMessage",
+    "ثبت‌نام با موفقیت انجام شد! 🎉",
+    true
+  );
+
+
+  setTimeout(() => {
+
+    closeModals();
+
+    loadUser();
+
+  }, 1200);
+
+}
+
+
+/* =========================================
+   LOGIN
+========================================= */
+
+async function login() {
+
+  const email =
+    document.getElementById("loginEmail")
+      .value.trim();
+
+  const password =
+    document.getElementById("loginPassword")
+      .value;
+
+
+  if (!email || !password) {
+
+    showMessage(
+      "loginMessage",
+      "ایمیل و رمز عبور را وارد کنید."
+    );
+
+    return;
+
+  }
+
+
+  showMessage(
+    "loginMessage",
+    "در حال ورود...",
+    true
+  );
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient.auth
+      .signInWithPassword({
+
+        email: email,
+
+        password: password
+
+      });
+
+
+  if (error) {
+
+    showMessage(
+      "loginMessage",
+      "ورود ناموفق بود: " + error.message
+    );
+
+    return;
+
+  }
+
+
+  showMessage(
+    "loginMessage",
+    "با موفقیت وارد شدید! 🎉",
+    true
+  );
+
+
+  setTimeout(() => {
+
+    closeModals();
+
+    loadUser();
+
+  }, 800);
+
+}
+
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+async function logout() {
+
+  await supabaseClient.auth.signOut();
+
+  document.getElementById("userName")
+    .textContent = "";
+
+  document.getElementById("loginBtn")
+    .style.display = "inline-block";
+
+  document.getElementById("registerBtn")
+    .style.display = "inline-block";
+
+  document.getElementById("profileBtn")
+    .style.display = "none";
+
+  document.getElementById("logoutBtn")
+    .style.display = "none";
+
+  document.getElementById("profileBox")
+    .style.display = "none";
+
+  alert("از حساب خارج شدید.");
+
+}
+
+
+/* =========================================
+   LOAD USER
+========================================= */
+
+async function loadUser() {
+
+  const {
+    data: { user }
+  } =
+    await supabaseClient.auth.getUser();
+
+
+  if (!user) {
+
+    document.getElementById("loginBtn")
+      .style.display = "inline-block";
+
+    document.getElementById("registerBtn")
+      .style.display = "inline-block";
+
+    document.getElementById("profileBtn")
+      .style.display = "none";
+
+    document.getElementById("logoutBtn")
+      .style.display = "none";
+
+    return;
+
+  }
+
+
+  document.getElementById("loginBtn")
+    .style.display = "none";
+
+  document.getElementById("registerBtn")
+    .style.display = "none";
+
+  document.getElementById("profileBtn")
+    .style.display = "inline-block";
+
+  document.getElementById("logoutBtn")
+    .style.display = "inline-block";
+
+
+  const {
+    data: profile
+  } =
+    await supabaseClient
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .maybeSingle();
+
+
+  if (profile) {
+
+    document.getElementById("userName")
+      .textContent =
+      "سلام " + profile.full_name;
+
+  } else {
+
+    document.getElementById("userName")
+      .textContent =
+      "سلام کاربر";
+
+  }
+
+}
+
+
+/* =========================================
+   PROFILE
+========================================= */
+
+async function showProfile() {
+
+  const {
+    data: { user }
+  } =
+    await supabaseClient.auth.getUser();
+
+
+  if (!user) {
+
+    openLogin();
+
+    return;
+
+  }
+
+
+  const {
+    data: profile,
+    error
+  } =
+    await supabaseClient
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .maybeSingle();
+
+
+  if (error) {
+
+    alert(
+      "خطا در دریافت پروفایل: "
+      + error.message
+    );
+
+    return;
+
+  }
+
+
+  if (!profile) {
+
+    alert("پروفایل پیدا نشد.");
+
+    return;
+
+  }
+
+
+  document.getElementById("profileName")
+    .textContent =
+    profile.full_name || "-";
+
+
+  document.getElementById("profileEmail")
+    .textContent =
+    user.email || "-";
+
+
+  document.getElementById("profileRole")
+    .textContent =
+    profile.role === "freelancer"
+      ? "فریلنسر"
+      : "کارفرما";
+
+
+  document.getElementById("profileSkills")
+    .textContent =
+    profile.skills || "-";
+
+
+  document.getElementById("profileBio")
+    .textContent =
+    profile.bio || "-";
+
+
+  document.getElementById("profileBox")
+    .style.display = "block";
+
+
+  document.getElementById("profileBox")
+    .scrollIntoView({
+      behavior: "smooth"
+    });
+
+}
+
+
+/* =========================================
+   REQUIRE LOGIN
+========================================= */
+
+async function requireLogin() {
+
+  const {
+    data: { user }
+  } =
+    await supabaseClient.auth.getUser();
+
+
+  if (!user) {
+
+    alert(
+      "برای مشاهده پروژه ابتدا وارد حساب شوید."
+    );
+
+    openLogin();
+
+    return;
+
+  }
+
+
+  alert(
+    "این قسمت در نسخه بعدی فعال می‌شود."
+  );
+
+}
+
+
+/* =========================================
+   SEARCH
+========================================= */
+
+function searchProjects() {
+
+  const text =
+    document.getElementById("searchInput")
+      .value.trim();
+
+
+  if (!text) {
+
+    alert(
+      "لطفاً چیزی برای جستجو بنویسید."
+    );
+
+    return;
+
+  }
+
+
+  alert(
+    "جستجوی «" +
+    text +
+    "» در نسخه بعدی فعال می‌شود."
+  );
+
+}
+
+
+/* =========================================
+   AUTH STATE
+========================================= */
+
+supabaseClient.auth.onAuthStateChange(
+  (event, session) => {
+
+    loadUser();
+
+  }
+);
+
+
+/* =========================================
+   START
+========================================= */
+
+loadUser();
 
 </script>
 
 </body>
-  </html
+</html>
