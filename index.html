@@ -4,55 +4,58 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>کارینو | پلتفرم فریلنسری</title>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: Tahoma, Arial, sans-serif; }
     body { background: #f5f7fb; color: #172033; }
-    header { background: #111827; color: white; padding: 18px 7%; display: flex; justify-content: space-between; align-items: center; gap: 20px; position: sticky; top: 0; z-index: 10; }
-    .logo { font-size: 28px; font-weight: bold; color: #60a5fa; }
-    nav { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
-    nav a { color: white; text-decoration: none; cursor: pointer; }
-    button { border: none; cursor: pointer; border-radius: 10px; padding: 11px 18px; font-size: 15px; }
+    header { background: #111827; color: white; padding: 14px 7%; display: flex; justify-content: space-between; align-items: center; gap: 15px; position: sticky; top: 0; z-index: 10; flex-wrap: wrap; }
+    .logo { font-size: 24px; font-weight: bold; color: #60a5fa; }
+    .tabs { display: flex; gap: 6px; flex-wrap: wrap; background: #1e293b; padding: 6px; border-radius: 12px; }
+    .tab { background: transparent; color: #cbd5e1; padding: 8px 14px; border-radius: 8px; font-size: 14px; cursor: pointer; }
+    .tab:hover { background: #334155; }
+    .tab.active { background: #2563eb; color: white; }
+    .user-area { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    button { border: none; cursor: pointer; border-radius: 10px; padding: 9px 15px; font-size: 14px; }
     .btn { background: #2563eb; color: white; }
     .btn:hover { background: #1d4ed8; }
     .btn-green { background: #16a34a; color: white; }
     .btn-green:hover { background: #15803d; }
     .btn-red { background: #dc2626; color: white; }
     .btn-red:hover { background: #b91c1c; }
-    .hero { text-align: center; padding: 85px 20px; background: linear-gradient(135deg, #172554, #2563eb); color: white; }
-    .hero h1 { font-size: 42px; margin-bottom: 18px; }
-    .hero p { font-size: 18px; margin-bottom: 30px; }
+    .btn-sm { padding: 6px 12px; font-size: 13px; }
+    #userName { color: #93c5fd; font-size: 13px; }
+    .page { display: none; }
+    .page.active { display: block; }
+    .hero { text-align: center; padding: 70px 20px; background: linear-gradient(135deg, #172554, #2563eb); color: white; }
+    .hero h1 { font-size: 38px; margin-bottom: 15px; }
+    .hero p { font-size: 17px; margin-bottom: 25px; }
     .search { max-width: 650px; margin: auto; display: flex; background: white; padding: 7px; border-radius: 14px; }
-    .search input { flex: 1; border: none; outline: none; padding: 13px; font-size: 15px; }
-    section { padding: 55px 7%; }
-    .title { text-align: center; margin-bottom: 30px; font-size: 28px; }
+    .search input { flex: 1; border: none; outline: none; padding: 12px; font-size: 15px; }
+    .container { padding: 40px 7%; }
+    .title { text-align: center; margin-bottom: 25px; font-size: 26px; }
     .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
-    .card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,.06); }
-    .card h3 { margin-bottom: 12px; }
+    .card { background: white; border-radius: 15px; padding: 22px; box-shadow: 0 5px 20px rgba(0,0,0,.06); }
+    .card h3 { margin-bottom: 10px; }
     .card p { color: #64748b; line-height: 1.8; }
     .card .budget { color: #16a34a; font-weight: bold; margin-top: 8px; }
     .card .category { color: #2563eb; font-size: 14px; margin-top: 6px; }
-    footer { background: #111827; color: white; text-align: center; padding: 30px; }
+    footer { background: #111827; color: white; text-align: center; padding: 25px; }
     .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.65); z-index: 100; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
-    .modal-box { background: white; width: 100%; max-width: 500px; border-radius: 18px; padding: 30px; position: relative; max-height: 90vh; overflow-y: auto; }
-    .modal-box h2 { margin-bottom: 20px; }
+    .modal-box { background: white; width: 100%; max-width: 500px; border-radius: 18px; padding: 28px; position: relative; max-height: 90vh; overflow-y: auto; }
+    .modal-box h2 { margin-bottom: 18px; }
     .close { position: absolute; left: 15px; top: 12px; background: transparent; font-size: 24px; }
-    .form-group { margin-bottom: 15px; }
-    .form-group label { display: block; margin-bottom: 7px; }
-    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 9px; outline: none; }
-    .form-group textarea { resize: vertical; min-height: 90px; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; margin-bottom: 6px; font-size: 14px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px; border: 1px solid #d1d5db; border-radius: 9px; outline: none; font-family: inherit; }
+    .form-group textarea { resize: vertical; min-height: 80px; }
     .form-button { width: 100%; margin-top: 8px; }
-    .switch { margin-top: 15px; text-align: center; color: #2563eb; cursor: pointer; }
-    .message { margin-top: 12px; padding: 10px; border-radius: 8px; display: none; line-height: 1.7; }
-    .profile-box { display: none; background: white; max-width: 700px; margin: 40px auto; padding: 30px; border-radius: 18px; box-shadow: 0 5px 20px rgba(0,0,0,.08); }
-    .profile-box h2 { margin-bottom: 20px; }
+    .switch { margin-top: 14px; text-align: center; color: #2563eb; cursor: pointer; font-size: 14px; }
+    .message { margin-top: 12px; padding: 10px; border-radius: 8px; display: none; line-height: 1.7; font-size: 14px; }
+    .profile-box { background: white; max-width: 700px; margin: 20px auto; padding: 28px; border-radius: 18px; box-shadow: 0 5px 20px rgba(0,0,0,.08); }
+    .profile-box h2 { margin-bottom: 18px; }
     .profile-item { padding: 12px 0; border-bottom: 1px solid #eee; line-height: 1.8; }
-    .user-area { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-    #userName { color: #93c5fd; font-size: 14px; }
     .proposal-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-bottom: 12px; }
-    .proposal-card .price { color: #16a34a; font-weight: bold; font-size: 18px; }
+    .proposal-card .price { color: #16a34a; font-weight: bold; font-size: 17px; }
     .proposal-card .freelancer-name { font-weight: bold; color: #1e293b; }
     .proposal-card .msg-text { color: #475569; margin: 8px 0; line-height: 1.7; }
     .proposal-card .actions { display: flex; gap: 8px; margin-top: 10px; }
@@ -60,74 +63,116 @@
     .badge-pending { background: #fef3c7; color: #92400e; }
     .badge-accepted { background: #dcfce7; color: #166534; }
     .badge-rejected { background: #fee2e2; color: #991b1b; }
-    @media(max-width:700px) { header { flex-direction: column; } nav { justify-content: center; } .hero h1 { font-size: 30px; } .search { flex-direction: column; gap: 7px; } }
+    .chat-container { background: white; border-radius: 15px; padding: 20px; max-width: 800px; margin: auto; box-shadow: 0 5px 20px rgba(0,0,0,.06); }
+    .chat-list { max-height: 400px; overflow-y: auto; margin-bottom: 15px; padding: 10px; background: #f8fafc; border-radius: 10px; min-height: 200px; }
+    .chat-message { padding: 8px 12px; margin-bottom: 8px; border-radius: 10px; max-width: 70%; line-height: 1.6; font-size: 14px; word-wrap: break-word; }
+    .chat-me { background: #2563eb; color: white; margin-right: auto; margin-left: 0; }
+    .chat-other { background: #e2e8f0; color: #1e293b; margin-left: auto; margin-right: 0; }
+    .chat-input { display: flex; gap: 8px; }
+    .chat-input input { flex: 1; padding: 12px; border: 1px solid #d1d5db; border-radius: 9px; outline: none; }
+    .empty-msg { text-align: center; color: #94a3b8; padding: 30px; }
+    @media(max-width:700px) {
+      header { flex-direction: column; }
+      .tabs { justify-content: center; width: 100%; }
+      .hero h1 { font-size: 26px; }
+      .search { flex-direction: column; gap: 7px; }
+    }
   </style>
 </head>
-
 <body>
 
 <header>
   <div class="logo">کارینو</div>
-  <nav>
-    <a href="#home">خانه</a>
-    <a href="#projects">پروژه‌ها</a>
-    <a href="#freelancers">فریلنسرها</a>
-    <a href="#about">درباره ما</a>
-
-    <div class="user-area">
-      <span id="userName"></span>
-      <button class="btn" id="loginBtn" onclick="openLogin()">ورود</button>
-      <button class="btn" id="registerBtn" onclick="openRegister()">ثبت‌نام</button>
-      <button class="btn btn-green" id="newProjectBtn" onclick="openProject()" style="display:none">+ ثبت پروژه</button>
-      <button class="btn" id="myProposalsBtn" onclick="openMyProposals()" style="display:none">پیشنهادهای من</button>
-      <button class="btn" id="profileBtn" onclick="showProfile()" style="display:none">پروفایل</button>
-      <button class="btn" id="logoutBtn" onclick="logout()" style="display:none">خروج</button>
-    </div>
-  </nav>
+  <div class="tabs">
+    <button class="tab active" onclick="showPage('home')">خانه</button>
+    <button class="tab" onclick="showPage('projects')">پروژه‌ها</button>
+    <button class="tab" onclick="showPage('chat')">چت</button>
+    <button class="tab" onclick="showPage('profile')">پروفایل</button>
+    <button class="tab" id="tabMyProposals" onclick="showPage('myProposals')" style="display:none">پیشنهادهای من</button>
+  </div>
+  <div class="user-area">
+    <span id="userName"></span>
+    <button class="btn" id="loginBtn" onclick="openLogin()">ورود</button>
+    <button class="btn" id="registerBtn" onclick="openRegister()">ثبت‌نام</button>
+    <button class="btn btn-green" id="newProjectBtn" onclick="openProject()" style="display:none">+ ثبت پروژه</button>
+    <button class="btn" id="logoutBtn" onclick="logout()" style="display:none">خروج</button>
+  </div>
 </header>
 
-<section class="hero" id="home">
-  <h1>پروژه‌ات را به متخصص بسپار</h1>
-  <p>کارینو؛ جایی برای ارتباط کارفرماها و فریلنسرها</p>
-  <div class="search">
-    <input id="searchInput" type="text" placeholder="چه کاری می‌خواهید انجام دهید؟">
-    <button class="btn" onclick="searchProjects()">جستجو</button>
-  </div>
-</section>
+<!-- ==================== صفحه خانه ==================== -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <h1>پروژه‌ات را به متخصص بسپار</h1>
+    <p>کارینو؛ جایی برای ارتباط کارفرماها و فریلنسرها</p>
+    <div class="search">
+      <input id="searchInput" type="text" placeholder="چه کاری می‌خواهید انجام دهید؟">
+      <button class="btn" onclick="searchProjects()">جستجو</button>
+    </div>
+  </section>
 
-<section id="projects">
-  <h2 class="title">پروژه‌های محبوب</h2>
-  <div class="cards" id="projectsContainer">
-    <p style="text-align:center; color:#94a3b8;">در حال بارگذاری پروژه‌ها...</p>
+  <div class="container">
+    <h2 class="title">درباره کارینو</h2>
+    <div class="card">
+      <p>کارینو یک پلتفرم فریلنسری برای ارتباط بین کارفرماها و متخصصان است. هدف ما ایجاد محیطی ساده برای پیدا کردن پروژه و همکاری با متخصصان است.</p>
+    </div>
   </div>
-</section>
-
-<section id="freelancers">
-  <h2 class="title">فریلنسرهای کارینو</h2>
-  <div class="cards">
-    <div class="card"><h3>برنامه‌نویس</h3><p>توسعه وب و طراحی نرم‌افزار</p></div>
-    <div class="card"><h3>گرافیست</h3><p>طراحی لوگو، بنر و محتوای گرافیکی</p></div>
-    <div class="card"><h3>تولیدکننده محتوا</h3><p>تولید محتوای حرفه‌ای برای کسب‌وکارها</p></div>
-  </div>
-</section>
-
-<section id="about">
-  <h2 class="title">درباره کارینو</h2>
-  <div class="card">
-    <p>کارینو یک پلتفرم فریلنسری برای ارتباط بین کارفرماها و متخصصان است. هدف ما ایجاد محیطی ساده برای پیدا کردن پروژه و همکاری با متخصصان است.</p>
-  </div>
-</section>
-
-<div class="profile-box" id="profileBox">
-  <h2>پروفایل من</h2>
-  <div class="profile-item"><strong>نام:</strong> <span id="profileName"></span></div>
-  <div class="profile-item"><strong>ایمیل:</strong> <span id="profileEmail"></span></div>
-  <div class="profile-item"><strong>نوع حساب:</strong> <span id="profileRole"></span></div>
-  <div class="profile-item"><strong>مهارت‌ها:</strong> <span id="profileSkills"></span></div>
-  <div class="profile-item"><strong>درباره من:</strong> <span id="profileBio"></span></div>
 </div>
 
-<!-- LOGIN -->
+<!-- ==================== صفحه پروژه‌ها ==================== -->
+<div class="page" id="page-projects">
+  <div class="container">
+    <h2 class="title">پروژه‌های محبوب</h2>
+    <div class="cards" id="projectsContainer">
+      <p style="text-align:center; color:#94a3b8;">در حال بارگذاری...</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== صفحه چت ==================== -->
+<div class="page" id="page-chat">
+  <div class="container">
+    <h2 class="title">چت‌های من</h2>
+    <div id="chatUsersList" class="chat-container" style="margin-bottom:15px;">
+      <p class="empty-msg">برای شروع چت، از بخش پیشنهادها روی «چت» بزنید.</p>
+    </div>
+
+    <div class="chat-container" id="activeChatBox" style="display:none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h3 id="chatWithName" style="font-size:16px;"></h3>
+        <button class="btn btn-sm" onclick="closeChat()">بستن</button>
+      </div>
+      <div class="chat-list" id="chatMessages"></div>
+      <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="پیام خود را بنویسید..." onkeypress="if(event.key==='Enter') sendMessage()">
+        <button class="btn" onclick="sendMessage()">ارسال</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== صفحه پروفایل ==================== -->
+<div class="page" id="page-profile">
+  <div class="container">
+    <div class="profile-box">
+      <h2>پروفایل من</h2>
+      <div class="profile-item"><strong>نام:</strong> <span id="profileName"></span></div>
+      <div class="profile-item"><strong>ایمیل:</strong> <span id="profileEmail"></span></div>
+      <div class="profile-item"><strong>نوع حساب:</strong> <span id="profileRole"></span></div>
+      <div class="profile-item"><strong>مهارت‌ها:</strong> <span id="profileSkills"></span></div>
+      <div class="profile-item"><strong>درباره من:</strong> <span id="profileBio"></span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== صفحه پیشنهادهای من ==================== -->
+<div class="page" id="page-myProposals">
+  <div class="container">
+    <h2 class="title">پیشنهادهای من</h2>
+    <div id="myProposalsContainer"></div>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
 <div class="modal" id="loginModal">
   <div class="modal-box">
     <button class="close" onclick="closeModals()">×</button>
@@ -140,7 +185,7 @@
   </div>
 </div>
 
-<!-- REGISTER -->
+<!-- REGISTER MODAL -->
 <div class="modal" id="registerModal">
   <div class="modal-box">
     <button class="close" onclick="closeModals()">×</button>
@@ -187,35 +232,26 @@
   </div>
 </div>
 
-<!-- SEND PROPOSAL MODAL -->
+<!-- PROPOSAL MODAL -->
 <div class="modal" id="proposalModal">
   <div class="modal-box">
     <button class="close" onclick="closeModals()">×</button>
     <h2>ارسال پیشنهاد</h2>
     <p id="proposalProjectTitle" style="color:#2563eb; margin-bottom:15px; font-weight:bold;"></p>
     <div class="form-group"><label>قیمت پیشنهادی (تومان)</label><input type="text" id="proposalPrice" placeholder="مثلاً ۴,۵۰۰,۰۰۰"></div>
-    <div class="form-group"><label>توضیحات پیشنهاد</label><textarea id="proposalMessage" placeholder="چرا شما گزینه مناسبی هستید؟ زمان تحویل چقدر است؟"></textarea></div>
+    <div class="form-group"><label>توضیحات پیشنهاد</label><textarea id="proposalMessage" placeholder="چرا شما گزینه مناسبی هستید؟"></textarea></div>
     <button class="btn form-button" onclick="sendProposal()">ارسال پیشنهاد</button>
     <div class="message" id="proposalMessageBox"></div>
   </div>
 </div>
 
-<!-- VIEW PROPOSALS MODAL (for employer) -->
+<!-- PROPOSALS LIST MODAL -->
 <div class="modal" id="proposalsListModal">
-  <div class="modal-box">
+  <div class="modal-box" style="max-width:600px;">
     <button class="close" onclick="closeModals()">×</button>
     <h2>پیشنهادهای دریافتی</h2>
     <p id="proposalsListTitle" style="color:#2563eb; margin-bottom:15px; font-weight:bold;"></p>
     <div id="proposalsListContainer"></div>
-  </div>
-</div>
-
-<!-- MY PROPOSALS MODAL (for freelancer) -->
-<div class="modal" id="myProposalsModal">
-  <div class="modal-box">
-    <button class="close" onclick="closeModals()">×</button>
-    <h2>پیشنهادهای من</h2>
-    <div id="myProposalsContainer"></div>
   </div>
 </div>
 
@@ -224,20 +260,44 @@
 </footer>
 
 <script>
-
 /* =========================================
    SUPABASE
 ========================================= */
 const SUPABASE_URL = "https://ozjijsulfqjtrpirnbkb.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96amlqc3VsZnFqdHJwaXJuYmtiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4MjcxMTQsImV4cCI6MjEwNjQwMzExNH0.zYC7bzwH_waiPZd8vg1IpzC0_g-pOEiO_bb50mVQ91I";
-
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-/* متغیرهای سراسری */
 let currentUser = null;
 let currentProfile = null;
 let currentProjectForProposal = null;
+let currentChatUserId = null;
+let chatInterval = null;
 
+/* =========================================
+   PAGE / TABS
+========================================= */
+function showPage(pageName) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+
+  const page = document.getElementById("page-" + pageName);
+  if (page) page.classList.add("active");
+
+  // هایلایت تب فعال
+  const tabs = document.querySelectorAll(".tab");
+  tabs.forEach(t => {
+    if (t.getAttribute("onclick") && t.getAttribute("onclick").includes("'" + pageName + "'")) {
+      t.classList.add("active");
+    }
+  });
+
+  if (pageName === "projects") loadProjects();
+  if (pageName === "profile") showProfile();
+  if (pageName === "myProposals") loadMyProposals();
+  if (pageName === "chat") loadChatUsers();
+
+  window.scrollTo(0, 0);
+}
 
 /* =========================================
    MODALS
@@ -245,12 +305,9 @@ let currentProjectForProposal = null;
 function openLogin() { closeModals(); document.getElementById("loginModal").style.display = "flex"; }
 function openRegister() { closeModals(); document.getElementById("registerModal").style.display = "flex"; }
 function openProject() { closeModals(); document.getElementById("projectModal").style.display = "flex"; }
-function closeModals() {
-  document.querySelectorAll(".modal").forEach(m => m.style.display = "none");
-}
+function closeModals() { document.querySelectorAll(".modal").forEach(m => m.style.display = "none"); }
 function switchToRegister() { closeModals(); openRegister(); }
 function switchToLogin() { closeModals(); openLogin(); }
-
 
 /* =========================================
    MESSAGE
@@ -262,7 +319,6 @@ function showMessage(id, text, success = false) {
   if (success) { box.style.background = "#dcfce7"; box.style.color = "#166534"; }
   else { box.style.background = "#fee2e2"; box.style.color = "#991b1b"; }
 }
-
 
 /* =========================================
    REGISTER
@@ -298,69 +354,56 @@ async function register() {
   setTimeout(() => { closeModals(); loadUser(); }, 1200);
 }
 
-
 /* =========================================
    LOGIN
 ========================================= */
 async function login() {
   const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
-
   if (!email || !password) { showMessage("loginMessage", "ایمیل و رمز عبور را وارد کنید."); return; }
-
   showMessage("loginMessage", "در حال ورود...", true);
 
-  const { data, error } = await supabaseClient.auth.signInWithPassword({ email: email, password: password });
-
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
   if (error) { showMessage("loginMessage", "ورود ناموفق بود: " + error.message); return; }
 
   showMessage("loginMessage", "با موفقیت وارد شدید! 🎉", true);
-  setTimeout(() => { closeModals(); loadUser(); loadProjects(); }, 800);
+  setTimeout(() => { closeModals(); loadUser(); }, 800);
 }
-
 
 /* =========================================
    LOGOUT
 ========================================= */
 async function logout() {
   await supabaseClient.auth.signOut();
-  currentUser = null;
-  currentProfile = null;
+  currentUser = null; currentProfile = null;
   document.getElementById("userName").textContent = "";
   document.getElementById("loginBtn").style.display = "inline-block";
   document.getElementById("registerBtn").style.display = "inline-block";
   document.getElementById("newProjectBtn").style.display = "none";
-  document.getElementById("myProposalsBtn").style.display = "none";
-  document.getElementById("profileBtn").style.display = "none";
   document.getElementById("logoutBtn").style.display = "none";
-  document.getElementById("profileBox").style.display = "none";
+  document.getElementById("tabMyProposals").style.display = "none";
+  showPage("home");
   alert("از حساب خارج شدید.");
-  loadProjects();
 }
-
 
 /* =========================================
    LOAD USER
 ========================================= */
 async function loadUser() {
   const { data: { user } } = await supabaseClient.auth.getUser();
-
   if (!user) {
-    currentUser = null;
-    currentProfile = null;
+    currentUser = null; currentProfile = null;
     document.getElementById("loginBtn").style.display = "inline-block";
     document.getElementById("registerBtn").style.display = "inline-block";
     document.getElementById("newProjectBtn").style.display = "none";
-    document.getElementById("myProposalsBtn").style.display = "none";
-    document.getElementById("profileBtn").style.display = "none";
     document.getElementById("logoutBtn").style.display = "none";
+    document.getElementById("tabMyProposals").style.display = "none";
     return;
   }
 
   currentUser = user;
   document.getElementById("loginBtn").style.display = "none";
   document.getElementById("registerBtn").style.display = "none";
-  document.getElementById("profileBtn").style.display = "inline-block";
   document.getElementById("logoutBtn").style.display = "inline-block";
 
   const { data: profile } = await supabaseClient.from("profiles").select("*").eq("id", user.id).maybeSingle();
@@ -368,43 +411,36 @@ async function loadUser() {
 
   if (profile) {
     document.getElementById("userName").textContent = "سلام " + profile.full_name;
-
     if (profile.role === "employer") {
       document.getElementById("newProjectBtn").style.display = "inline-block";
-      document.getElementById("myProposalsBtn").style.display = "none";
+      document.getElementById("tabMyProposals").style.display = "none";
     } else {
       document.getElementById("newProjectBtn").style.display = "none";
-      document.getElementById("myProposalsBtn").style.display = "inline-block";
+      document.getElementById("tabMyProposals").style.display = "inline-block";
     }
   } else {
     document.getElementById("userName").textContent = "سلام کاربر";
   }
 }
 
-
 /* =========================================
    CREATE PROJECT
 ========================================= */
 async function createProject() {
   if (!currentUser) { showMessage("projectMessage", "ابتدا وارد حساب شوید."); return; }
-
   const title = document.getElementById("projectTitle").value.trim();
   const description = document.getElementById("projectDescription").value.trim();
   const budget = document.getElementById("projectBudget").value.trim();
   const category = document.getElementById("projectCategory").value;
-
   if (!title || !description) { showMessage("projectMessage", "عنوان و توضیحات الزامی است."); return; }
 
   showMessage("projectMessage", "در حال ثبت پروژه...", true);
-
   const { error } = await supabaseClient.from("projects").insert({
-    employer_id: currentUser.id, title: title, description: description, budget: budget, category: category
+    employer_id: currentUser.id, title, description, budget, category
   });
-
   if (error) { showMessage("projectMessage", "خطا: " + error.message); return; }
 
   showMessage("projectMessage", "پروژه با موفقیت ثبت شد! 🎉", true);
-
   setTimeout(() => {
     closeModals();
     document.getElementById("projectTitle").value = "";
@@ -414,25 +450,15 @@ async function createProject() {
   }, 1000);
 }
 
-
 /* =========================================
    LOAD PROJECTS
 ========================================= */
 async function loadProjects() {
   const container = document.getElementById("projectsContainer");
+  const { data: projects, error } = await supabaseClient.from("projects").select("*").order("created_at", { ascending: false });
 
-  const { data: projects, error } = await supabaseClient
-    .from("projects").select("*").order("created_at", { ascending: false });
-
-  if (error) {
-    container.innerHTML = '<p style="text-align:center; color:#991b1b;">خطا در بارگذاری پروژه‌ها: ' + error.message + '</p>';
-    return;
-  }
-
-  if (!projects || projects.length === 0) {
-    container.innerHTML = '<p style="text-align:center; color:#94a3b8;">هنوز پروژه‌ای ثبت نشده. اولین نفر باش!</p>';
-    return;
-  }
+  if (error) { container.innerHTML = '<p style="text-align:center; color:#991b1b;">خطا: ' + error.message + '</p>'; return; }
+  if (!projects || projects.length === 0) { container.innerHTML = '<p style="text-align:center; color:#94a3b8;">هنوز پروژه‌ای ثبت نشده. اولین نفر باش!</p>'; return; }
 
   container.innerHTML = projects.map(p => {
     let actionBtn = "";
@@ -440,9 +466,9 @@ async function loadProjects() {
     const isFreelancer = currentProfile && currentProfile.role === "freelancer";
 
     if (isOwner) {
-      actionBtn = `<button class="btn btn-green" onclick="openProposalsList('${p.id}', '${escapeHtml(p.title)}')">مشاهده پیشنهادها</button>`;
+      actionBtn = `<button class="btn btn-green" onclick="openProposalsList('${p.id}', '${escapeHtml(p.title).replace(/'/g,"&#39;")}')">مشاهده پیشنهادها</button>`;
     } else if (isFreelancer) {
-      actionBtn = `<button class="btn" onclick="openProposal('${p.id}', '${escapeHtml(p.title)}')">ارسال پیشنهاد</button>`;
+      actionBtn = `<button class="btn" onclick="openProposal('${p.id}', '${escapeHtml(p.title).replace(/'/g,"&#39;")}')">ارسال پیشنهاد</button>`;
     } else {
       actionBtn = `<button class="btn" onclick="openLogin()">برای پیشنهاد وارد شوید</button>`;
     }
@@ -455,122 +481,63 @@ async function loadProjects() {
         ${p.category ? '<p class="category">دسته: ' + escapeHtml(p.category) + '</p>' : ""}
         <br>
         ${actionBtn}
-      </div>
-    `;
+      </div>`;
   }).join("");
 }
 
-
 /* =========================================
-   OPEN PROPOSAL MODAL (freelancer)
+   PROPOSAL
 ========================================= */
 function openProposal(projectId, projectTitle) {
   if (!currentUser) { openLogin(); return; }
-  if (!currentProfile || currentProfile.role !== "freelancer") {
-    alert("فقط فریلنسرها می‌توانند پیشنهاد ارسال کنند.");
-    return;
-  }
-
+  if (!currentProfile || currentProfile.role !== "freelancer") { alert("فقط فریلنسرها می‌توانند پیشنهاد ارسال کنند."); return; }
   currentProjectForProposal = projectId;
   document.getElementById("proposalProjectTitle").textContent = "پروژه: " + projectTitle;
   document.getElementById("proposalPrice").value = "";
   document.getElementById("proposalMessage").value = "";
   document.getElementById("proposalMessageBox").style.display = "none";
-
   closeModals();
   document.getElementById("proposalModal").style.display = "flex";
 }
 
-
-/* =========================================
-   SEND PROPOSAL
-========================================= */
 async function sendProposal() {
   if (!currentProjectForProposal || !currentUser) return;
-
   const price = document.getElementById("proposalPrice").value.trim();
   const message = document.getElementById("proposalMessage").value.trim();
-
-  if (!price || !message) {
-    showMessage("proposalMessageBox", "قیمت و توضیحات الزامی است.");
-    return;
-  }
-
+  if (!price || !message) { showMessage("proposalMessageBox", "قیمت و توضیحات الزامی است."); return; }
   showMessage("proposalMessageBox", "در حال ارسال...", true);
 
-  // گرفتن employer_id از پروژه
-  const { data: project, error: projErr } = await supabaseClient
-    .from("projects").select("employer_id").eq("id", currentProjectForProposal).single();
+  const { data: project, error: projErr } = await supabaseClient.from("projects").select("employer_id").eq("id", currentProjectForProposal).single();
+  if (projErr || !project) { showMessage("proposalMessageBox", "خطا در دریافت اطلاعات پروژه."); return; }
 
-  if (projErr || !project) {
-    showMessage("proposalMessageBox", "خطا در دریافت اطلاعات پروژه.");
-    return;
-  }
-
-  // چک کن قبلاً پیشنهاد نداده باشه
-  const { data: existing } = await supabaseClient
-    .from("proposals").select("id")
-    .eq("project_id", currentProjectForProposal)
-    .eq("freelancer_id", currentUser.id)
-    .maybeSingle();
-
-  if (existing) {
-    showMessage("proposalMessageBox", "شما قبلاً برای این پروژه پیشنهاد داده‌اید.");
-    return;
-  }
+  const { data: existing } = await supabaseClient.from("proposals").select("id").eq("project_id", currentProjectForProposal).eq("freelancer_id", currentUser.id).maybeSingle();
+  if (existing) { showMessage("proposalMessageBox", "شما قبلاً برای این پروژه پیشنهاد داده‌اید."); return; }
 
   const { error } = await supabaseClient.from("proposals").insert({
-    project_id: currentProjectForProposal,
-    freelancer_id: currentUser.id,
-    employer_id: project.employer_id,
-    message: message,
-    price: price,
-    status: "pending"
+    project_id: currentProjectForProposal, freelancer_id: currentUser.id,
+    employer_id: project.employer_id, message, price, status: "pending"
   });
-
   if (error) { showMessage("proposalMessageBox", "خطا: " + error.message); return; }
-
   showMessage("proposalMessageBox", "پیشنهاد شما ارسال شد! 🎉", true);
-
-  setTimeout(() => {
-    closeModals();
-    currentProjectForProposal = null;
-  }, 1200);
+  setTimeout(() => { closeModals(); currentProjectForProposal = null; }, 1200);
 }
 
-
 /* =========================================
-   OPEN PROPOSALS LIST (employer)
+   PROPOSALS LIST (employer)
 ========================================= */
 async function openProposalsList(projectId, projectTitle) {
   document.getElementById("proposalsListTitle").textContent = "پروژه: " + projectTitle;
   const container = document.getElementById("proposalsListContainer");
   container.innerHTML = '<p style="text-align:center; color:#94a3b8;">در حال بارگذاری...</p>';
-
   closeModals();
   document.getElementById("proposalsListModal").style.display = "flex";
 
-  // گرفتن پیشنهادها + اطلاعات فریلنسر
-  const { data: proposals, error } = await supabaseClient
-    .from("proposals").select("*")
-    .eq("project_id", projectId)
-    .order("created_at", { ascending: false });
+  const { data: proposals, error } = await supabaseClient.from("proposals").select("*").eq("project_id", projectId).order("created_at", { ascending: false });
+  if (error) { container.innerHTML = '<p style="color:#991b1b;">خطا: ' + error.message + '</p>'; return; }
+  if (!proposals || proposals.length === 0) { container.innerHTML = '<p class="empty-msg">هنوز پیشنهادی دریافت نکرده‌اید.</p>'; return; }
 
-  if (error) {
-    container.innerHTML = '<p style="color:#991b1b;">خطا: ' + error.message + '</p>';
-    return;
-  }
-
-  if (!proposals || proposals.length === 0) {
-    container.innerHTML = '<p style="text-align:center; color:#94a3b8;">هنوز پیشنهادی دریافت نکرده‌اید.</p>';
-    return;
-  }
-
-  // گرفتن اطلاعات فریلنسرها
   const freelancerIds = proposals.map(p => p.freelancer_id);
-  const { data: profiles } = await supabaseClient
-    .from("profiles").select("id, full_name, skills").in("id", freelancerIds);
-
+  const { data: profiles } = await supabaseClient.from("profiles").select("id, full_name, skills").in("id", freelancerIds);
   const profileMap = {};
   (profiles || []).forEach(pr => { profileMap[pr.id] = pr; });
 
@@ -585,10 +552,11 @@ async function openProposalsList(projectId, projectTitle) {
     if (p.status === "pending") {
       actionBtns = `
         <div class="actions">
-          <button class="btn btn-green" onclick="updateProposalStatus('${p.id}', 'accepted', '${projectId}', '${projectTitle.replace(/'/g, "\\'")}')">قبول</button>
-          <button class="btn btn-red" onclick="updateProposalStatus('${p.id}', 'rejected', '${projectId}', '${projectTitle.replace(/'/g, "\\'")}')">رد</button>
-        </div>
-      `;
+          <button class="btn btn-green btn-sm" onclick="updateProposalStatus('${p.id}', 'accepted', '${projectId}', '${projectTitle.replace(/'/g, "\\'")}')">قبول</button>
+          <button class="btn btn-red btn-sm" onclick="updateProposalStatus('${p.id}', 'rejected', '${projectId}', '${projectTitle.replace(/'/g, "\\'")}')">رد</button>
+        </div>`;
+    } else if (p.status === "accepted") {
+      actionBtns = `<div class="actions"><button class="btn btn-sm" onclick="openChatWith('${p.freelancer_id}', '${escapeHtml(fr.full_name || "کاربر").replace(/'/g,"&#39;")}')">شروع چت</button></div>`;
     }
 
     return `
@@ -599,132 +567,191 @@ async function openProposalsList(projectId, projectTitle) {
         <div class="msg-text">${escapeHtml(p.message || "")}</div>
         ${statusBadge}
         ${actionBtns}
-      </div>
-    `;
+      </div>`;
   }).join("");
 }
 
-
-/* =========================================
-   UPDATE PROPOSAL STATUS
-========================================= */
 async function updateProposalStatus(proposalId, newStatus, projectId, projectTitle) {
   if (!confirm("مطمئن هستید؟")) return;
-
-  const { error } = await supabaseClient
-    .from("proposals").update({ status: newStatus }).eq("id", proposalId);
-
+  const { error } = await supabaseClient.from("proposals").update({ status: newStatus }).eq("id", proposalId);
   if (error) { alert("خطا: " + error.message); return; }
-
   alert(newStatus === "accepted" ? "پیشنهاد قبول شد! ✅" : "پیشنهاد رد شد.");
-
-  // رفرش لیست
   openProposalsList(projectId, projectTitle);
 }
 
-
 /* =========================================
-   OPEN MY PROPOSALS (freelancer)
+   MY PROPOSALS (freelancer)
 ========================================= */
-async function openMyProposals() {
-  if (!currentUser) { openLogin(); return; }
-
+async function loadMyProposals() {
+  if (!currentUser) { showPage("home"); return; }
   const container = document.getElementById("myProposalsContainer");
-  container.innerHTML = '<p style="text-align:center; color:#94a3b8;">در حال بارگذاری...</p>';
+  container.innerHTML = '<p class="empty-msg">در حال بارگذاری...</p>';
 
-  closeModals();
-  document.getElementById("myProposalsModal").style.display = "flex";
+  const { data: proposals, error } = await supabaseClient.from("proposals").select("*").eq("freelancer_id", currentUser.id).order("created_at", { ascending: false });
+  if (error) { container.innerHTML = '<p style="color:#991b1b;">خطا: ' + error.message + '</p>'; return; }
+  if (!proposals || proposals.length === 0) { container.innerHTML = '<p class="empty-msg">هنوز پیشنهادی ارسال نکرده‌اید.</p>'; return; }
 
-  const { data: proposals, error } = await supabaseClient
-    .from("proposals").select("*")
-    .eq("freelancer_id", currentUser.id)
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    container.innerHTML = '<p style="color:#991b1b;">خطا: ' + error.message + '</p>';
-    return;
-  }
-
-  if (!proposals || proposals.length === 0) {
-    container.innerHTML = '<p style="text-align:center; color:#94a3b8;">هنوز پیشنهادی ارسال نکرده‌اید.</p>';
-    return;
-  }
-
-  // گرفتن عنوان پروژه‌ها
   const projectIds = proposals.map(p => p.project_id);
-  const { data: projects } = await supabaseClient
-    .from("projects").select("id, title").in("id", projectIds);
-
+  const { data: projects } = await supabaseClient.from("projects").select("id, title").in("id", projectIds);
   const projectMap = {};
   (projects || []).forEach(pr => { projectMap[pr.id] = pr; });
 
+  // اطلاعات کارفرماها برای چت
+  const employerIds = proposals.map(p => p.employer_id);
+  const { data: employers } = await supabaseClient.from("profiles").select("id, full_name").in("id", employerIds);
+  const employerMap = {};
+  (employers || []).forEach(e => { employerMap[e.id] = e; });
+
   container.innerHTML = proposals.map(p => {
     const proj = projectMap[p.project_id] || {};
+    const emp = employerMap[p.employer_id] || {};
     let statusBadge = "";
     if (p.status === "accepted") statusBadge = '<span class="badge badge-accepted">قبول شده ✅</span>';
     else if (p.status === "rejected") statusBadge = '<span class="badge badge-rejected">رد شده</span>';
     else statusBadge = '<span class="badge badge-pending">در انتظار</span>';
 
+    let chatBtn = "";
+    if (p.status === "accepted") {
+      chatBtn = `<div class="actions"><button class="btn btn-sm" onclick="openChatWith('${p.employer_id}', '${escapeHtml(emp.full_name || "کارفرما").replace(/'/g,"&#39;")}')">شروع چت</button></div>`;
+    }
+
     return `
       <div class="proposal-card">
         <div class="freelancer-name">${escapeHtml(proj.title || "پروژه")}</div>
+        <div style="color:#64748b; font-size:13px; margin-top:3px;">کارفرما: ${escapeHtml(emp.full_name || "-")}</div>
         <div class="price">💰 ${escapeHtml(p.price || "-")} تومان</div>
         <div class="msg-text">${escapeHtml(p.message || "")}</div>
         ${statusBadge}
-      </div>
-    `;
+        ${chatBtn}
+      </div>`;
   }).join("");
 }
 
+/* =========================================
+   CHAT
+========================================= */
+async function loadChatUsers() {
+  if (!currentUser) { showPage("home"); return; }
+  const container = document.getElementById("chatUsersList");
+  container.innerHTML = '<p class="empty-msg">در حال بارگذاری...</p>';
+
+  const { data: msgs } = await supabaseClient
+    .from("messages").select("*")
+    .or(`sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`)
+    .order("created_at", { ascending: false });
+
+  if (!msgs || msgs.length === 0) {
+    container.innerHTML = '<p class="empty-msg">هنوز چتی ندارید. از بخش پیشنهادها شروع کنید.</p>';
+    return;
+  }
+
+  const userIds = new Set();
+  msgs.forEach(m => {
+    if (m.sender_id !== currentUser.id) userIds.add(m.sender_id);
+    if (m.receiver_id !== currentUser.id) userIds.add(m.receiver_id);
+  });
+
+  const idsArr = Array.from(userIds);
+  const { data: profiles } = await supabaseClient.from("profiles").select("id, full_name").in("id", idsArr);
+  const map = {};
+  (profiles || []).forEach(p => { map[p.id] = p; });
+
+  container.innerHTML = '<h3 style="margin-bottom:12px; font-size:16px;">گفتگوها</h3>' + idsArr.map(id => {
+    const p = map[id] || {};
+    return `<div class="proposal-card" style="cursor:pointer;" onclick="openChatWith('${id}', '${escapeHtml(p.full_name || "کاربر").replace(/'/g,"&#39;")}')">
+      <div class="freelancer-name">💬 ${escapeHtml(p.full_name || "کاربر")}</div>
+    </div>`;
+  }).join("");
+}
+
+function openChatWith(userId, userName) {
+  currentChatUserId = userId;
+  document.getElementById("activeChatBox").style.display = "block";
+  document.getElementById("chatWithName").textContent = "چت با " + userName;
+  showPage("chat");
+  loadMessages();
+
+  if (chatInterval) clearInterval(chatInterval);
+  chatInterval = setInterval(loadMessages, 3000);
+}
+
+function closeChat() {
+  currentChatUserId = null;
+  document.getElementById("activeChatBox").style.display = "none";
+  if (chatInterval) { clearInterval(chatInterval); chatInterval = null; }
+  loadChatUsers();
+}
+
+async function loadMessages() {
+  if (!currentUser || !currentChatUserId) return;
+  const container = document.getElementById("chatMessages");
+
+  const { data: msgs, error } = await supabaseClient
+    .from("messages").select("*")
+    .or(`and(sender_id.eq.${currentUser.id},receiver_id.eq.${currentChatUserId}),and(sender_id.eq.${currentChatUserId},receiver_id.eq.${currentUser.id})`)
+    .order("created_at", { ascending: true });
+
+  if (error) { container.innerHTML = '<p style="color:#991b1b;">خطا: ' + error.message + '</p>'; return; }
+  if (!msgs || msgs.length === 0) { container.innerHTML = '<p class="empty-msg">شروع به گفتگو کنید...</p>'; return; }
+
+  container.innerHTML = msgs.map(m => {
+    const isMe = m.sender_id === currentUser.id;
+    return `<div class="chat-message ${isMe ? 'chat-me' : 'chat-other'}">${escapeHtml(m.content)}</div>`;
+  }).join("");
+  container.scrollTop = container.scrollHeight;
+}
+
+async function sendMessage() {
+  if (!currentUser || !currentChatUserId) return;
+  const input = document.getElementById("chatInput");
+  const content = input.value.trim();
+  if (!content) return;
+
+  input.value = "";
+  const { error } = await supabaseClient.from("messages").insert({
+    sender_id: currentUser.id, receiver_id: currentChatUserId, content: content
+  });
+  if (error) { alert("خطا: " + error.message); return; }
+  loadMessages();
+}
 
 /* =========================================
    PROFILE
 ========================================= */
 async function showProfile() {
-  if (!currentUser) { openLogin(); return; }
-
-  const { data: profile, error } = await supabaseClient.from("profiles").select("*").eq("id", currentUser.id).maybeSingle();
-  if (error) { alert("خطا: " + error.message); return; }
-  if (!profile) { alert("پروفایل پیدا نشد."); return; }
-
+  if (!currentUser) { showPage("home"); return; }
+  const { data: profile } = await supabaseClient.from("profiles").select("*").eq("id", currentUser.id).maybeSingle();
+  if (!profile) return;
   document.getElementById("profileName").textContent = profile.full_name || "-";
   document.getElementById("profileEmail").textContent = currentUser.email || "-";
   document.getElementById("profileRole").textContent = profile.role === "freelancer" ? "فریلنسر" : "کارفرما";
   document.getElementById("profileSkills").textContent = profile.skills || "-";
   document.getElementById("profileBio").textContent = profile.bio || "-";
-
-  document.getElementById("profileBox").style.display = "block";
-  document.getElementById("profileBox").scrollIntoView({ behavior: "smooth" });
 }
-
 
 /* =========================================
    HELPERS
 ========================================= */
 function escapeHtml(text) {
   if (text === null || text === undefined) return "";
-  return String(text)
-    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
 
 function searchProjects() {
   const text = document.getElementById("searchInput").value.trim();
-  if (!text) { alert("لطفاً چیزی برای جستجو بنویسید."); return; }
+  if (!text) { alert("لطفاً چیزی بنویسید."); return; }
   alert("جستجوی «" + text + "» در نسخه بعدی فعال می‌شود.");
 }
-
 
 /* =========================================
    AUTH STATE
 ========================================= */
 supabaseClient.auth.onAuthStateChange((event, session) => { loadUser(); });
 
-
 /* =========================================
    START
 ========================================= */
-loadUser().then(() => loadProjects());
+loadUser();
 
 </script>
 
