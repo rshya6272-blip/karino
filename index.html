@@ -109,7 +109,7 @@
     <h1>پروژه‌ات را به متخصص بسپار</h1>
     <p>کارینو؛ جایی برای ارتباط کارفرماها و فریلنسرها</p>
     <div class="search">
-      <input id="searchInput" type="text" placeholder="چه کاری می‌خواهید انجام دهید؟">
+      <input id="searchInput" type="text" placeholder="چه کاری می‌خواهید انجام دهید؟" onkeypress="if(event.key==='Enter') searchProjects()">
       <button class="btn" onclick="searchProjects()">جستجو</button>
     </div>
   </section>
@@ -168,11 +168,12 @@
       <div class="profile-item"><strong>نوع حساب:</strong> <span id="profileRole"></span></div>
       <div class="profile-item"><strong>سن:</strong> <span id="profileAge"></span></div>
       <div class="profile-item" id="profileNationalIdRow"><strong>کد ملی:</strong> <span id="profileNationalId"></span></div>
-      <div class="profile-item"><strong>مهارت‌ها:</strong> <span 
-                                                            
-    </div><div class="profile-item"><strong>درباره من:</strong> <span id="profileBio"></span></div>
-<button class="btn btn-green" onclick="openEditProfile()" style="margin-top:20px; width:100%;">✏️ ویرایش پروفایل</button>
-<button class="btn btn-red" id="logoutBtn" onclick="logout()" style="display:none; margin-top:10px; width:100%;">خروج از حساب</button>
+      <div class="profile-item"><strong>مهارت‌ها:</strong> <span id="profileSkills"></span></div>
+      <div class="profile-item"><strong>درباره من:</strong> <span id="profileBio"></span></div>
+
+      <button class="btn btn-green" onclick="openEditProfile()" style="margin-top:20px; width:100%;">✏️ ویرایش پروفایل</button>
+      <button class="btn btn-red" id="logoutBtn" onclick="logout()" style="display:none; margin-top:10px; width:100%;">خروج از حساب</button>
+    </div>
   </div>
 </div>
 
@@ -229,6 +230,33 @@
     <button class="btn form-button" onclick="register()">ساخت حساب</button>
     <div class="message" id="registerMessage"></div>
     <div class="switch" onclick="switchToLogin()">حساب دارید؟ وارد شوید</div>
+  </div>
+</div>
+
+<!-- EDIT PROFILE MODAL -->
+<div class="modal" id="editProfileModal">
+  <div class="modal-box">
+    <button class="close" onclick="closeModals()">×</button>
+    <h2>ویرایش پروفایل</h2>
+
+    <div class="form-group"><label>نام و نام خانوادگی</label><input type="text" id="editName"></div>
+
+    <div class="form-group">
+      <label>سن</label>
+      <input type="number" id="editAge" min="5" max="100" oninput="toggleEditNationalId()">
+    </div>
+
+    <div class="form-group" id="editNationalIdGroup" style="display:none;">
+      <div class="info-box">🔒 چون سن شما بالای ۱۸ سال است، کد ملی الزامی است.</div>
+      <label>کد ملی (۱۰ رقم)</label>
+      <input type="text" id="editNationalId" placeholder="۱۰ رقم" maxlength="10">
+    </div>
+
+    <div class="form-group"><label>مهارت‌ها</label><input type="text" id="editSkills"></div>
+    <div class="form-group"><label>درباره من</label><textarea id="editBio"></textarea></div>
+
+    <button class="btn form-button" onclick="saveProfile()">ذخیره تغییرات</button>
+    <div class="message" id="editProfileMessage"></div>
   </div>
 </div>
 
@@ -338,7 +366,6 @@ function toggleNationalId() {
   const ageInput = document.getElementById("registerAge");
   const group = document.getElementById("nationalIdGroup");
   const age = parseInt(ageInput.value);
-
   if (!isNaN(age) && age >= 18) {
     group.style.display = "block";
   } else {
@@ -347,17 +374,26 @@ function toggleNationalId() {
   }
 }
 
+function toggleEditNationalId() {
+  const age = parseInt(document.getElementById("editAge").value);
+  const group = document.getElementById("editNationalIdGroup");
+  if (!isNaN(age) && age >= 18) {
+    group.style.display = "block";
+  } else {
+    group.style.display = "none";
+    document.getElementById("editNationalId").value = "";
+  }
+}
+
 function validateIranianNationalId(code) {
   if (!/^\d{10}$/.test(code)) return false;
   if (/^(\d)\1{9}$/.test(code)) return false;
-
   let sum = 0;
   for (let i = 0; i < 9; i++) {
     sum += parseInt(code[i]) * (10 - i);
   }
   const remainder = sum % 11;
   const checkDigit = parseInt(code[9]);
-
   if (remainder < 2) return checkDigit === remainder;
   return checkDigit === (11 - remainder);
 }
@@ -397,14 +433,8 @@ async function register() {
   if (!data.user) { showMessage("registerMessage", "حساب ساخته نشد."); return; }
 
   const { error: profileError } = await supabaseClient.from("profiles").insert({
-    id: data.user.id,
-    full_name: name,
-    role: role,
-    skills: skills,
-    bio: bio,
-    avatar_url: null,
-    age: age,
-    national_id: age >= 18 ? nationalId : null
+    id: data.user.id, full_name: name, role: role, skills: skills, bio: bio, avatar_url: null,
+    age: age, national_id: age >= 18 ? nationalId : null
   });
 
   if (profileError) { showMessage("registerMessage", "حساب ساخته شد اما پروفایل ذخیره نشد: " + profileError.message); return; }
@@ -508,6 +538,58 @@ async function uploadAvatar(event) {
 }
 
 /* =========================================
+   EDIT PROFILE
+========================================= */
+function openEditProfile() {
+  if (!currentUser || !currentProfile) { openLogin(); return; }
+  document.getElementById("editName").value = currentProfile.full_name || "";
+  document.getElementById("editAge").value = currentProfile.age || "";
+  document.getElementById("editNationalId").value = currentProfile.national_id || "";
+  document.getElementById("editSkills").value = currentProfile.skills || "";
+  document.getElementById("editBio").value = currentProfile.bio || "";
+  document.getElementById("editProfileMessage").style.display = "none";
+  toggleEditNationalId();
+  closeModals();
+  document.getElementById("editProfileModal").style.display = "flex";
+}
+
+async function saveProfile() {
+  if (!currentUser) return;
+  const name = document.getElementById("editName").value.trim();
+  const ageStr = document.getElementById("editAge").value.trim();
+  const nationalId = document.getElementById("editNationalId").value.trim();
+  const skills = document.getElementById("editSkills").value.trim();
+  const bio = document.getElementById("editBio").value.trim();
+
+  if (!name) { showMessage("editProfileMessage", "نام الزامی است."); return; }
+  const age = parseInt(ageStr);
+  if (isNaN(age) || age < 5 || age > 100) { showMessage("editProfileMessage", "لطفاً سن معتبر وارد کنید."); return; }
+
+  if (age >= 18) {
+    if (!nationalId) { showMessage("editProfileMessage", "کد ملی الزامی است."); return; }
+    if (!validateIranianNationalId(nationalId)) { showMessage("editProfileMessage", "کد ملی معتبر نیست."); return; }
+  }
+
+  showMessage("editProfileMessage", "در حال ذخیره...", true);
+
+  const { error } = await supabaseClient.from("profiles").update({
+    full_name: name, age: age, national_id: age >= 18 ? nationalId : null, skills: skills, bio: bio
+  }).eq("id", currentUser.id);
+
+  if (error) { showMessage("editProfileMessage", "خطا: " + error.message); return; }
+
+  showMessage("editProfileMessage", "پروفایل با موفقیت ویرایش شد! 🎉", true);
+  currentProfile.full_name = name;
+  currentProfile.age = age;
+  currentProfile.national_id = age >= 18 ? nationalId : null;
+  currentProfile.skills = skills;
+  currentProfile.bio = bio;
+  document.getElementById("userName").textContent = "سلام " + name;
+
+  setTimeout(() => { closeModals(); showProfile(); }, 1200);
+}
+
+/* =========================================
    CREATE PROJECT
 ========================================= */
 async function createProject() {
@@ -538,13 +620,10 @@ async function createProject() {
 async function loadProjects() {
   const container = document.getElementById("projectsContainer");
   let query = supabaseClient.from("projects").select("*").order("created_at", { ascending: false });
-
   if (currentSearch) {
     query = query.or(`title.ilike.%${currentSearch}%,description.ilike.%${currentSearch}%,category.ilike.%${currentSearch}%`);
   }
-
   const { data: projects, error } = await query;
-
   if (error) { container.innerHTML = '<p style="text-align:center; color:#991b1b;">خطا: ' + error.message + '</p>'; return; }
 
   let banner = "";
@@ -805,6 +884,7 @@ async function showProfile() {
   if (!currentUser) { showPage("home"); return; }
   const { data: profile } = await supabaseClient.from("profiles").select("*").eq("id", currentUser.id).maybeSingle();
   if (!profile) return;
+  currentProfile = profile;
   const pAv = document.getElementById("profileAvatar");
   if (profile.avatar_url) { pAv.src = profile.avatar_url; pAv.style.background = "transparent"; }
   else { pAv.src = ""; pAv.style.background = "#e2e8f0"; }
