@@ -11,7 +11,7 @@
     header { background: #111827; color: white; padding: 14px 7%; display: flex; justify-content: space-between; align-items: center; gap: 15px; position: sticky; top: 0; z-index: 10; flex-wrap: wrap; }
     .logo { font-size: 24px; font-weight: bold; color: #60a5fa; }
     .tabs { display: flex; gap: 6px; flex-wrap: wrap; background: #1e293b; padding: 6px; border-radius: 12px; }
-    .tab { background: transparent; color: #cbd5e1; padding: 8px 14px; border-radius: 8px; font-size: 14px; cursor: pointer; border:none; }
+    .tab { background: transparent; color: #cbd5e1; padding: 8px 14px; border-radius: 8px; font-size: 14px; cursor: pointer; border: none; }
     .tab:hover { background: #334155; }
     .tab.active { background: #2563eb; color: white; }
     .user-area { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
@@ -102,7 +102,7 @@
   </div>
 </header>
 
-<!-- ==================== صفحه خانه ==================== -->
+<!-- صفحه خانه -->
 <div class="page active" id="page-home">
   <section class="hero">
     <h1>پروژه‌ات را به متخصص بسپار</h1>
@@ -112,7 +112,6 @@
       <button class="btn" onclick="searchProjects()">جستجو</button>
     </div>
   </section>
-
   <div class="container">
     <h2 class="title">درباره کارینو</h2>
     <div class="card">
@@ -121,7 +120,7 @@
   </div>
 </div>
 
-<!-- ==================== صفحه پروژه‌ها ==================== -->
+<!-- صفحه پروژه‌ها -->
 <div class="page" id="page-projects">
   <div class="container">
     <h2 class="title">پروژه‌های محبوب</h2>
@@ -131,14 +130,13 @@
   </div>
 </div>
 
-<!-- ==================== صفحه چت ==================== -->
+<!-- صفحه چت -->
 <div class="page" id="page-chat">
   <div class="container">
     <h2 class="title">چت‌های من</h2>
     <div id="chatUsersList" class="chat-container" style="margin-bottom:15px;">
       <p class="empty-msg">برای شروع چت، از بخش پیشنهادها روی «چت» بزنید.</p>
     </div>
-
     <div class="chat-container" id="activeChatBox" style="display:none;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
         <h3 id="chatWithName" style="font-size:16px;"></h3>
@@ -153,31 +151,28 @@
   </div>
 </div>
 
-<!-- ==================== صفحه پروفایل ==================== -->
+<!-- صفحه پروفایل -->
 <div class="page" id="page-profile">
   <div class="container">
     <div class="profile-box">
       <h2>پروفایل من</h2>
-
       <div style="text-align:center; margin-bottom:25px;">
         <img id="profileAvatar" class="avatar-lg" src="">
         <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="uploadAvatar(event)">
         <button class="btn btn-sm" onclick="document.getElementById('avatarInput').click()">📷 تغییر عکس پروفایل</button>
         <div id="avatarMessage" class="message" style="margin-top:10px;"></div>
       </div>
-
       <div class="profile-item"><strong>نام:</strong> <span id="profileName"></span></div>
       <div class="profile-item"><strong>ایمیل:</strong> <span id="profileEmail"></span></div>
       <div class="profile-item"><strong>نوع حساب:</strong> <span id="profileRole"></span></div>
       <div class="profile-item"><strong>مهارت‌ها:</strong> <span id="profileSkills"></span></div>
       <div class="profile-item"><strong>درباره من:</strong> <span id="profileBio"></span></div>
-
       <button class="btn btn-red" id="logoutBtn" onclick="logout()" style="display:none; margin-top:20px; width:100%;">خروج از حساب</button>
     </div>
   </div>
 </div>
 
-<!-- ==================== صفحه پیشنهادهای من ==================== -->
+<!-- صفحه پیشنهادهای من -->
 <div class="page" id="page-myProposals">
   <div class="container">
     <h2 class="title">پیشنهادهای من</h2>
@@ -273,9 +268,6 @@
 </footer>
 
 <script>
-/* =========================================
-   SUPABASE
-========================================= */
 const SUPABASE_URL = "https://ozjijsulfqjtrpirnbkb.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96amlqc3VsZnFqdHJwaXJuYmtiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4MjcxMTQsImV4cCI6MjEwNjQwMzExNH0.zYC7bzwH_waiPZd8vg1IpzC0_g-pOEiO_bb50mVQ91I";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -286,34 +278,21 @@ let currentProjectForProposal = null;
 let currentChatUserId = null;
 let chatInterval = null;
 
-/* =========================================
-   PAGE / TABS
-========================================= */
 function showPage(pageName) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-
   const page = document.getElementById("page-" + pageName);
   if (page) page.classList.add("active");
-
-  const tabs = document.querySelectorAll(".tab");
-  tabs.forEach(t => {
-    if (t.getAttribute("onclick") && t.getAttribute("onclick").includes("'" + pageName + "'")) {
-      t.classList.add("active");
-    }
+  document.querySelectorAll(".tab").forEach(t => {
+    if (t.getAttribute("onclick") && t.getAttribute("onclick").includes("'" + pageName + "'")) t.classList.add("active");
   });
-
   if (pageName === "projects") loadProjects();
   if (pageName === "profile") showProfile();
   if (pageName === "myProposals") loadMyProposals();
   if (pageName === "chat") loadChatUsers();
-
   window.scrollTo(0, 0);
 }
 
-/* =========================================
-   MODALS
-========================================= */
 function openLogin() { closeModals(); document.getElementById("loginModal").style.display = "flex"; }
 function openRegister() { closeModals(); document.getElementById("registerModal").style.display = "flex"; }
 function openProject() { closeModals(); document.getElementById("projectModal").style.display = "flex"; }
@@ -321,9 +300,6 @@ function closeModals() { document.querySelectorAll(".modal").forEach(m => m.styl
 function switchToRegister() { closeModals(); openRegister(); }
 function switchToLogin() { closeModals(); openLogin(); }
 
-/* =========================================
-   MESSAGE
-========================================= */
 function showMessage(id, text, success = false) {
   const box = document.getElementById(id);
   box.style.display = "block";
@@ -332,9 +308,6 @@ function showMessage(id, text, success = false) {
   else { box.style.background = "#fee2e2"; box.style.color = "#991b1b"; }
 }
 
-/* =========================================
-   REGISTER
-========================================= */
 async function register() {
   const name = document.getElementById("registerName").value.trim();
   const email = document.getElementById("registerEmail").value.trim();
@@ -342,49 +315,34 @@ async function register() {
   const role = document.getElementById("registerRole").value;
   const skills = document.getElementById("registerSkills").value.trim();
   const bio = document.getElementById("registerBio").value.trim();
-
   if (!name || !email || !password) { showMessage("registerMessage", "لطفاً نام، ایمیل و رمز عبور را وارد کنید."); return; }
   if (password.length < 6) { showMessage("registerMessage", "رمز عبور باید حداقل ۶ کاراکتر باشد."); return; }
-
   showMessage("registerMessage", "در حال ساخت حساب...", true);
-
   const { data, error } = await supabaseClient.auth.signUp({
     email: email, password: password,
     options: { data: { full_name: name, role: role, skills: skills, bio: bio } }
   });
-
   if (error) { showMessage("registerMessage", "خطا: " + error.message); return; }
   if (!data.user) { showMessage("registerMessage", "حساب ساخته نشد."); return; }
-
   const { error: profileError } = await supabaseClient.from("profiles").insert({
     id: data.user.id, full_name: name, role: role, skills: skills, bio: bio, avatar_url: null
   });
-
   if (profileError) { showMessage("registerMessage", "حساب ساخته شد اما پروفایل ذخیره نشد: " + profileError.message); return; }
-
   showMessage("registerMessage", "ثبت‌نام با موفقیت انجام شد! 🎉", true);
   setTimeout(() => { closeModals(); loadUser(); }, 1200);
 }
 
-/* =========================================
-   LOGIN
-========================================= */
 async function login() {
   const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
   if (!email || !password) { showMessage("loginMessage", "ایمیل و رمز عبور را وارد کنید."); return; }
   showMessage("loginMessage", "در حال ورود...", true);
-
   const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
   if (error) { showMessage("loginMessage", "ورود ناموفق بود: " + error.message); return; }
-
   showMessage("loginMessage", "با موفقیت وارد شدید! 🎉", true);
   setTimeout(() => { closeModals(); loadUser(); }, 800);
 }
 
-/* =========================================
-   LOGOUT
-========================================= */
 async function logout() {
   await supabaseClient.auth.signOut();
   currentUser = null; currentProfile = null;
@@ -399,9 +357,6 @@ async function logout() {
   alert("از حساب خارج شدید.");
 }
 
-/* =========================================
-   LOAD USER
-========================================= */
 async function loadUser() {
   const { data: { user } } = await supabaseClient.auth.getUser();
   if (!user) {
@@ -414,24 +369,17 @@ async function loadUser() {
     document.getElementById("userAvatar").style.display = "none";
     return;
   }
-
   currentUser = user;
   document.getElementById("loginBtn").style.display = "none";
   document.getElementById("registerBtn").style.display = "none";
   document.getElementById("logoutBtn").style.display = "inline-block";
-
   const { data: profile } = await supabaseClient.from("profiles").select("*").eq("id", user.id).maybeSingle();
   currentProfile = profile;
-
   if (profile) {
     document.getElementById("userName").textContent = "سلام " + profile.full_name;
     const av = document.getElementById("userAvatar");
-    if (profile.avatar_url) {
-      av.src = profile.avatar_url;
-      av.style.display = "inline-block";
-    } else {
-      av.style.display = "none";
-    }
+    if (profile.avatar_url) { av.src = profile.avatar_url; av.style.display = "inline-block"; }
+    else { av.style.display = "none"; }
     if (profile.role === "employer") {
       document.getElementById("newProjectBtn").style.display = "inline-block";
       document.getElementById("tabMyProposals").style.display = "none";
@@ -444,49 +392,20 @@ async function loadUser() {
   }
 }
 
-/* =========================================
-   UPLOAD AVATAR
-========================================= */
 async function uploadAvatar(event) {
   if (!currentUser) return;
   const file = event.target.files[0];
   if (!file) return;
-
-  if (file.size > 2 * 1024 * 1024) {
-    showMessage("avatarMessage", "حجم عکس باید کمتر از ۲ مگابایت باشد.");
-    return;
-  }
-
+  if (file.size > 2 * 1024 * 1024) { showMessage("avatarMessage", "حجم عکس باید کمتر از ۲ مگابایت باشد."); return; }
   showMessage("avatarMessage", "در حال آپلود...", true);
-
   const fileExt = file.name.split('.').pop();
   const filePath = currentUser.id + '/avatar.' + fileExt;
-
-  const { error: uploadError } = await supabaseClient.storage
-    .from('avatars')
-    .upload(filePath, file, { upsert: true });
-
-  if (uploadError) {
-    showMessage("avatarMessage", "خطا در آپلود: " + uploadError.message);
-    return;
-  }
-
-  const { data: urlData } = supabaseClient.storage
-    .from('avatars')
-    .getPublicUrl(filePath);
-
+  const { error: uploadError } = await supabaseClient.storage.from('avatars').upload(filePath, file, { upsert: true });
+  if (uploadError) { showMessage("avatarMessage", "خطا در آپلود: " + uploadError.message); return; }
+  const { data: urlData } = supabaseClient.storage.from('avatars').getPublicUrl(filePath);
   const avatarUrl = urlData.publicUrl + '?t=' + Date.now();
-
-  const { error: updateError } = await supabaseClient
-    .from('profiles')
-    .update({ avatar_url: avatarUrl })
-    .eq('id', currentUser.id);
-
-  if (updateError) {
-    showMessage("avatarMessage", "خطا در ذخیره: " + updateError.message);
-    return;
-  }
-
+  const { error: updateError } = await supabaseClient.from('profiles').update({ avatar_url: avatarUrl }).eq('id', currentUser.id);
+  if (updateError) { showMessage("avatarMessage", "خطا در ذخیره: " + updateError.message); return; }
   showMessage("avatarMessage", "عکس پروفایل با موفقیت تغییر کرد! 🎉", true);
   document.getElementById("profileAvatar").src = avatarUrl;
   const topAv = document.getElementById("userAvatar");
@@ -495,9 +414,6 @@ async function uploadAvatar(event) {
   currentProfile.avatar_url = avatarUrl;
 }
 
-/* =========================================
-   CREATE PROJECT
-========================================= */
 async function createProject() {
   if (!currentUser) { showMessage("projectMessage", "ابتدا وارد حساب شوید."); return; }
   const title = document.getElementById("projectTitle").value.trim();
@@ -505,13 +421,11 @@ async function createProject() {
   const budget = document.getElementById("projectBudget").value.trim();
   const category = document.getElementById("projectCategory").value;
   if (!title || !description) { showMessage("projectMessage", "عنوان و توضیحات الزامی است."); return; }
-
   showMessage("projectMessage", "در حال ثبت پروژه...", true);
   const { error } = await supabaseClient.from("projects").insert({
     employer_id: currentUser.id, title, description, budget, category
   });
   if (error) { showMessage("projectMessage", "خطا: " + error.message); return; }
-
   showMessage("projectMessage", "پروژه با موفقیت ثبت شد! 🎉", true);
   setTimeout(() => {
     closeModals();
@@ -522,21 +436,15 @@ async function createProject() {
   }, 1000);
 }
 
-/* =========================================
-   LOAD PROJECTS
-========================================= */
 async function loadProjects() {
   const container = document.getElementById("projectsContainer");
   const { data: projects, error } = await supabaseClient.from("projects").select("*").order("created_at", { ascending: false });
-
   if (error) { container.innerHTML = '<p style="text-align:center; color:#991b1b;">خطا: ' + error.message + '</p>'; return; }
   if (!projects || projects.length === 0) { container.innerHTML = '<p style="text-align:center; color:#94a3b8;">هنوز پروژه‌ای ثبت نشده. اولین نفر باش!</p>'; return; }
-
   container.innerHTML = projects.map(p => {
     let actionBtn = "";
     const isOwner = currentUser && currentUser.id === p.employer_id;
     const isFreelancer = currentProfile && currentProfile.role === "freelancer";
-
     if (isOwner) {
       actionBtn = `<button class="btn btn-green" onclick="openProposalsList('${p.id}', '${escapeHtml(p.title).replace(/'/g,"&#39;")}')">مشاهده پیشنهادها</button>`;
     } else if (isFreelancer) {
@@ -544,22 +452,17 @@ async function loadProjects() {
     } else {
       actionBtn = `<button class="btn" onclick="openLogin()">برای پیشنهاد وارد شوید</button>`;
     }
-
     return `
       <div class="card">
         <h3>${escapeHtml(p.title)}</h3>
         <p>${escapeHtml(p.description || "")}</p>
         ${p.budget ? '<p class="budget">💰 ' + escapeHtml(p.budget) + ' تومان</p>' : ""}
         ${p.category ? '<p class="category">دسته: ' + escapeHtml(p.category) + '</p>' : ""}
-        <br>
-        ${actionBtn}
+        <br>${actionBtn}
       </div>`;
   }).join("");
 }
 
-/* =========================================
-   PROPOSAL
-========================================= */
 function openProposal(projectId, projectTitle) {
   if (!currentUser) { openLogin(); return; }
   if (!currentProfile || currentProfile.role !== "freelancer") { alert("فقط فریلنسرها می‌توانند پیشنهاد ارسال کنند."); return; }
@@ -578,13 +481,10 @@ async function sendProposal() {
   const message = document.getElementById("proposalMessage").value.trim();
   if (!price || !message) { showMessage("proposalMessageBox", "قیمت و توضیحات الزامی است."); return; }
   showMessage("proposalMessageBox", "در حال ارسال...", true);
-
   const { data: project, error: projErr } = await supabaseClient.from("projects").select("employer_id").eq("id", currentProjectForProposal).single();
   if (projErr || !project) { showMessage("proposalMessageBox", "خطا در دریافت اطلاعات پروژه."); return; }
-
   const { data: existing } = await supabaseClient.from("proposals").select("id").eq("project_id", currentProjectForProposal).eq("freelancer_id", currentUser.id).maybeSingle();
   if (existing) { showMessage("proposalMessageBox", "شما قبلاً برای این پروژه پیشنهاد داده‌اید."); return; }
-
   const { error } = await supabaseClient.from("proposals").insert({
     project_id: currentProjectForProposal, freelancer_id: currentUser.id,
     employer_id: project.employer_id, message, price, status: "pending"
@@ -594,53 +494,42 @@ async function sendProposal() {
   setTimeout(() => { closeModals(); currentProjectForProposal = null; }, 1200);
 }
 
-/* =========================================
-   PROPOSALS LIST (employer)
-========================================= */
 async function openProposalsList(projectId, projectTitle) {
   document.getElementById("proposalsListTitle").textContent = "پروژه: " + projectTitle;
   const container = document.getElementById("proposalsListContainer");
   container.innerHTML = '<p style="text-align:center; color:#94a3b8;">در حال بارگذاری...</p>';
   closeModals();
   document.getElementById("proposalsListModal").style.display = "flex";
-
   const { data: proposals, error } = await supabaseClient.from("proposals").select("*").eq("project_id", projectId).order("created_at", { ascending: false });
   if (error) { container.innerHTML = '<p style="color:#991b1b;">خطا: ' + error.message + '</p>'; return; }
   if (!proposals || proposals.length === 0) { container.innerHTML = '<p class="empty-msg">هنوز پیشنهادی دریافت نکرده‌اید.</p>'; return; }
-
   const freelancerIds = proposals.map(p => p.freelancer_id);
   const { data: profiles } = await supabaseClient.from("profiles").select("id, full_name, skills, avatar_url").in("id", freelancerIds);
   const profileMap = {};
   (profiles || []).forEach(pr => { profileMap[pr.id] = pr; });
-
   container.innerHTML = proposals.map(p => {
     const fr = profileMap[p.freelancer_id] || {};
     let statusBadge = "";
     if (p.status === "accepted") statusBadge = '<span class="badge badge-accepted">قبول شده</span>';
     else if (p.status === "rejected") statusBadge = '<span class="badge badge-rejected">رد شده</span>';
     else statusBadge = '<span class="badge badge-pending">در انتظار</span>';
-
     let actionBtns = "";
     if (p.status === "pending") {
-      actionBtns = `
-        <div class="actions">
+      actionBtns = `<div class="actions">
           <button class="btn btn-green btn-sm" onclick="updateProposalStatus('${p.id}', 'accepted', '${projectId}', '${projectTitle.replace(/'/g, "\\'")}')">قبول</button>
           <button class="btn btn-red btn-sm" onclick="updateProposalStatus('${p.id}', 'rejected', '${projectId}', '${projectTitle.replace(/'/g, "\\'")}')">رد</button>
         </div>`;
     } else if (p.status === "accepted") {
       actionBtns = `<div class="actions"><button class="btn btn-sm" onclick="openChatWith('${p.freelancer_id}', '${escapeHtml(fr.full_name || "کاربر").replace(/'/g,"&#39;")}')">شروع چت</button></div>`;
     }
-
     const av = fr.avatar_url ? `<img src="${fr.avatar_url}" class="avatar-chat">` : '';
-
     return `
       <div class="proposal-card">
         <div class="freelancer-name">${av} ${escapeHtml(fr.full_name || "کاربر")}</div>
         <div style="color:#64748b; font-size:13px; margin-top:3px;">مهارت‌ها: ${escapeHtml(fr.skills || "-")}</div>
         <div class="price">💰 ${escapeHtml(p.price || "-")} تومان</div>
         <div class="msg-text">${escapeHtml(p.message || "")}</div>
-        ${statusBadge}
-        ${actionBtns}
+        ${statusBadge}${actionBtns}
       </div>`;
   }).join("");
 }
@@ -653,28 +542,21 @@ async function updateProposalStatus(proposalId, newStatus, projectId, projectTit
   openProposalsList(projectId, projectTitle);
 }
 
-/* =========================================
-   MY PROPOSALS (freelancer)
-========================================= */
 async function loadMyProposals() {
   if (!currentUser) { showPage("home"); return; }
   const container = document.getElementById("myProposalsContainer");
   container.innerHTML = '<p class="empty-msg">در حال بارگذاری...</p>';
-
   const { data: proposals, error } = await supabaseClient.from("proposals").select("*").eq("freelancer_id", currentUser.id).order("created_at", { ascending: false });
   if (error) { container.innerHTML = '<p style="color:#991b1b;">خطا: ' + error.message + '</p>'; return; }
   if (!proposals || proposals.length === 0) { container.innerHTML = '<p class="empty-msg">هنوز پیشنهادی ارسال نکرده‌اید.</p>'; return; }
-
   const projectIds = proposals.map(p => p.project_id);
   const { data: projects } = await supabaseClient.from("projects").select("id, title").in("id", projectIds);
   const projectMap = {};
   (projects || []).forEach(pr => { projectMap[pr.id] = pr; });
-
   const employerIds = proposals.map(p => p.employer_id);
   const { data: employers } = await supabaseClient.from("profiles").select("id, full_name, avatar_url").in("id", employerIds);
   const employerMap = {};
   (employers || []).forEach(e => { employerMap[e.id] = e; });
-
   container.innerHTML = proposals.map(p => {
     const proj = projectMap[p.project_id] || {};
     const emp = employerMap[p.employer_id] || {};
@@ -682,55 +564,42 @@ async function loadMyProposals() {
     if (p.status === "accepted") statusBadge = '<span class="badge badge-accepted">قبول شده ✅</span>';
     else if (p.status === "rejected") statusBadge = '<span class="badge badge-rejected">رد شده</span>';
     else statusBadge = '<span class="badge badge-pending">در انتظار</span>';
-
     let chatBtn = "";
     if (p.status === "accepted") {
       chatBtn = `<div class="actions"><button class="btn btn-sm" onclick="openChatWith('${p.employer_id}', '${escapeHtml(emp.full_name || "کارفرما").replace(/'/g,"&#39;")}')">شروع چت</button></div>`;
     }
-
     const av = emp.avatar_url ? `<img src="${emp.avatar_url}" class="avatar-chat">` : '';
-
     return `
       <div class="proposal-card">
         <div class="freelancer-name">${escapeHtml(proj.title || "پروژه")}</div>
         <div style="color:#64748b; font-size:13px; margin-top:3px;">کارفرما: ${av} ${escapeHtml(emp.full_name || "-")}</div>
         <div class="price">💰 ${escapeHtml(p.price || "-")} تومان</div>
         <div class="msg-text">${escapeHtml(p.message || "")}</div>
-        ${statusBadge}
-        ${chatBtn}
+        ${statusBadge}${chatBtn}
       </div>`;
   }).join("");
 }
 
-/* =========================================
-   CHAT
-========================================= */
 async function loadChatUsers() {
   if (!currentUser) { showPage("home"); return; }
   const container = document.getElementById("chatUsersList");
   container.innerHTML = '<p class="empty-msg">در حال بارگذاری...</p>';
-
-  const { data: msgs } = await supabaseClient
-    .from("messages").select("*")
+  const { data: msgs } = await supabaseClient.from("messages").select("*")
     .or(`sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`)
     .order("created_at", { ascending: false });
-
   if (!msgs || msgs.length === 0) {
     container.innerHTML = '<p class="empty-msg">هنوز چتی ندارید. از بخش پیشنهادها شروع کنید.</p>';
     return;
   }
-
   const userIds = new Set();
   msgs.forEach(m => {
     if (m.sender_id !== currentUser.id) userIds.add(m.sender_id);
     if (m.receiver_id !== currentUser.id) userIds.add(m.receiver_id);
   });
-
   const idsArr = Array.from(userIds);
   const { data: profiles } = await supabaseClient.from("profiles").select("id, full_name, avatar_url").in("id", idsArr);
   const map = {};
   (profiles || []).forEach(p => { map[p.id] = p; });
-
   container.innerHTML = '<h3 style="margin-bottom:12px; font-size:16px;">گفتگوها</h3>' + idsArr.map(id => {
     const p = map[id] || {};
     const av = p.avatar_url ? `<img src="${p.avatar_url}" class="avatar-chat">` : '👤';
@@ -746,7 +615,6 @@ function openChatWith(userId, userName) {
   document.getElementById("chatWithName").textContent = "چت با " + userName;
   showPage("chat");
   loadMessages();
-
   if (chatInterval) clearInterval(chatInterval);
   chatInterval = setInterval(loadMessages, 3000);
 }
@@ -761,15 +629,11 @@ function closeChat() {
 async function loadMessages() {
   if (!currentUser || !currentChatUserId) return;
   const container = document.getElementById("chatMessages");
-
-  const { data: msgs, error } = await supabaseClient
-    .from("messages").select("*")
+  const { data: msgs, error } = await supabaseClient.from("messages").select("*")
     .or(`and(sender_id.eq.${currentUser.id},receiver_id.eq.${currentChatUserId}),and(sender_id.eq.${currentChatUserId},receiver_id.eq.${currentUser.id})`)
     .order("created_at", { ascending: true });
-
   if (error) { container.innerHTML = '<p style="color:#991b1b;">خطا: ' + error.message + '</p>'; return; }
   if (!msgs || msgs.length === 0) { container.innerHTML = '<p class="empty-msg">شروع به گفتگو کنید...</p>'; return; }
-
   container.innerHTML = msgs.map(m => {
     const isMe = m.sender_id === currentUser.id;
     return `<div class="chat-message ${isMe ? 'chat-me' : 'chat-other'}">${escapeHtml(m.content)}</div>`;
@@ -782,7 +646,6 @@ async function sendMessage() {
   const input = document.getElementById("chatInput");
   const content = input.value.trim();
   if (!content) return;
-
   input.value = "";
   const { error } = await supabaseClient.from("messages").insert({
     sender_id: currentUser.id, receiver_id: currentChatUserId, content: content
@@ -791,23 +654,13 @@ async function sendMessage() {
   loadMessages();
 }
 
-/* =========================================
-   PROFILE
-========================================= */
 async function showProfile() {
   if (!currentUser) { showPage("home"); return; }
   const { data: profile } = await supabaseClient.from("profiles").select("*").eq("id", currentUser.id).maybeSingle();
   if (!profile) return;
-
   const pAv = document.getElementById("profileAvatar");
-  if (profile.avatar_url) {
-    pAv.src = profile.avatar_url;
-    pAv.style.background = "transparent";
-  } else {
-    pAv.src = "";
-    pAv.style.background = "#e2e8f0";
-  }
-
+  if (profile.avatar_url) { pAv.src = profile.avatar_url; pAv.style.background = "transparent"; }
+  else { pAv.src = ""; pAv.style.background = "#e2e8f0"; }
   document.getElementById("avatarMessage").style.display = "none";
   document.getElementById("profileName").textContent = profile.full_name || "-";
   document.getElementById("profileEmail").textContent = currentUser.email || "-";
@@ -816,9 +669,6 @@ async function showProfile() {
   document.getElementById("profileBio").textContent = profile.bio || "-";
 }
 
-/* =========================================
-   HELPERS
-========================================= */
 function escapeHtml(text) {
   if (text === null || text === undefined) return "";
   return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
@@ -830,16 +680,8 @@ function searchProjects() {
   alert("جستجوی «" + text + "» در نسخه بعدی فعال می‌شود.");
 }
 
-/* =========================================
-   AUTH STATE
-========================================= */
 supabaseClient.auth.onAuthStateChange((event, session) => { loadUser(); });
-
-/* =========================================
-   START
-========================================= */
 loadUser();
-
 </script>
 
 </body>
