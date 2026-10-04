@@ -11,7 +11,7 @@
     header { background: #111827; color: white; padding: 14px 7%; display: flex; justify-content: space-between; align-items: center; gap: 15px; position: sticky; top: 0; z-index: 10; flex-wrap: wrap; }
     .logo { font-size: 24px; font-weight: bold; color: #60a5fa; }
     .tabs { display: flex; gap: 6px; flex-wrap: wrap; background: #1e293b; padding: 6px; border-radius: 12px; }
-    .tab { background: transparent; color: #cbd5e1; padding: 8px 14px; border-radius: 8px; font-size: 14px; cursor: pointer; }
+    .tab { background: transparent; color: #cbd5e1; padding: 8px 14px; border-radius: 8px; font-size: 14px; cursor: pointer; border:none; }
     .tab:hover { background: #334155; }
     .tab.active { background: #2563eb; color: white; }
     .user-area { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
@@ -71,6 +71,9 @@
     .chat-input { display: flex; gap: 8px; }
     .chat-input input { flex: 1; padding: 12px; border: 1px solid #d1d5db; border-radius: 9px; outline: none; }
     .empty-msg { text-align: center; color: #94a3b8; padding: 30px; }
+    .avatar-sm { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #60a5fa; }
+    .avatar-lg { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 3px solid #2563eb; display: block; margin: 0 auto 12px; background: #e2e8f0; }
+    .avatar-chat { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; margin-left: 6px; vertical-align: middle; }
     @media(max-width:700px) {
       header { flex-direction: column; }
       .tabs { justify-content: center; width: 100%; }
@@ -91,11 +94,11 @@
     <button class="tab" id="tabMyProposals" onclick="showPage('myProposals')" style="display:none">پیشنهادهای من</button>
   </div>
   <div class="user-area">
+    <img id="userAvatar" class="avatar-sm" src="" style="display:none;">
     <span id="userName"></span>
     <button class="btn" id="loginBtn" onclick="openLogin()">ورود</button>
     <button class="btn" id="registerBtn" onclick="openRegister()">ثبت‌نام</button>
     <button class="btn btn-green" id="newProjectBtn" onclick="openProject()" style="display:none">+ ثبت پروژه</button>
-    <button class="btn" id="logoutBtn" onclick="logout()" style="display:none">خروج</button>
   </div>
 </header>
 
@@ -155,11 +158,21 @@
   <div class="container">
     <div class="profile-box">
       <h2>پروفایل من</h2>
+
+      <div style="text-align:center; margin-bottom:25px;">
+        <img id="profileAvatar" class="avatar-lg" src="">
+        <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="uploadAvatar(event)">
+        <button class="btn btn-sm" onclick="document.getElementById('avatarInput').click()">📷 تغییر عکس پروفایل</button>
+        <div id="avatarMessage" class="message" style="margin-top:10px;"></div>
+      </div>
+
       <div class="profile-item"><strong>نام:</strong> <span id="profileName"></span></div>
       <div class="profile-item"><strong>ایمیل:</strong> <span id="profileEmail"></span></div>
       <div class="profile-item"><strong>نوع حساب:</strong> <span id="profileRole"></span></div>
       <div class="profile-item"><strong>مهارت‌ها:</strong> <span id="profileSkills"></span></div>
       <div class="profile-item"><strong>درباره من:</strong> <span id="profileBio"></span></div>
+
+      <button class="btn btn-red" id="logoutBtn" onclick="logout()" style="display:none; margin-top:20px; width:100%;">خروج از حساب</button>
     </div>
   </div>
 </div>
@@ -283,7 +296,6 @@ function showPage(pageName) {
   const page = document.getElementById("page-" + pageName);
   if (page) page.classList.add("active");
 
-  // هایلایت تب فعال
   const tabs = document.querySelectorAll(".tab");
   tabs.forEach(t => {
     if (t.getAttribute("onclick") && t.getAttribute("onclick").includes("'" + pageName + "'")) {
@@ -377,6 +389,7 @@ async function logout() {
   await supabaseClient.auth.signOut();
   currentUser = null; currentProfile = null;
   document.getElementById("userName").textContent = "";
+  document.getElementById("userAvatar").style.display = "none";
   document.getElementById("loginBtn").style.display = "inline-block";
   document.getElementById("registerBtn").style.display = "inline-block";
   document.getElementById("newProjectBtn").style.display = "none";
@@ -398,6 +411,7 @@ async function loadUser() {
     document.getElementById("newProjectBtn").style.display = "none";
     document.getElementById("logoutBtn").style.display = "none";
     document.getElementById("tabMyProposals").style.display = "none";
+    document.getElementById("userAvatar").style.display = "none";
     return;
   }
 
@@ -411,6 +425,13 @@ async function loadUser() {
 
   if (profile) {
     document.getElementById("userName").textContent = "سلام " + profile.full_name;
+    const av = document.getElementById("userAvatar");
+    if (profile.avatar_url) {
+      av.src = profile.avatar_url;
+      av.style.display = "inline-block";
+    } else {
+      av.style.display = "none";
+    }
     if (profile.role === "employer") {
       document.getElementById("newProjectBtn").style.display = "inline-block";
       document.getElementById("tabMyProposals").style.display = "none";
@@ -421,6 +442,57 @@ async function loadUser() {
   } else {
     document.getElementById("userName").textContent = "سلام کاربر";
   }
+}
+
+/* =========================================
+   UPLOAD AVATAR
+========================================= */
+async function uploadAvatar(event) {
+  if (!currentUser) return;
+  const file = event.target.files[0];
+  if (!file) return;
+
+  if (file.size > 2 * 1024 * 1024) {
+    showMessage("avatarMessage", "حجم عکس باید کمتر از ۲ مگابایت باشد.");
+    return;
+  }
+
+  showMessage("avatarMessage", "در حال آپلود...", true);
+
+  const fileExt = file.name.split('.').pop();
+  const filePath = currentUser.id + '/avatar.' + fileExt;
+
+  const { error: uploadError } = await supabaseClient.storage
+    .from('avatars')
+    .upload(filePath, file, { upsert: true });
+
+  if (uploadError) {
+    showMessage("avatarMessage", "خطا در آپلود: " + uploadError.message);
+    return;
+  }
+
+  const { data: urlData } = supabaseClient.storage
+    .from('avatars')
+    .getPublicUrl(filePath);
+
+  const avatarUrl = urlData.publicUrl + '?t=' + Date.now();
+
+  const { error: updateError } = await supabaseClient
+    .from('profiles')
+    .update({ avatar_url: avatarUrl })
+    .eq('id', currentUser.id);
+
+  if (updateError) {
+    showMessage("avatarMessage", "خطا در ذخیره: " + updateError.message);
+    return;
+  }
+
+  showMessage("avatarMessage", "عکس پروفایل با موفقیت تغییر کرد! 🎉", true);
+  document.getElementById("profileAvatar").src = avatarUrl;
+  const topAv = document.getElementById("userAvatar");
+  topAv.src = avatarUrl;
+  topAv.style.display = "inline-block";
+  currentProfile.avatar_url = avatarUrl;
 }
 
 /* =========================================
@@ -537,7 +609,7 @@ async function openProposalsList(projectId, projectTitle) {
   if (!proposals || proposals.length === 0) { container.innerHTML = '<p class="empty-msg">هنوز پیشنهادی دریافت نکرده‌اید.</p>'; return; }
 
   const freelancerIds = proposals.map(p => p.freelancer_id);
-  const { data: profiles } = await supabaseClient.from("profiles").select("id, full_name, skills").in("id", freelancerIds);
+  const { data: profiles } = await supabaseClient.from("profiles").select("id, full_name, skills, avatar_url").in("id", freelancerIds);
   const profileMap = {};
   (profiles || []).forEach(pr => { profileMap[pr.id] = pr; });
 
@@ -559,9 +631,11 @@ async function openProposalsList(projectId, projectTitle) {
       actionBtns = `<div class="actions"><button class="btn btn-sm" onclick="openChatWith('${p.freelancer_id}', '${escapeHtml(fr.full_name || "کاربر").replace(/'/g,"&#39;")}')">شروع چت</button></div>`;
     }
 
+    const av = fr.avatar_url ? `<img src="${fr.avatar_url}" class="avatar-chat">` : '';
+
     return `
       <div class="proposal-card">
-        <div class="freelancer-name">${escapeHtml(fr.full_name || "کاربر")}</div>
+        <div class="freelancer-name">${av} ${escapeHtml(fr.full_name || "کاربر")}</div>
         <div style="color:#64748b; font-size:13px; margin-top:3px;">مهارت‌ها: ${escapeHtml(fr.skills || "-")}</div>
         <div class="price">💰 ${escapeHtml(p.price || "-")} تومان</div>
         <div class="msg-text">${escapeHtml(p.message || "")}</div>
@@ -596,9 +670,8 @@ async function loadMyProposals() {
   const projectMap = {};
   (projects || []).forEach(pr => { projectMap[pr.id] = pr; });
 
-  // اطلاعات کارفرماها برای چت
   const employerIds = proposals.map(p => p.employer_id);
-  const { data: employers } = await supabaseClient.from("profiles").select("id, full_name").in("id", employerIds);
+  const { data: employers } = await supabaseClient.from("profiles").select("id, full_name, avatar_url").in("id", employerIds);
   const employerMap = {};
   (employers || []).forEach(e => { employerMap[e.id] = e; });
 
@@ -615,10 +688,12 @@ async function loadMyProposals() {
       chatBtn = `<div class="actions"><button class="btn btn-sm" onclick="openChatWith('${p.employer_id}', '${escapeHtml(emp.full_name || "کارفرما").replace(/'/g,"&#39;")}')">شروع چت</button></div>`;
     }
 
+    const av = emp.avatar_url ? `<img src="${emp.avatar_url}" class="avatar-chat">` : '';
+
     return `
       <div class="proposal-card">
         <div class="freelancer-name">${escapeHtml(proj.title || "پروژه")}</div>
-        <div style="color:#64748b; font-size:13px; margin-top:3px;">کارفرما: ${escapeHtml(emp.full_name || "-")}</div>
+        <div style="color:#64748b; font-size:13px; margin-top:3px;">کارفرما: ${av} ${escapeHtml(emp.full_name || "-")}</div>
         <div class="price">💰 ${escapeHtml(p.price || "-")} تومان</div>
         <div class="msg-text">${escapeHtml(p.message || "")}</div>
         ${statusBadge}
@@ -652,14 +727,15 @@ async function loadChatUsers() {
   });
 
   const idsArr = Array.from(userIds);
-  const { data: profiles } = await supabaseClient.from("profiles").select("id, full_name").in("id", idsArr);
+  const { data: profiles } = await supabaseClient.from("profiles").select("id, full_name, avatar_url").in("id", idsArr);
   const map = {};
   (profiles || []).forEach(p => { map[p.id] = p; });
 
   container.innerHTML = '<h3 style="margin-bottom:12px; font-size:16px;">گفتگوها</h3>' + idsArr.map(id => {
     const p = map[id] || {};
+    const av = p.avatar_url ? `<img src="${p.avatar_url}" class="avatar-chat">` : '👤';
     return `<div class="proposal-card" style="cursor:pointer;" onclick="openChatWith('${id}', '${escapeHtml(p.full_name || "کاربر").replace(/'/g,"&#39;")}')">
-      <div class="freelancer-name">💬 ${escapeHtml(p.full_name || "کاربر")}</div>
+      <div class="freelancer-name">${av} ${escapeHtml(p.full_name || "کاربر")}</div>
     </div>`;
   }).join("");
 }
@@ -722,6 +798,17 @@ async function showProfile() {
   if (!currentUser) { showPage("home"); return; }
   const { data: profile } = await supabaseClient.from("profiles").select("*").eq("id", currentUser.id).maybeSingle();
   if (!profile) return;
+
+  const pAv = document.getElementById("profileAvatar");
+  if (profile.avatar_url) {
+    pAv.src = profile.avatar_url;
+    pAv.style.background = "transparent";
+  } else {
+    pAv.src = "";
+    pAv.style.background = "#e2e8f0";
+  }
+
+  document.getElementById("avatarMessage").style.display = "none";
   document.getElementById("profileName").textContent = profile.full_name || "-";
   document.getElementById("profileEmail").textContent = currentUser.email || "-";
   document.getElementById("profileRole").textContent = profile.role === "freelancer" ? "فریلنسر" : "کارفرما";
