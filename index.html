@@ -29,7 +29,7 @@
     .logo { font-size: 26px; font-weight: 800; background: linear-gradient(135deg, #818cf8, #c7d2fe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: flex; align-items: center; gap: 8px; cursor: pointer; }
     .logo::before { content: '◆'; font-size: 22px; -webkit-text-fill-color: #818cf8; }
     .tabs { display: flex; gap: 4px; flex-wrap: wrap; background: rgba(255,255,255,.08); padding: 6px; border-radius: 14px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.1); }
-    .tab { background: transparent; color: #cbd5e1; padding: 9px 16px; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; border: none; transition: all .25s; font-family: inherit; }
+    .tab { background: transparent; color: #cbd5e1; padding: 9px 14px; border-radius: 10px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: all .25s; font-family: inherit; }
     .tab:hover { background: rgba(255,255,255,.1); color: white; }
     .tab.active { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; box-shadow: 0 4px 12px rgba(99,102,241,.4); }
     .user-area { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
@@ -157,7 +157,7 @@
     @media(max-width:700px) {
       header { flex-direction: column; padding: 14px 5%; }
       .tabs { justify-content: center; width: 100%; }
-      .tab { padding: 8px 12px; font-size: 13px; }
+      .tab { padding: 8px 10px; font-size: 12px; }
       .hero { padding: 55px 18px; }
       .hero h1 { font-size: 26px; }
       .hero p { font-size: 15px; }
@@ -182,6 +182,7 @@
     <button class="tab" onclick="showPage('projects')">پروژه‌ها</button>
     <button class="tab" onclick="showPage('chat')">چت</button>
     <button class="tab" onclick="showPage('profile')">پروفایل</button>
+    <button class="tab" onclick="showPage('about')">درباره ما</button>
     <button class="tab" id="tabMyProposals" onclick="showPage('myProposals')" style="display:none">پیشنهادهای من</button>
   </div>
   <div class="user-area">
@@ -278,6 +279,76 @@
       <button class="btn btn-green" onclick="openEditProfile()" style="margin-top:25px; width:100%;">✏️ ویرایش پروفایل</button>
       <button class="btn btn-red" id="logoutBtn" onclick="logout()" style="display:none; margin-top:12px; width:100%;">خروج از حساب</button>
     </div>
+  </div>
+</div>
+
+<!-- صفحه درباره ما -->
+<div class="page" id="page-about">
+  <div class="container">
+
+    <div style="background: linear-gradient(135deg, #1e1b4b, #4338ca); color: white; border-radius: 20px; padding: 45px 30px; text-align: center; margin-bottom: 30px; box-shadow: 0 12px 40px rgba(99,102,241,.3);">
+      <h1 style="font-size: 34px; margin-bottom: 15px; font-weight: 800;">درباره کارینو</h1>
+      <p style="font-size: 17px; line-height: 1.9; color: #c7d2fe; max-width: 700px; margin: 0 auto;">
+        کارینو یک پلتفرم فریلنسری ایرانی است که هدفش ایجاد محیطی امن، ساده و شفاف برای ارتباط بین کارفرمایان و متخصصان است.
+      </p>
+    </div>
+
+    <div class="cards" style="margin-bottom: 30px;">
+      <div class="card">
+        <h3>🎯 ماموریت ما</h3>
+        <p>ما می‌خواهیم فریلنسرهای ایرانی بدون واسطه‌های اضافی، به پروژه‌های واقعی وصل بشن و کارفرماها به راحتی متخصص مناسب پیدا کنن. همه چیز ساده، امن و منصفانه.</p>
+      </div>
+
+      <div class="card">
+        <h3>💡 چرا کارینو؟</h3>
+        <p>
+          ✅ ثبت‌نام رایگان برای همه<br>
+          ✅ احراز هویت دقیق کاربران<br>
+          ✅ چت امن بین کارفرما و فریلنسر<br>
+          ✅ سیستم امتیازدهی و نظرات<br>
+          ✅ جلوگیری از معاملات خارج از پلتفرم
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>🛡️ امنیت کاربران</h3>
+        <p>در کارینو، تمام هماهنگی‌ها باید از طریق پلتفرم انجام بشه. این کار از کلاهبرداری جلوگیری می‌کنه و اگه اختلافی پیش بیاد، پلتفرم می‌تونه داوری کنه.</p>
+      </div>
+    </div>
+
+    <div class="card" style="max-width: 800px; margin: 0 auto 30px;">
+      <h3 style="text-align: center; margin-bottom: 20px;">📖 داستان کارینو</h3>
+      <p style="line-height: 2; text-align: justify;">
+        کارینو از یک ایده ساده شروع شد: چرا باید پیدا کردن یه فریلنسر خوب یا یه پروژه مناسب این‌قدر سخت باشه؟ ما دیدیم که خیلی از فریلنسرهای با استعداد توی ایران هستن که به دلیل نبود پلتفرم مناسب، نمی‌تونن استعدادشون رو نشون بدن. از اون طرف، کارفرماها هم وقت و انرژی زیادی برای پیدا کردن متخصص مناسب هدر می‌دن.
+        <br><br>
+        کارینو با هدف پر کردن این شکاف ساخته شد. ما باور داریم که با یک پلتفرم امن، ساده و منصفانه، می‌تونیم به رشد اکوسیستم فریلنسری ایران کمک کنیم و مسیر همکاری رو برای همه راحت‌تر کنیم.
+      </p>
+    </div>
+
+    <div class="card" style="max-width: 800px; margin: 0 auto 30px;">
+      <h3 style="text-align: center; margin-bottom: 20px;">📞 تماس با ما</h3>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 10px; padding: 12px; background: #f8fafc; border-radius: 12px;">
+          <span style="font-size: 22px;">📧</span>
+          <span>ایمیل: <strong>support@karino.ir</strong></span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; padding: 12px; background: #f8fafc; border-radius: 12px;">
+          <span style="font-size: 22px;">💬</span>
+          <span>پشتیبانی آنلاین از طریق <strong>چت کارینو</strong></span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; padding: 12px; background: #f8fafc; border-radius: 12px;">
+          <span style="font-size: 22px;">📱</span>
+          <span>شبکه‌های اجتماعی: به زودی</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="text-align: center; background: linear-gradient(135deg, #eef2ff, #e0e7ff); border: none;">
+      <h3 style="margin-bottom: 15px;">🚀 آماده شروع هستید؟</h3>
+      <p style="margin-bottom: 20px;">همین امروز به کارینو بپیوندید و اولین پروژه‌تون رو شروع کنید.</p>
+      <button class="btn btn-green" onclick="showPage('home')" style="padding: 12px 30px;">شروع کنید</button>
+    </div>
+
   </div>
 </div>
 
@@ -473,103 +544,43 @@ function toEnglishDigits(str) {
 
 function detectContactInfo(text) {
   const t = toEnglishDigits(text);
-
-  // شماره تلفن ایرانی (با یا بدون پیش‌شماره)
   if (/(\+?98|0098|0)?9\d{9}/.test(t.replace(/[\s\-\(\)\.]/g, ''))) return "شماره تلفن";
-
-  // شماره تلفن ثابت
   if (/\b0\d{2,3}\d{7,8}\b/.test(t.replace(/[\s\-\(\)\.]/g, ''))) return "شماره تلفن";
-
-  // ایمیل
   if (/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/.test(t)) return "ایمیل";
-
-  // آیدی تلگرام/اینستاگرام
   if (/@[a-zA-Z0-9_\.]{3,}/.test(t)) return "آیدی شبکه اجتماعی";
-
-  // لینک‌های پیام‌رسان
   if (/(t\.me|telegram\.me|telegram\.dog|wa\.me|whatsapp\.com|instagram\.com|instagr\.am|ig\.me)\/[^\s]+/i.test(t)) return "لینک پیام‌رسان";
-
-  // کلمات مربوط به پیام‌رسان‌ها
   if (/(تلگرام|تلگرامم|واتساپ|واتس اپ|واتس‌اپ|whatsapp|telegram|اینستاگرام|instagram|آیدی من|آیدیم|ایدی من|ایدیم)/i.test(text)) return "اشاره به پیام‌رسان";
-
   return null;
 }
 
 /* ============ SUPPORT BOT ============ */
 const BOT_RESPONSES = [
-  {
-    keys: ["سلام", "سلام علیکم", "درود", "hi", "hello"],
-    reply: "سلام و خوش آمدید به کارینو! 👋\nچطور می‌تونم کمکتون کنم؟\n\nمی‌تونید بپرسید:\n• چطور پروژه ثبت کنم؟\n• چطور پیشنهاد بدم؟\n• پرداخت چطوریه؟\n• چطور پروفایلم رو کامل کنم؟"
-  },
-  {
-    keys: ["ثبت پروژه", "پروژه بذارم", "پروژه جدید", "کارفرما"],
-    reply: "📌 برای ثبت پروژه:\n\n۱. اگر کارفرما هستید، وارد حساب بشید\n۲. روی دکمه سبز «+ ثبت پروژه» بزنید\n۳. عنوان، توضیحات، بودجه و دسته‌بندی رو وارد کنید\n۴. دکمه «ثبت پروژه» رو بزنید\n\nفریلنسرها می‌تونن بلافاصله پروژه‌تون رو ببینن و پیشنهاد بدن. ✅"
-  },
-  {
-    keys: ["پیشنهاد", "پیشنهاد بدم", "فریلنسر"],
-    reply: "🎯 برای ارسال پیشنهاد:\n\n۱. اگر فریلنسر هستید، وارد حساب بشید\n۲. برو به تب «پروژه‌ها»\n۳. روی «ارسال پیشنهاد» پروژه مورد نظر بزنید\n۴. قیمت پیشنهادی و توضیحات رو وارد کنید\n۵. ارسال کنید\n\n⚠️ توجه: ارسال شماره تماس، ایمیل یا آیدی پیام‌رسان در پیشنهاد ممنوعه و باعث مسدودی حساب می‌شه."
-  },
-  {
-    keys: ["پرداخت", "پول", "کمیسیون", "کارمزد", "تسویه"],
-    reply: "💳 راه‌های پرداخت:\n\nدر حال حاضر درگاه پرداخت آنلاین در دسترس نیست، ولی به زودی فعال می‌شه.\n\nدر آینده:\n• کارفرما مبلغ رو واریز می‌کنه\n• ۱۰٪ کمیسیون پلتفرم کسر می‌شه\n• ۹۰٪ به فریلنسر پرداخت می‌شه\n\nجهت هماهنگی بیشتر با پشتیبانی در تماس باشید. 📞"
-  },
-  {
-    keys: ["پروفایل", "عکس پروفایل", "ویرایش"],
-    reply: "👤 برای کامل کردن پروفایل:\n\n۱. برو به تب «پروفایل»\n۲. روی «📷 تغییر عکس پروفایل» بزن\n۳. برای ویرایش اطلاعات، دکمه سبز «✏️ ویرایش پروفایل» رو بزن\n\nمی‌تونی نام، سن، کد ملی، مهارت‌ها و بیو رو ویرایش کنی. ✅"
-  },
-  {
-    keys: ["چت", "پیام", "گفتگو"],
-    reply: "💬 چت در کارینو:\n\nوقتی پیشنهاد شما توسط کارفرما قبول بشه، دکمه «شروع چت» ظاهر می‌شه و می‌تونید با هم گفتگو کنید.\n\n⚠️ ارسال اطلاعات تماس (شماره، ایمیل، آیدی) در چت ممنوعه. تمام هماهنگی‌ها باید از طریق پلتفرم باشه."
-  },
-  {
-    keys: ["شماره", "تماس", "آیدی", "تلگرام", "واتساپ", "چرا ممنوع"],
-    reply: "🚫 چرا ارسال اطلاعات تماس ممنوعه؟\n\n• حفظ امنیت کاربران\n• جلوگیری از کلاهبرداری\n• تضمین پرداخت توسط پلتفرم\n• امکان داوری در صورت بروز اختلاف\n\nاگه با کسی معامله خارج از پلتفرم انجام بدید، در صورت مشکل هیچ‌کس نمی‌تونه کمکتون کنه. ⚠️"
-  },
-  {
-    keys: ["امتیاز", "نظر", "نظرات", "رتبه"],
-    reply: "⭐ سیستم امتیازدهی:\n\nبعد از اتمام پروژه، هم کارفرما هم فریلنسر می‌تونن به هم امتیاز بدن (۱ تا ۵ ستاره) + نظر.\n\nامتیاز شما در پروفایل نمایش داده می‌شه و روی اعتبارتون تأثیر داره. ✅"
-  },
-  {
-    keys: ["شکایت", "گزارش", "تخلف", "کلاهبرداری"],
-    reply: "🚨 گزارش تخلف:\n\nاگه با مورد مشکوکی روبرو شدید:\n\n• در چت یا پیشنهاد، تخلف رو گزارش بدید\n• یا با پشتیبانی تماس بگیرید\n\nتیم پشتیبانی در اسرع وقت بررسی می‌کنه. 🙏"
-  },
-  {
-    keys: ["سن", "کد ملی", "۱۸", "18"],
-    reply: "🔞 ثبت سن و کد ملی:\n\n• اگر زیر ۱۸ سال هستید → کد ملی لازم نیست\n• اگر بالای ۱۸ سال هستید → کد ملی الزامی است\n\nکد ملی شما به صورت امن ذخیره می‌شه و فقط برای احراز هویت استفاده می‌شه. ✅"
-  },
-  {
-    keys: ["ممنون", "مرسی", "تشکر", "سپاس", "thanks"],
-    reply: "خواهش می‌کنم! 😊\nاگه سوال دیگه‌ای داشتید، در خدمتم."
-  },
-  {
-    keys: ["خداحافظ", "بای", "خدانگهدار"],
-    reply: "خدانگهدار! 👋\nموفق باشید و روز خوبی داشته باشید."
-  }
+  { keys: ["سلام", "سلام علیکم", "درود", "hi", "hello"], reply: "سلام و خوش آمدید به کارینو! 👋\nچطور می‌تونم کمکتون کنم؟\n\nمی‌تونید بپرسید:\n• چطور پروژه ثبت کنم؟\n• چطور پیشنهاد بدم؟\n• پرداخت چطوریه؟\n• چطور پروفایلم رو کامل کنم؟" },
+  { keys: ["ثبت پروژه", "پروژه بذارم", "پروژه جدید", "کارفرما"], reply: "📌 برای ثبت پروژه:\n\n۱. اگر کارفرما هستید، وارد حساب بشید\n۲. روی دکمه سبز «+ ثبت پروژه» بزنید\n۳. عنوان، توضیحات، بودجه و دسته‌بندی رو وارد کنید\n۴. دکمه «ثبت پروژه» رو بزنید\n\nفریلنسرها می‌تونن بلافاصله پروژه‌تون رو ببینن و پیشنهاد بدن. ✅" },
+  { keys: ["پیشنهاد", "پیشنهاد بدم", "فریلنسر"], reply: "🎯 برای ارسال پیشنهاد:\n\n۱. اگر فریلنسر هستید، وارد حساب بشید\n۲. برو به تب «پروژه‌ها»\n۳. روی «ارسال پیشنهاد» پروژه مورد نظر بزنید\n۴. قیمت پیشنهادی و توضیحات رو وارد کنید\n۵. ارسال کنید\n\n⚠️ توجه: ارسال شماره تماس، ایمیل یا آیدی پیام‌رسان در پیشنهاد ممنوعه." },
+  { keys: ["پرداخت", "پول", "کمیسیون", "کارمزد", "تسویه"], reply: "💳 راه‌های پرداخت:\n\nدر حال حاضر درگاه پرداخت آنلاین در دسترس نیست، ولی به زودی فعال می‌شه.\n\nدر آینده:\n• کارفرما مبلغ رو واریز می‌کنه\n• ۱۰٪ کمیسیون پلتفرم کسر می‌شه\n• ۹۰٪ به فریلنسر پرداخت می‌شه\n\nجهت هماهنگی بیشتر با پشتیبانی در تماس باشید. 📞" },
+  { keys: ["پروفایل", "عکس پروفایل", "ویرایش"], reply: "👤 برای کامل کردن پروفایل:\n\n۱. برو به تب «پروفایل»\n۲. روی «📷 تغییر عکس پروفایل» بزن\n۳. برای ویرایش اطلاعات، دکمه سبز «✏️ ویرایش پروفایل» رو بزن\n\nمی‌تونی نام، سن، کد ملی، مهارت‌ها و بیو رو ویرایش کنی. ✅" },
+  { keys: ["چت", "پیام", "گفتگو"], reply: "💬 چت در کارینو:\n\nوقتی پیشنهاد شما توسط کارفرما قبول بشه، دکمه «شروع چت» ظاهر می‌شه و می‌تونید با هم گفتگو کنید.\n\n⚠️ ارسال اطلاعات تماس در چت ممنوعه." },
+  { keys: ["شماره", "تماس", "آیدی", "تلگرام", "واتساپ", "چرا ممنوع"], reply: "🚫 چرا ارسال اطلاعات تماس ممنوعه؟\n\n• حفظ امنیت کاربران\n• جلوگیری از کلاهبرداری\n• تضمین پرداخت توسط پلتفرم\n• امکان داوری در صورت بروز اختلاف\n\nاگه با کسی معامله خارج از پلتفرم انجام بدید، در صورت مشکل هیچ‌کس نمی‌تونه کمکتون کنه. ⚠️" },
+  { keys: ["امتیاز", "نظر", "نظرات", "رتبه"], reply: "⭐ سیستم امتیازدهی:\n\nبعد از اتمام پروژه، هم کارفرما هم فریلنسر می‌تونن به هم امتیاز بدن (۱ تا ۵ ستاره) + نظر.\n\nامتیاز شما در پروفایل نمایش داده می‌شه. ✅" },
+  { keys: ["شکایت", "گزارش", "تخلف", "کلاهبرداری"], reply: "🚨 گزارش تخلف:\n\nاگه با مورد مشکوکی روبرو شدید:\n\n• در چت یا پیشنهاد، تخلف رو گزارش بدید\n• یا با پشتیبانی تماس بگیرید\n\nتیم پشتیبانی در اسرع وقت بررسی می‌کنه. 🙏" },
+  { keys: ["سن", "کد ملی", "۱۸", "18"], reply: "🔞 ثبت سن و کد ملی:\n\n• اگر زیر ۱۸ سال هستید → کد ملی لازم نیست\n• اگر بالای ۱۸ سال هستید → کد ملی الزامی است\n\nکد ملی شما به صورت امن ذخیره می‌شه. ✅" },
+  { keys: ["ممنون", "مرسی", "تشکر", "سپاس", "thanks"], reply: "خواهش می‌کنم! 😊\nاگه سوال دیگه‌ای داشتید، در خدمتم." },
+  { keys: ["خداحافظ", "بای", "خدانگهدار"], reply: "خدانگهدار! 👋\nموفق باشید و روز خوبی داشته باشید." }
 ];
 
 function getBotResponse(text) {
   const t = text.toLowerCase().trim();
-
-  // چک کردن الگوهای اطلاعات تماس
   const contactType = detectContactInfo(text);
   if (contactType) {
-    return {
-      text: `⚠️ ارسال ${contactType} در چت ممنوعه!\n\nلطفاً اطلاعات تماس خودتون رو نفرستید. تمام هماهنگی‌ها باید از طریق کارینو انجام بشه.\n\nتکرار این تخلف منجر به مسدودی حساب شما می‌شه.`,
-      warning: true
-    };
+    return { text: `⚠️ ارسال ${contactType} در چت ممنوعه!\n\nلطفاً اطلاعات تماس خودتون رو نفرستید. تمام هماهنگی‌ها باید از طریق کارینو انجام بشه.\n\nتکرار این تخلف منجر به مسدودی حساب شما می‌شه.`, warning: true };
   }
-
-  // پیدا کردن پاسخ مناسب
   for (const r of BOT_RESPONSES) {
     for (const k of r.keys) {
       if (t.includes(k)) return { text: r.reply, warning: false };
     }
   }
-
-  return {
-    text: "متوجه سوال شما نشدم. 🤔\n\nمی‌تونید از این موضوعات بپرسید:\n• ثبت پروژه\n• ارسال پیشنهاد\n• پرداخت\n• پروفایل\n• چت\n• قوانین\n\nیا اگه سوال خاصی دارید، به پشتیبانی انسانی از طریق تیکت اطلاع بدید.",
-    warning: false
-  };
+  return { text: "متوجه سوال شما نشدم. 🤔\n\nمی‌تونید از این موضوعات بپرسید:\n• ثبت پروژه\n• ارسال پیشنهاد\n• پرداخت\n• پروفایل\n• چت\n• قوانین\n\nیا اگه سوال خاصی دارید، به پشتیبانی انسانی اطلاع بدید.", warning: false };
 }
 
 /* ============ PAGE / TABS ============ */
@@ -653,15 +664,12 @@ async function openNotifications() {
   document.getElementById("notificationsModal").style.display = "flex";
   const container = document.getElementById("notificationsContainer");
   container.innerHTML = '<p class="empty-msg">در حال بارگذاری...</p>';
-
   const { data } = await supabaseClient.from("notifications").select("*")
     .eq("user_id", currentUser.id).order("created_at", { ascending: false }).limit(50);
-
   if (!data || data.length === 0) {
     container.innerHTML = '<p class="empty-msg">اعلان جدیدی ندارید.</p>';
     return;
   }
-
   container.innerHTML = data.map(n => {
     const time = new Date(n.created_at).toLocaleString("fa-IR");
     return `<div class="notification-item ${n.is_read ? "" : "unread"}" onclick="markNotificationRead('${n.id}')">
@@ -670,7 +678,6 @@ async function openNotifications() {
       <div class="notification-time">${time}</div>
     </div>`;
   }).join("");
-
   await supabaseClient.from("notifications").update({ is_read: true }).eq("user_id", currentUser.id);
   loadNotificationCount();
 }
@@ -897,10 +904,8 @@ async function loadProjects() {
   let query = supabaseClient.from("projects").select("*").order("created_at", { ascending: false });
   if (currentSearch) query = query.or(`title.ilike.%${currentSearch}%,description.ilike.%${currentSearch}%,category.ilike.%${currentSearch}%`);
   if (currentCategory) query = query.eq("category", currentCategory);
-
   const { data: projects, error } = await query;
   if (error) { container.innerHTML = '<p class="empty-msg">خطا: ' + error.message + '</p>'; return; }
-
   let banner = "";
   if (currentSearch) {
     banner = `<div style="grid-column: 1/-1; text-align:center; margin-bottom:10px; padding:14px; background:linear-gradient(135deg,#eef2ff,#e0e7ff); border-radius:14px; font-weight:500;">
@@ -908,12 +913,10 @@ async function loadProjects() {
       <button class="btn btn-sm" onclick="clearSearch()" style="margin-right:10px;">پاک کردن</button>
     </div>`;
   }
-
   if (!projects || projects.length === 0) {
     container.innerHTML = banner + '<p class="empty-msg">پروژه‌ای پیدا نشد.</p>';
     return;
   }
-
   container.innerHTML = banner + projects.map(p => {
     let actionBtn = "";
     const isOwner = currentUser && currentUser.id === p.employer_id;
@@ -967,13 +970,11 @@ async function sendProposal() {
   const price = document.getElementById("proposalPrice").value.trim();
   const message = document.getElementById("proposalMessage").value.trim();
   if (!price || !message) { showMessage("proposalMessageBox", "قیمت و توضیحات الزامی است."); return; }
-
   const contactCheck = detectContactInfo(message);
   if (contactCheck) {
-    showMessage("proposalMessageBox", "⚠️ ارسال " + contactCheck + " در پیشنهاد ممنوع است. لطفاً اطلاعات تماس را حذف کنید.");
+    showMessage("proposalMessageBox", "⚠️ ارسال " + contactCheck + " در پیشنهاد ممنوع است.");
     return;
   }
-
   showMessage("proposalMessageBox", "در حال ارسال...", true);
   const { data: project, error: projErr } = await supabaseClient.from("projects").select("employer_id, title").eq("id", currentProjectForProposal).single();
   if (projErr || !project) { showMessage("proposalMessageBox", "خطا در دریافت اطلاعات پروژه."); return; }
@@ -984,11 +985,9 @@ async function sendProposal() {
     employer_id: project.employer_id, message, price, status: "pending"
   });
   if (error) { showMessage("proposalMessageBox", "خطا: " + error.message); return; }
-
   await createNotification(project.employer_id, "new_proposal",
     "پیشنهاد جدید دریافت کردید",
     "برای پروژه «" + project.title + "» یک پیشنهاد جدید ثبت شد.", null);
-
   showToast("پیشنهاد ارسال شد! 🎉", "success");
   setTimeout(() => { closeModals(); currentProjectForProposal = null; }, 1000);
 }
@@ -1042,14 +1041,12 @@ async function updateProposalStatus(proposalId, newStatus, projectId, projectTit
   const { data: prop } = await supabaseClient.from("proposals").select("freelancer_id").eq("id", proposalId).single();
   const { error } = await supabaseClient.from("proposals").update({ status: newStatus }).eq("id", proposalId);
   if (error) { showToast("خطا: " + error.message, "error"); return; }
-
   if (prop && prop.freelancer_id) {
     await createNotification(prop.freelancer_id,
       newStatus === "accepted" ? "proposal_accepted" : "proposal_rejected",
       newStatus === "accepted" ? "پیشنهاد شما قبول شد! ✅" : "پیشنهاد شما رد شد",
       "برای پروژه «" + projectTitle + "»", null);
   }
-
   showToast(newStatus === "accepted" ? "پیشنهاد قبول شد! ✅" : "پیشنهاد رد شد.", "success");
   openProposalsList(projectId, projectTitle);
 }
@@ -1101,18 +1098,14 @@ async function loadChatUsers() {
   if (!currentUser) { showPage("home"); return; }
   const container = document.getElementById("chatUsersList");
   container.innerHTML = '<p class="empty-msg">در حال بارگذاری...</p>';
-
-  // همیشه پشتیبانی رو نشون بده
   let html = `<h3 style="margin-bottom:15px; font-size:17px; font-weight:700;">گفتگوها</h3>
     <div class="proposal-card" style="cursor:pointer; background:linear-gradient(135deg,#d1fae5,#a7f3d0); border-color:#6ee7b7;" onclick="openBotChat()">
       <div class="freelancer-name">🤖 ${BOT_NAME} <span style="font-size:11px; color:#059669; margin-right:6px;">(همیشه در دسترس)</span></div>
       <div style="color:#065f46; font-size:12px; margin-top:4px;">پاسخ خودکار به سوالات رایج</div>
     </div>`;
-
   const { data: msgs } = await supabaseClient.from("messages").select("*")
     .or(`sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`)
     .order("created_at", { ascending: false });
-
   if (msgs && msgs.length > 0) {
     const userIds = new Set();
     msgs.forEach(m => {
@@ -1133,7 +1126,6 @@ async function loadChatUsers() {
       }).join("");
     }
   }
-
   container.innerHTML = html;
 }
 
@@ -1152,10 +1144,7 @@ let botHistory = [];
 function renderBotChat() {
   const container = document.getElementById("chatMessages");
   if (botHistory.length === 0) {
-    botHistory.push({
-      from: "bot",
-      text: "سلام! 👋 من دستیار پشتیبانی کارینو هستم.\n\nمی‌تونم در این موارد کمکت کنم:\n• ثبت پروژه\n• ارسال پیشنهاد\n• پرداخت\n• پروفایل\n• قوانین کارینو\n\nچی می‌خوای بپرسی؟"
-    });
+    botHistory.push({ from: "bot", text: "سلام! 👋 من دستیار پشتیبانی کارینو هستم.\n\nمی‌تونم در این موارد کمکت کنم:\n• ثبت پروژه\n• ارسال پیشنهاد\n• پرداخت\n• پروفایل\n• قوانین کارینو\n\nچی می‌خوای بپرسی؟" });
   }
   container.innerHTML = botHistory.map(m => {
     if (m.from === "me") return `<div class="chat-message chat-me">${escapeHtml(m.text)}</div>`;
@@ -1205,7 +1194,6 @@ async function sendMessage() {
   if (!content) return;
   input.value = "";
 
-  // چت با بات
   if (isBotChat) {
     botHistory.push({ from: "me", text: content });
     renderBotChat();
@@ -1217,7 +1205,6 @@ async function sendMessage() {
     return;
   }
 
-  // فیلتر اطلاعات تماس در چت عادی
   const contactCheck = detectContactInfo(content);
   if (contactCheck) {
     showToast("⚠️ ارسال " + contactCheck + " در چت ممنوعه!", "error");
@@ -1229,10 +1216,8 @@ async function sendMessage() {
     sender_id: currentUser.id, receiver_id: currentChatUserId, content: content
   });
   if (error) { showToast("خطا: " + error.message, "error"); return; }
-
   await createNotification(currentChatUserId, "new_message",
     "پیام جدید", content.substring(0, 50), null);
-
   loadMessages();
 }
 
@@ -1266,21 +1251,17 @@ async function submitRating() {
   if (!currentUser || !ratingTargetId) return;
   if (ratingStars === 0) { showMessage("ratingMessage", "لطفاً ستاره انتخاب کنید."); return; }
   const comment = document.getElementById("ratingComment").value.trim();
-
   const { data: existing } = await supabaseClient.from("ratings").select("id")
     .eq("project_id", ratingProjectId).eq("rater_id", currentUser.id).maybeSingle();
-  if (existing) { showMessage("ratingMessage", "شما قبلاً برای این پروژه امتیاز داده‌اید."); return; }
-
+  if (existing) { showMessage("ratingMessage", "شما قبلاً امتیاز داده‌اید."); return; }
   showMessage("ratingMessage", "در حال ثبت...", true);
   const { error } = await supabaseClient.from("ratings").insert({
     project_id: ratingProjectId, rater_id: currentUser.id,
     rated_id: ratingTargetId, stars: ratingStars, comment: comment || null
   });
   if (error) { showMessage("ratingMessage", "خطا: " + error.message); return; }
-
   await createNotification(ratingTargetId, "new_rating",
     "امتیاز جدید دریافت کردید", "⭐ " + ratingStars + " از ۵", null);
-
   showToast("امتیاز ثبت شد! 🎉", "success");
   setTimeout(() => { closeModals(); }, 1000);
 }
@@ -1306,7 +1287,6 @@ async function showProfile() {
   document.getElementById("profileEmail").textContent = currentUser.email || "-";
   document.getElementById("profileRole").textContent = profile.role === "freelancer" ? "فریلنسر" : "کارفرما";
   document.getElementById("profileAge").textContent = profile.age || "-";
-
   const nidRow = document.getElementById("profileNationalIdRow");
   if (profile.age && profile.age >= 18) {
     nidRow.style.display = "flex";
@@ -1314,7 +1294,6 @@ async function showProfile() {
   } else {
     nidRow.style.display = "none";
   }
-
   document.getElementById("profileSkills").textContent = profile.skills || "-";
   document.getElementById("profileBio").textContent = profile.bio || "-";
   document.getElementById("profileRating").innerHTML = await loadProfileRating(currentUser.id);
