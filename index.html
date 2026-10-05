@@ -11,7 +11,7 @@
     header { background: #111827; color: white; padding: 14px 7%; display: flex; justify-content: space-between; align-items: center; gap: 15px; position: sticky; top: 0; z-index: 10; flex-wrap: wrap; }
     .logo { font-size: 24px; font-weight: bold; color: #60a5fa; }
     .tabs { display: flex; gap: 6px; flex-wrap: wrap; background: #1e293b; padding: 6px; border-radius: 12px; }
-    .tab { background: transparent; color: #cbd5e1; padding: 8px 14px; border-radius: 8px; font-size: 14px; cursor: pointer; border: none; }
+    .tab { background: transparent; color: #cbd5e1; padding: 8px 14px; border-radius: 8px; font-size: 14px; cursor: pointer; border: none; position: relative; }
     .tab:hover { background: #334155; }
     .tab.active { background: #2563eb; color: white; }
     .user-area { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
@@ -24,6 +24,8 @@
     .btn-red:hover { background: #b91c1c; }
     .btn-sm { padding: 6px 12px; font-size: 13px; }
     #userName { color: #93c5fd; font-size: 13px; }
+    .bell-btn { position: relative; background: #1e293b; color: white; padding: 8px 12px; border-radius: 10px; font-size: 18px; }
+    .bell-badge { position: absolute; top: -5px; right: -5px; background: #dc2626; color: white; font-size: 10px; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
     .page { display: none; }
     .page.active { display: block; }
     .hero { text-align: center; padding: 70px 20px; background: linear-gradient(135deg, #172554, #2563eb); color: white; }
@@ -33,6 +35,9 @@
     .search input { flex: 1; border: none; outline: none; padding: 12px; font-size: 15px; }
     .container { padding: 40px 7%; }
     .title { text-align: center; margin-bottom: 25px; font-size: 26px; }
+    .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; }
+    .filter-chip { background: white; border: 1px solid #d1d5db; padding: 6px 14px; border-radius: 20px; font-size: 13px; cursor: pointer; }
+    .filter-chip.active { background: #2563eb; color: white; border-color: #2563eb; }
     .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
     .card { background: white; border-radius: 15px; padding: 22px; box-shadow: 0 5px 20px rgba(0,0,0,.06); }
     .card h3 { margin-bottom: 10px; }
@@ -75,6 +80,16 @@
     .avatar-lg { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 3px solid #2563eb; display: block; margin: 0 auto 12px; background: #e2e8f0; }
     .avatar-chat { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; margin-left: 6px; vertical-align: middle; }
     .info-box { background: #dbeafe; color: #1e40af; padding: 10px 12px; border-radius: 8px; font-size: 13px; margin-bottom: 10px; }
+    .notification-item { padding: 12px; border-bottom: 1px solid #eee; cursor: pointer; }
+    .notification-item:hover { background: #f8fafc; }
+    .notification-item.unread { background: #eff6ff; }
+    .notification-title { font-weight: bold; font-size: 14px; margin-bottom: 4px; }
+    .notification-body { color: #64748b; font-size: 13px; }
+    .notification-time { color: #94a3b8; font-size: 11px; margin-top: 4px; }
+    .stars { color: #f59e0b; font-size: 18px; }
+    .star-input { font-size: 32px; cursor: pointer; color: #d1d5db; }
+    .star-input.active { color: #f59e0b; }
+    .rating-card { background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 12px; margin-bottom: 10px; }
     @media(max-width:700px) {
       header { flex-direction: column; }
       .tabs { justify-content: center; width: 100%; }
@@ -97,6 +112,10 @@
   <div class="user-area">
     <img id="userAvatar" class="avatar-sm" src="" style="display:none;">
     <span id="userName"></span>
+    <button class="bell-btn" id="bellBtn" onclick="openNotifications()" style="display:none;">
+      🔔
+      <span class="bell-badge" id="bellBadge" style="display:none;">0</span>
+    </button>
     <button class="btn" id="loginBtn" onclick="openLogin()">ورود</button>
     <button class="btn" id="registerBtn" onclick="openRegister()">ثبت‌نام</button>
     <button class="btn btn-green" id="newProjectBtn" onclick="openProject()" style="display:none">+ ثبت پروژه</button>
@@ -124,7 +143,16 @@
 <!-- صفحه پروژه‌ها -->
 <div class="page" id="page-projects">
   <div class="container">
-    <h2 class="title">پروژه‌های محبوب</h2>
+    <h2 class="title">پروژه‌ها</h2>
+    <div class="filter-bar" id="filterBar">
+      <button class="filter-chip active" onclick="filterCategory('')">همه</button>
+      <button class="filter-chip" onclick="filterCategory('طراحی سایت')">طراحی سایت</button>
+      <button class="filter-chip" onclick="filterCategory('طراحی گرافیک')">طراحی گرافیک</button>
+      <button class="filter-chip" onclick="filterCategory('تولید محتوا')">تولید محتوا</button>
+      <button class="filter-chip" onclick="filterCategory('برنامه‌نویسی')">برنامه‌نویسی</button>
+      <button class="filter-chip" onclick="filterCategory('ترجمه')">ترجمه</button>
+      <button class="filter-chip" onclick="filterCategory('دیگر')">دیگر</button>
+    </div>
     <div class="cards" id="projectsContainer">
       <p style="text-align:center; color:#94a3b8;">در حال بارگذاری...</p>
     </div>
@@ -170,6 +198,7 @@
       <div class="profile-item" id="profileNationalIdRow"><strong>کد ملی:</strong> <span id="profileNationalId"></span></div>
       <div class="profile-item"><strong>مهارت‌ها:</strong> <span id="profileSkills"></span></div>
       <div class="profile-item"><strong>درباره من:</strong> <span id="profileBio"></span></div>
+      <div class="profile-item"><strong>امتیاز:</strong> <span id="profileRating"></span></div>
 
       <button class="btn btn-green" onclick="openEditProfile()" style="margin-top:20px; width:100%;">✏️ ویرایش پروفایل</button>
       <button class="btn btn-red" id="logoutBtn" onclick="logout()" style="display:none; margin-top:10px; width:100%;">خروج از حساب</button>
@@ -206,18 +235,15 @@
     <div class="form-group"><label>نام و نام خانوادگی</label><input type="text" id="registerName" placeholder="نام شما"></div>
     <div class="form-group"><label>ایمیل</label><input type="email" id="registerEmail" placeholder="example@gmail.com"></div>
     <div class="form-group"><label>رمز عبور</label><input type="password" id="registerPassword" placeholder="حداقل ۶ کاراکتر"></div>
-
     <div class="form-group">
       <label>سن</label>
       <input type="number" id="registerAge" placeholder="مثلاً ۲۰" min="5" max="100" oninput="toggleNationalId()">
     </div>
-
     <div class="form-group" id="nationalIdGroup" style="display:none;">
       <div class="info-box">🔒 چون سن شما بالای ۱۸ سال است، وارد کردن کد ملی الزامی است.</div>
       <label>کد ملی (۱۰ رقم)</label>
       <input type="text" id="registerNationalId" placeholder="۱۰ رقم" maxlength="10">
     </div>
-
     <div class="form-group">
       <label>نوع حساب</label>
       <select id="registerRole">
@@ -238,23 +264,15 @@
   <div class="modal-box">
     <button class="close" onclick="closeModals()">×</button>
     <h2>ویرایش پروفایل</h2>
-
     <div class="form-group"><label>نام و نام خانوادگی</label><input type="text" id="editName"></div>
-
-    <div class="form-group">
-      <label>سن</label>
-      <input type="number" id="editAge" min="5" max="100" oninput="toggleEditNationalId()">
-    </div>
-
+    <div class="form-group"><label>سن</label><input type="number" id="editAge" min="5" max="100" oninput="toggleEditNationalId()"></div>
     <div class="form-group" id="editNationalIdGroup" style="display:none;">
       <div class="info-box">🔒 چون سن شما بالای ۱۸ سال است، کد ملی الزامی است.</div>
       <label>کد ملی (۱۰ رقم)</label>
       <input type="text" id="editNationalId" placeholder="۱۰ رقم" maxlength="10">
     </div>
-
     <div class="form-group"><label>مهارت‌ها</label><input type="text" id="editSkills"></div>
     <div class="form-group"><label>درباره من</label><textarea id="editBio"></textarea></div>
-
     <button class="btn form-button" onclick="saveProfile()">ذخیره تغییرات</button>
     <div class="message" id="editProfileMessage"></div>
   </div>
@@ -307,6 +325,34 @@
   </div>
 </div>
 
+<!-- NOTIFICATIONS MODAL -->
+<div class="modal" id="notificationsModal">
+  <div class="modal-box" style="max-width:600px;">
+    <button class="close" onclick="closeModals()">×</button>
+    <h2>🔔 اعلان‌ها</h2>
+    <div id="notificationsContainer"></div>
+  </div>
+</div>
+
+<!-- RATING MODAL -->
+<div class="modal" id="ratingModal">
+  <div class="modal-box">
+    <button class="close" onclick="closeModals()">×</button>
+    <h2>امتیازدهی</h2>
+    <p id="ratingTargetName" style="color:#2563eb; margin-bottom:15px; font-weight:bold;"></p>
+    <div style="text-align:center; margin-bottom:15px;">
+      <span class="star-input" data-star="1" onclick="setStars(1)">★</span>
+      <span class="star-input" data-star="2" onclick="setStars(2)">★</span>
+      <span class="star-input" data-star="3" onclick="setStars(3)">★</span>
+      <span class="star-input" data-star="4" onclick="setStars(4)">★</span>
+      <span class="star-input" data-star="5" onclick="setStars(5)">★</span>
+    </div>
+    <div class="form-group"><label>نظر (اختیاری)</label><textarea id="ratingComment" placeholder="تجربه خود را بنویسید..."></textarea></div>
+    <button class="btn form-button" onclick="submitRating()">ثبت امتیاز</button>
+    <div class="message" id="ratingMessage"></div>
+  </div>
+</div>
+
 <footer>
   <p>© 2026 کارینو - تمامی حقوق محفوظ است.</p>
 </footer>
@@ -322,10 +368,10 @@ let currentProjectForProposal = null;
 let currentChatUserId = null;
 let chatInterval = null;
 let currentSearch = "";
+let currentCategory = "";
+let notifInterval = null;
 
-/* =========================================
-   PAGE / TABS
-========================================= */
+/* ============ PAGE / TABS ============ */
 function showPage(pageName) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
@@ -348,9 +394,6 @@ function closeModals() { document.querySelectorAll(".modal").forEach(m => m.styl
 function switchToRegister() { closeModals(); openRegister(); }
 function switchToLogin() { closeModals(); openLogin(); }
 
-/* =========================================
-   MESSAGE
-========================================= */
 function showMessage(id, text, success = false) {
   const box = document.getElementById(id);
   box.style.display = "block";
@@ -359,48 +402,85 @@ function showMessage(id, text, success = false) {
   else { box.style.background = "#fee2e2"; box.style.color = "#991b1b"; }
 }
 
-/* =========================================
-   AGE / NATIONAL ID LOGIC
-========================================= */
+/* ============ AGE / NATIONAL ID ============ */
 function toggleNationalId() {
-  const ageInput = document.getElementById("registerAge");
+  const age = parseInt(document.getElementById("registerAge").value);
   const group = document.getElementById("nationalIdGroup");
-  const age = parseInt(ageInput.value);
-  if (!isNaN(age) && age >= 18) {
-    group.style.display = "block";
-  } else {
-    group.style.display = "none";
-    document.getElementById("registerNationalId").value = "";
-  }
+  if (!isNaN(age) && age >= 18) group.style.display = "block";
+  else { group.style.display = "none"; document.getElementById("registerNationalId").value = ""; }
 }
-
 function toggleEditNationalId() {
   const age = parseInt(document.getElementById("editAge").value);
   const group = document.getElementById("editNationalIdGroup");
-  if (!isNaN(age) && age >= 18) {
-    group.style.display = "block";
-  } else {
-    group.style.display = "none";
-    document.getElementById("editNationalId").value = "";
-  }
+  if (!isNaN(age) && age >= 18) group.style.display = "block";
+  else { group.style.display = "none"; document.getElementById("editNationalId").value = ""; }
 }
-
 function validateIranianNationalId(code) {
   if (!/^\d{10}$/.test(code)) return false;
   if (/^(\d)\1{9}$/.test(code)) return false;
   let sum = 0;
-  for (let i = 0; i < 9; i++) {
-    sum += parseInt(code[i]) * (10 - i);
-  }
+  for (let i = 0; i < 9; i++) sum += parseInt(code[i]) * (10 - i);
   const remainder = sum % 11;
   const checkDigit = parseInt(code[9]);
   if (remainder < 2) return checkDigit === remainder;
   return checkDigit === (11 - remainder);
 }
 
-/* =========================================
-   REGISTER
-========================================= */
+/* ============ NOTIFICATIONS ============ */
+async function createNotification(userId, type, title, body, link) {
+  if (!userId) return;
+  try {
+    await supabaseClient.from("notifications").insert({
+      user_id: userId, type: type, title: title, body: body, link: link || null
+    });
+  } catch (e) { console.log("notif err", e); }
+}
+
+async function loadNotificationCount() {
+  if (!currentUser) return;
+  const { count } = await supabaseClient.from("notifications")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", currentUser.id).eq("is_read", false);
+  const badge = document.getElementById("bellBadge");
+  if (count && count > 0) { badge.textContent = count; badge.style.display = "flex"; }
+  else { badge.style.display = "none"; }
+}
+
+async function openNotifications() {
+  if (!currentUser) return;
+  closeModals();
+  document.getElementById("notificationsModal").style.display = "flex";
+  const container = document.getElementById("notificationsContainer");
+  container.innerHTML = '<p class="empty-msg">در حال بارگذاری...</p>';
+
+  const { data } = await supabaseClient.from("notifications").select("*")
+    .eq("user_id", currentUser.id).order("created_at", { ascending: false }).limit(50);
+
+  if (!data || data.length === 0) {
+    container.innerHTML = '<p class="empty-msg">اعلان جدیدی ندارید.</p>';
+    return;
+  }
+
+  container.innerHTML = data.map(n => {
+    const time = new Date(n.created_at).toLocaleString("fa-IR");
+    return `<div class="notification-item ${n.is_read ? "" : "unread"}" onclick="markNotificationRead('${n.id}')">
+      <div class="notification-title">${escapeHtml(n.title)}</div>
+      ${n.body ? '<div class="notification-body">' + escapeHtml(n.body) + '</div>' : ''}
+      <div class="notification-time">${time}</div>
+    </div>`;
+  }).join("");
+
+  // همه رو خونده کن
+  await supabaseClient.from("notifications").update({ is_read: true }).eq("user_id", currentUser.id);
+  loadNotificationCount();
+}
+
+async function markNotificationRead(id) {
+  await supabaseClient.from("notifications").update({ is_read: true }).eq("id", id);
+  loadNotificationCount();
+}
+
+/* ============ REGISTER ============ */
 async function register() {
   const name = document.getElementById("registerName").value.trim();
   const email = document.getElementById("registerEmail").value.trim();
@@ -413,22 +493,18 @@ async function register() {
 
   if (!name || !email || !password) { showMessage("registerMessage", "لطفاً نام، ایمیل و رمز عبور را وارد کنید."); return; }
   if (password.length < 6) { showMessage("registerMessage", "رمز عبور باید حداقل ۶ کاراکتر باشد."); return; }
-
   const age = parseInt(ageStr);
-  if (isNaN(age) || age < 5 || age > 100) { showMessage("registerMessage", "لطفاً سن خود را وارد کنید (بین ۵ تا ۱۰۰)."); return; }
-
+  if (isNaN(age) || age < 5 || age > 100) { showMessage("registerMessage", "لطفاً سن خود را وارد کنید."); return; }
   if (age >= 18) {
-    if (!nationalId) { showMessage("registerMessage", "چون سن شما بالای ۱۸ سال است، کد ملی الزامی است."); return; }
-    if (!validateIranianNationalId(nationalId)) { showMessage("registerMessage", "کد ملی وارد شده معتبر نیست. لطفاً بررسی کنید."); return; }
+    if (!nationalId) { showMessage("registerMessage", "کد ملی الزامی است."); return; }
+    if (!validateIranianNationalId(nationalId)) { showMessage("registerMessage", "کد ملی معتبر نیست."); return; }
   }
 
   showMessage("registerMessage", "در حال ساخت حساب...", true);
-
   const { data, error } = await supabaseClient.auth.signUp({
     email: email, password: password,
     options: { data: { full_name: name, role: role, age: age, national_id: age >= 18 ? nationalId : null } }
   });
-
   if (error) { showMessage("registerMessage", "خطا: " + error.message); return; }
   if (!data.user) { showMessage("registerMessage", "حساب ساخته نشد."); return; }
 
@@ -436,16 +512,13 @@ async function register() {
     id: data.user.id, full_name: name, role: role, skills: skills, bio: bio, avatar_url: null,
     age: age, national_id: age >= 18 ? nationalId : null
   });
-
-  if (profileError) { showMessage("registerMessage", "حساب ساخته شد اما پروفایل ذخیره نشد: " + profileError.message); return; }
+  if (profileError) { showMessage("registerMessage", "خطا: " + profileError.message); return; }
 
   showMessage("registerMessage", "ثبت‌نام با موفقیت انجام شد! 🎉", true);
   setTimeout(() => { closeModals(); loadUser(); }, 1200);
 }
 
-/* =========================================
-   LOGIN
-========================================= */
+/* ============ LOGIN ============ */
 async function login() {
   const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
@@ -457,9 +530,7 @@ async function login() {
   setTimeout(() => { closeModals(); loadUser(); }, 800);
 }
 
-/* =========================================
-   LOGOUT
-========================================= */
+/* ============ LOGOUT ============ */
 async function logout() {
   await supabaseClient.auth.signOut();
   currentUser = null; currentProfile = null;
@@ -470,13 +541,13 @@ async function logout() {
   document.getElementById("newProjectBtn").style.display = "none";
   document.getElementById("logoutBtn").style.display = "none";
   document.getElementById("tabMyProposals").style.display = "none";
+  document.getElementById("bellBtn").style.display = "none";
+  if (notifInterval) clearInterval(notifInterval);
   showPage("home");
   alert("از حساب خارج شدید.");
 }
 
-/* =========================================
-   LOAD USER
-========================================= */
+/* ============ LOAD USER ============ */
 async function loadUser() {
   const { data: { user } } = await supabaseClient.auth.getUser();
   if (!user) {
@@ -487,12 +558,15 @@ async function loadUser() {
     document.getElementById("logoutBtn").style.display = "none";
     document.getElementById("tabMyProposals").style.display = "none";
     document.getElementById("userAvatar").style.display = "none";
+    document.getElementById("bellBtn").style.display = "none";
     return;
   }
   currentUser = user;
   document.getElementById("loginBtn").style.display = "none";
   document.getElementById("registerBtn").style.display = "none";
   document.getElementById("logoutBtn").style.display = "inline-block";
+  document.getElementById("bellBtn").style.display = "inline-block";
+
   const { data: profile } = await supabaseClient.from("profiles").select("*").eq("id", user.id).maybeSingle();
   currentProfile = profile;
   if (profile) {
@@ -510,11 +584,13 @@ async function loadUser() {
   } else {
     document.getElementById("userName").textContent = "سلام کاربر";
   }
+
+  loadNotificationCount();
+  if (notifInterval) clearInterval(notifInterval);
+  notifInterval = setInterval(loadNotificationCount, 10000);
 }
 
-/* =========================================
-   UPLOAD AVATAR
-========================================= */
+/* ============ UPLOAD AVATAR ============ */
 async function uploadAvatar(event) {
   if (!currentUser) return;
   const file = event.target.files[0];
@@ -524,12 +600,12 @@ async function uploadAvatar(event) {
   const fileExt = file.name.split('.').pop();
   const filePath = currentUser.id + '/avatar.' + fileExt;
   const { error: uploadError } = await supabaseClient.storage.from('avatars').upload(filePath, file, { upsert: true });
-  if (uploadError) { showMessage("avatarMessage", "خطا در آپلود: " + uploadError.message); return; }
+  if (uploadError) { showMessage("avatarMessage", "خطا: " + uploadError.message); return; }
   const { data: urlData } = supabaseClient.storage.from('avatars').getPublicUrl(filePath);
   const avatarUrl = urlData.publicUrl + '?t=' + Date.now();
   const { error: updateError } = await supabaseClient.from('profiles').update({ avatar_url: avatarUrl }).eq('id', currentUser.id);
-  if (updateError) { showMessage("avatarMessage", "خطا در ذخیره: " + updateError.message); return; }
-  showMessage("avatarMessage", "عکس پروفایل با موفقیت تغییر کرد! 🎉", true);
+  if (updateError) { showMessage("avatarMessage", "خطا: " + updateError.message); return; }
+  showMessage("avatarMessage", "عکس با موفقیت تغییر کرد! 🎉", true);
   document.getElementById("profileAvatar").src = avatarUrl;
   const topAv = document.getElementById("userAvatar");
   topAv.src = avatarUrl;
@@ -537,9 +613,7 @@ async function uploadAvatar(event) {
   currentProfile.avatar_url = avatarUrl;
 }
 
-/* =========================================
-   EDIT PROFILE
-========================================= */
+/* ============ EDIT PROFILE ============ */
 function openEditProfile() {
   if (!currentUser || !currentProfile) { openLogin(); return; }
   document.getElementById("editName").value = currentProfile.full_name || "";
@@ -560,38 +634,29 @@ async function saveProfile() {
   const nationalId = document.getElementById("editNationalId").value.trim();
   const skills = document.getElementById("editSkills").value.trim();
   const bio = document.getElementById("editBio").value.trim();
-
   if (!name) { showMessage("editProfileMessage", "نام الزامی است."); return; }
   const age = parseInt(ageStr);
-  if (isNaN(age) || age < 5 || age > 100) { showMessage("editProfileMessage", "لطفاً سن معتبر وارد کنید."); return; }
-
+  if (isNaN(age) || age < 5 || age > 100) { showMessage("editProfileMessage", "سن معتبر وارد کنید."); return; }
   if (age >= 18) {
     if (!nationalId) { showMessage("editProfileMessage", "کد ملی الزامی است."); return; }
     if (!validateIranianNationalId(nationalId)) { showMessage("editProfileMessage", "کد ملی معتبر نیست."); return; }
   }
-
   showMessage("editProfileMessage", "در حال ذخیره...", true);
-
   const { error } = await supabaseClient.from("profiles").update({
     full_name: name, age: age, national_id: age >= 18 ? nationalId : null, skills: skills, bio: bio
   }).eq("id", currentUser.id);
-
   if (error) { showMessage("editProfileMessage", "خطا: " + error.message); return; }
-
-  showMessage("editProfileMessage", "پروفایل با موفقیت ویرایش شد! 🎉", true);
+  showMessage("editProfileMessage", "پروفایل ویرایش شد! 🎉", true);
   currentProfile.full_name = name;
   currentProfile.age = age;
   currentProfile.national_id = age >= 18 ? nationalId : null;
   currentProfile.skills = skills;
   currentProfile.bio = bio;
   document.getElementById("userName").textContent = "سلام " + name;
-
   setTimeout(() => { closeModals(); showProfile(); }, 1200);
 }
 
-/* =========================================
-   CREATE PROJECT
-========================================= */
+/* ============ CREATE PROJECT ============ */
 async function createProject() {
   if (!currentUser) { showMessage("projectMessage", "ابتدا وارد حساب شوید."); return; }
   const title = document.getElementById("projectTitle").value.trim();
@@ -604,7 +669,7 @@ async function createProject() {
     employer_id: currentUser.id, title, description, budget, category
   });
   if (error) { showMessage("projectMessage", "خطا: " + error.message); return; }
-  showMessage("projectMessage", "پروژه با موفقیت ثبت شد! 🎉", true);
+  showMessage("projectMessage", "پروژه ثبت شد! 🎉", true);
   setTimeout(() => {
     closeModals();
     document.getElementById("projectTitle").value = "";
@@ -614,15 +679,25 @@ async function createProject() {
   }, 1000);
 }
 
-/* =========================================
-   LOAD PROJECTS + SEARCH
-========================================= */
+/* ============ LOAD PROJECTS + SEARCH + FILTER ============ */
+function filterCategory(cat) {
+  currentCategory = cat;
+  document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
+  event.target.classList.add("active");
+  loadProjects();
+}
+
 async function loadProjects() {
   const container = document.getElementById("projectsContainer");
   let query = supabaseClient.from("projects").select("*").order("created_at", { ascending: false });
+
   if (currentSearch) {
     query = query.or(`title.ilike.%${currentSearch}%,description.ilike.%${currentSearch}%,category.ilike.%${currentSearch}%`);
   }
+  if (currentCategory) {
+    query = query.eq("category", currentCategory);
+  }
+
   const { data: projects, error } = await query;
   if (error) { container.innerHTML = '<p style="text-align:center; color:#991b1b;">خطا: ' + error.message + '</p>'; return; }
 
@@ -674,9 +749,7 @@ function searchProjects() {
   showPage("projects");
 }
 
-/* =========================================
-   PROPOSAL
-========================================= */
+/* ============ PROPOSAL ============ */
 function openProposal(projectId, projectTitle) {
   if (!currentUser) { openLogin(); return; }
   if (!currentProfile || currentProfile.role !== "freelancer") { alert("فقط فریلنسرها می‌توانند پیشنهاد ارسال کنند."); return; }
@@ -695,22 +768,27 @@ async function sendProposal() {
   const message = document.getElementById("proposalMessage").value.trim();
   if (!price || !message) { showMessage("proposalMessageBox", "قیمت و توضیحات الزامی است."); return; }
   showMessage("proposalMessageBox", "در حال ارسال...", true);
-  const { data: project, error: projErr } = await supabaseClient.from("projects").select("employer_id").eq("id", currentProjectForProposal).single();
+  const { data: project, error: projErr } = await supabaseClient.from("projects").select("employer_id, title").eq("id", currentProjectForProposal).single();
   if (projErr || !project) { showMessage("proposalMessageBox", "خطا در دریافت اطلاعات پروژه."); return; }
   const { data: existing } = await supabaseClient.from("proposals").select("id").eq("project_id", currentProjectForProposal).eq("freelancer_id", currentUser.id).maybeSingle();
-  if (existing) { showMessage("proposalMessageBox", "شما قبلاً برای این پروژه پیشنهاد داده‌اید."); return; }
+  if (existing) { showMessage("proposalMessageBox", "شما قبلاً پیشنهاد داده‌اید."); return; }
   const { error } = await supabaseClient.from("proposals").insert({
     project_id: currentProjectForProposal, freelancer_id: currentUser.id,
     employer_id: project.employer_id, message, price, status: "pending"
   });
   if (error) { showMessage("proposalMessageBox", "خطا: " + error.message); return; }
-  showMessage("proposalMessageBox", "پیشنهاد شما ارسال شد! 🎉", true);
+
+  // اعلان به کارفرما
+  await createNotification(project.employer_id, "new_proposal",
+    "پیشنهاد جدید دریافت کردید",
+    "برای پروژه «" + project.title + "» یک پیشنهاد جدید ثبت شد.",
+    null);
+
+  showMessage("proposalMessageBox", "پیشنهاد ارسال شد! 🎉", true);
   setTimeout(() => { closeModals(); currentProjectForProposal = null; }, 1200);
 }
 
-/* =========================================
-   PROPOSALS LIST
-========================================= */
+/* ============ PROPOSALS LIST ============ */
 async function openProposalsList(projectId, projectTitle) {
   document.getElementById("proposalsListTitle").textContent = "پروژه: " + projectTitle;
   const container = document.getElementById("proposalsListContainer");
@@ -737,7 +815,10 @@ async function openProposalsList(projectId, projectTitle) {
           <button class="btn btn-red btn-sm" onclick="updateProposalStatus('${p.id}', 'rejected', '${projectId}', '${projectTitle.replace(/'/g, "\\'")}')">رد</button>
         </div>`;
     } else if (p.status === "accepted") {
-      actionBtns = `<div class="actions"><button class="btn btn-sm" onclick="openChatWith('${p.freelancer_id}', '${escapeHtml(fr.full_name || "کاربر").replace(/'/g,"&#39;")}')">شروع چت</button></div>`;
+      actionBtns = `<div class="actions">
+        <button class="btn btn-sm" onclick="openChatWith('${p.freelancer_id}', '${escapeHtml(fr.full_name || "کاربر").replace(/'/g,"&#39;")}')">شروع چت</button>
+        <button class="btn btn-green btn-sm" onclick="openRating('${p.freelancer_id}', '${escapeHtml(fr.full_name || "کاربر").replace(/'/g,"&#39;")}', '${projectId}')">⭐ امتیازدهی</button>
+      </div>`;
     }
     const av = fr.avatar_url ? `<img src="${fr.avatar_url}" class="avatar-chat">` : '';
     return `
@@ -753,15 +834,24 @@ async function openProposalsList(projectId, projectTitle) {
 
 async function updateProposalStatus(proposalId, newStatus, projectId, projectTitle) {
   if (!confirm("مطمئن هستید؟")) return;
+  const { data: prop } = await supabaseClient.from("proposals").select("freelancer_id").eq("id", proposalId).single();
   const { error } = await supabaseClient.from("proposals").update({ status: newStatus }).eq("id", proposalId);
   if (error) { alert("خطا: " + error.message); return; }
+
+  // اعلان به فریلنسر
+  if (prop && prop.freelancer_id) {
+    await createNotification(prop.freelancer_id,
+      newStatus === "accepted" ? "proposal_accepted" : "proposal_rejected",
+      newStatus === "accepted" ? "پیشنهاد شما قبول شد! ✅" : "پیشنهاد شما رد شد",
+      "برای پروژه «" + projectTitle + "»",
+      null);
+  }
+
   alert(newStatus === "accepted" ? "پیشنهاد قبول شد! ✅" : "پیشنهاد رد شد.");
   openProposalsList(projectId, projectTitle);
 }
 
-/* =========================================
-   MY PROPOSALS
-========================================= */
+/* ============ MY PROPOSALS ============ */
 async function loadMyProposals() {
   if (!currentUser) { showPage("home"); return; }
   const container = document.getElementById("myProposalsContainer");
@@ -786,7 +876,10 @@ async function loadMyProposals() {
     else statusBadge = '<span class="badge badge-pending">در انتظار</span>';
     let chatBtn = "";
     if (p.status === "accepted") {
-      chatBtn = `<div class="actions"><button class="btn btn-sm" onclick="openChatWith('${p.employer_id}', '${escapeHtml(emp.full_name || "کارفرما").replace(/'/g,"&#39;")}')">شروع چت</button></div>`;
+      chatBtn = `<div class="actions">
+        <button class="btn btn-sm" onclick="openChatWith('${p.employer_id}', '${escapeHtml(emp.full_name || "کارفرما").replace(/'/g,"&#39;")}')">شروع چت</button>
+        <button class="btn btn-green btn-sm" onclick="openRating('${p.employer_id}', '${escapeHtml(emp.full_name || "کارفرما").replace(/'/g,"&#39;")}', '${p.project_id}')">⭐ امتیازدهی</button>
+      </div>`;
     }
     const av = emp.avatar_url ? `<img src="${emp.avatar_url}" class="avatar-chat">` : '';
     return `
@@ -800,9 +893,7 @@ async function loadMyProposals() {
   }).join("");
 }
 
-/* =========================================
-   CHAT
-========================================= */
+/* ============ CHAT ============ */
 async function loadChatUsers() {
   if (!currentUser) { showPage("home"); return; }
   const container = document.getElementById("chatUsersList");
@@ -811,7 +902,7 @@ async function loadChatUsers() {
     .or(`sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`)
     .order("created_at", { ascending: false });
   if (!msgs || msgs.length === 0) {
-    container.innerHTML = '<p class="empty-msg">هنوز چتی ندارید. از بخش پیشنهادها شروع کنید.</p>';
+    container.innerHTML = '<p class="empty-msg">هنوز چتی ندارید.</p>';
     return;
   }
   const userIds = new Set();
@@ -874,12 +965,72 @@ async function sendMessage() {
     sender_id: currentUser.id, receiver_id: currentChatUserId, content: content
   });
   if (error) { alert("خطا: " + error.message); return; }
+
+  // اعلان به گیرنده
+  await createNotification(currentChatUserId, "new_message",
+    "پیام جدید", content.substring(0, 50), null);
+
   loadMessages();
 }
 
-/* =========================================
-   PROFILE
-========================================= */
+/* ============ RATING ============ */
+let ratingStars = 0;
+let ratingTargetId = null;
+let ratingProjectId = null;
+
+function openRating(userId, userName, projectId) {
+  if (!currentUser) return;
+  ratingTargetId = userId;
+  ratingProjectId = projectId;
+  ratingStars = 0;
+  document.getElementById("ratingTargetName").textContent = "امتیاز به: " + userName;
+  document.getElementById("ratingComment").value = "";
+  document.getElementById("ratingMessage").style.display = "none";
+  document.querySelectorAll(".star-input").forEach(s => s.classList.remove("active"));
+  closeModals();
+  document.getElementById("ratingModal").style.display = "flex";
+}
+
+function setStars(n) {
+  ratingStars = n;
+  document.querySelectorAll(".star-input").forEach(s => {
+    if (parseInt(s.dataset.star) <= n) s.classList.add("active");
+    else s.classList.remove("active");
+  });
+}
+
+async function submitRating() {
+  if (!currentUser || !ratingTargetId) return;
+  if (ratingStars === 0) { showMessage("ratingMessage", "لطفاً ستاره انتخاب کنید."); return; }
+  const comment = document.getElementById("ratingComment").value.trim();
+
+  // چک کن قبلاً امتیاز نداده
+  const { data: existing } = await supabaseClient.from("ratings").select("id")
+    .eq("project_id", ratingProjectId).eq("rater_id", currentUser.id).maybeSingle();
+  if (existing) { showMessage("ratingMessage", "شما قبلاً برای این پروژه امتیاز داده‌اید."); return; }
+
+  showMessage("ratingMessage", "در حال ثبت...", true);
+  const { error } = await supabaseClient.from("ratings").insert({
+    project_id: ratingProjectId, rater_id: currentUser.id,
+    rated_id: ratingTargetId, stars: ratingStars, comment: comment || null
+  });
+  if (error) { showMessage("ratingMessage", "خطا: " + error.message); return; }
+
+  await createNotification(ratingTargetId, "new_rating",
+    "امتیاز جدید دریافت کردید", "⭐ " + ratingStars + " از ۵", null);
+
+  showMessage("ratingMessage", "امتیاز ثبت شد! 🎉", true);
+  setTimeout(() => { closeModals(); }, 1200);
+}
+
+async function loadProfileRating(userId) {
+  const { data } = await supabaseClient.from("ratings").select("stars").eq("rated_id", userId);
+  if (!data || data.length === 0) return "بدون امتیاز";
+  const avg = (data.reduce((s, r) => s + r.stars, 0) / data.length).toFixed(1);
+  return `<span class="stars">⭐</span> ${avg} از ۵ (${data.length} نظر)`;
+}
+
+/* ============ PROFILE ============ */
 async function showProfile() {
   if (!currentUser) { showPage("home"); return; }
   const { data: profile } = await supabaseClient.from("profiles").select("*").eq("id", currentUser.id).maybeSingle();
@@ -904,11 +1055,10 @@ async function showProfile() {
 
   document.getElementById("profileSkills").textContent = profile.skills || "-";
   document.getElementById("profileBio").textContent = profile.bio || "-";
+  document.getElementById("profileRating").innerHTML = await loadProfileRating(currentUser.id);
 }
 
-/* =========================================
-   HELPERS
-========================================= */
+/* ============ HELPERS ============ */
 function escapeHtml(text) {
   if (text === null || text === undefined) return "";
   return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
