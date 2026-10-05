@@ -4,104 +4,863 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>کارینو | پلتفرم فریلنسری</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Tahoma, Arial, sans-serif; }
-    body { background: #f5f7fb; color: #172033; }
-    header { background: #111827; color: white; padding: 14px 7%; display: flex; justify-content: space-between; align-items: center; gap: 15px; position: sticky; top: 0; z-index: 10; flex-wrap: wrap; }
-    .logo { font-size: 24px; font-weight: bold; color: #60a5fa; }
-    .tabs { display: flex; gap: 6px; flex-wrap: wrap; background: #1e293b; padding: 6px; border-radius: 12px; }
-    .tab { background: transparent; color: #cbd5e1; padding: 8px 14px; border-radius: 8px; font-size: 14px; cursor: pointer; border: none; position: relative; }
-    .tab:hover { background: #334155; }
-    .tab.active { background: #2563eb; color: white; }
-    .user-area { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-    button { border: none; cursor: pointer; border-radius: 10px; padding: 9px 15px; font-size: 14px; }
-    .btn { background: #2563eb; color: white; }
-    .btn:hover { background: #1d4ed8; }
-    .btn-green { background: #16a34a; color: white; }
-    .btn-green:hover { background: #15803d; }
-    .btn-red { background: #dc2626; color: white; }
-    .btn-red:hover { background: #b91c1c; }
-    .btn-sm { padding: 6px 12px; font-size: 13px; }
-    #userName { color: #93c5fd; font-size: 13px; }
-    .bell-btn { position: relative; background: #1e293b; color: white; padding: 8px 12px; border-radius: 10px; font-size: 18px; }
-    .bell-badge { position: absolute; top: -5px; right: -5px; background: #dc2626; color: white; font-size: 10px; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #818cf8;
+      --success: #10b981;
+      --success-dark: #059669;
+      --danger: #ef4444;
+      --danger-dark: #dc2626;
+      --warning: #f59e0b;
+      --dark: #0f172a;
+      --dark-2: #1e293b;
+      --gray: #64748b;
+      --gray-light: #94a3b8;
+      --bg: #f8fafc;
+      --white: #ffffff;
+      --border: #e2e8f0;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,.05);
+      --shadow: 0 4px 12px rgba(0,0,0,.08);
+      --shadow-lg: 0 12px 32px rgba(0,0,0,.12);
+      --radius: 14px;
+      --radius-sm: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Vazirmatn', Tahoma, sans-serif; }
+
+    body {
+      background: var(--bg);
+      color: var(--dark);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ============ HEADER ============ */
+    header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+      color: white;
+      padding: 16px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 20px rgba(0,0,0,.15);
+    }
+
+    .logo {
+      font-size: 26px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #818cf8, #c7d2fe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .logo::before {
+      content: '◆';
+      font-size: 22px;
+      -webkit-text-fill-color: #818cf8;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      background: rgba(255,255,255,.08);
+      padding: 6px;
+      border-radius: 14px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,.1);
+    }
+
+    .tab {
+      background: transparent;
+      color: #cbd5e1;
+      padding: 9px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all .25s;
+      font-family: inherit;
+    }
+
+    .tab:hover { background: rgba(255,255,255,.1); color: white; }
+
+    .tab.active {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      box-shadow: 0 4px 12px rgba(99,102,241,.4);
+    }
+
+    .user-area {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* ============ BUTTONS ============ */
+    button {
+      border: none;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: inherit;
+      transition: all .25s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    button:active { transform: scale(.97); }
+
+    .btn {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      box-shadow: 0 4px 12px rgba(99,102,241,.3);
+    }
+    .btn:hover {
+      box-shadow: 0 6px 18px rgba(99,102,241,.5);
+      transform: translateY(-1px);
+    }
+
+    .btn-green {
+      background: linear-gradient(135deg, var(--success), var(--success-dark));
+      color: white;
+      box-shadow: 0 4px 12px rgba(16,185,129,.3);
+    }
+    .btn-green:hover {
+      box-shadow: 0 6px 18px rgba(16,185,129,.5);
+      transform: translateY(-1px);
+    }
+
+    .btn-red {
+      background: linear-gradient(135deg, var(--danger), var(--danger-dark));
+      color: white;
+      box-shadow: 0 4px 12px rgba(239,68,68,.3);
+    }
+    .btn-red:hover {
+      box-shadow: 0 6px 18px rgba(239,68,68,.5);
+      transform: translateY(-1px);
+    }
+
+    .btn-sm { padding: 7px 14px; font-size: 13px; }
+
+    .bell-btn {
+      position: relative;
+      background: rgba(255,255,255,.1);
+      color: white;
+      padding: 9px 13px;
+      border-radius: var(--radius-sm);
+      font-size: 17px;
+      border: 1px solid rgba(255,255,255,.15);
+    }
+    .bell-btn:hover { background: rgba(255,255,255,.2); }
+
+    .bell-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+      font-size: 10px;
+      border-radius: 50%;
+      min-width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      padding: 0 5px;
+      box-shadow: 0 2px 8px rgba(239,68,68,.5);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .avatar-sm {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary-light);
+      box-shadow: 0 2px 8px rgba(99,102,241,.3);
+    }
+
+    #userName { color: #c7d2fe; font-size: 13px; font-weight: 500; }
+
+    /* ============ PAGES ============ */
     .page { display: none; }
-    .page.active { display: block; }
-    .hero { text-align: center; padding: 70px 20px; background: linear-gradient(135deg, #172554, #2563eb); color: white; }
-    .hero h1 { font-size: 38px; margin-bottom: 15px; }
-    .hero p { font-size: 17px; margin-bottom: 25px; }
-    .search { max-width: 650px; margin: auto; display: flex; background: white; padding: 7px; border-radius: 14px; }
-    .search input { flex: 1; border: none; outline: none; padding: 12px; font-size: 15px; }
-    .container { padding: 40px 7%; }
-    .title { text-align: center; margin-bottom: 25px; font-size: 26px; }
-    .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; }
-    .filter-chip { background: white; border: 1px solid #d1d5db; padding: 6px 14px; border-radius: 20px; font-size: 13px; cursor: pointer; }
-    .filter-chip.active { background: #2563eb; color: white; border-color: #2563eb; }
-    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
-    .card { background: white; border-radius: 15px; padding: 22px; box-shadow: 0 5px 20px rgba(0,0,0,.06); }
-    .card h3 { margin-bottom: 10px; }
-    .card p { color: #64748b; line-height: 1.8; }
-    .card .budget { color: #16a34a; font-weight: bold; margin-top: 8px; }
-    .card .category { color: #2563eb; font-size: 14px; margin-top: 6px; }
-    footer { background: #111827; color: white; text-align: center; padding: 25px; }
-    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.65); z-index: 100; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
-    .modal-box { background: white; width: 100%; max-width: 500px; border-radius: 18px; padding: 28px; position: relative; max-height: 90vh; overflow-y: auto; }
-    .modal-box h2 { margin-bottom: 18px; }
-    .close { position: absolute; left: 15px; top: 12px; background: transparent; font-size: 24px; }
-    .form-group { margin-bottom: 14px; }
-    .form-group label { display: block; margin-bottom: 6px; font-size: 14px; }
-    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px; border: 1px solid #d1d5db; border-radius: 9px; outline: none; font-family: inherit; }
-    .form-group textarea { resize: vertical; min-height: 80px; }
-    .form-button { width: 100%; margin-top: 8px; }
-    .switch { margin-top: 14px; text-align: center; color: #2563eb; cursor: pointer; font-size: 14px; }
-    .message { margin-top: 12px; padding: 10px; border-radius: 8px; display: none; line-height: 1.7; font-size: 14px; }
-    .profile-box { background: white; max-width: 700px; margin: 20px auto; padding: 28px; border-radius: 18px; box-shadow: 0 5px 20px rgba(0,0,0,.08); }
-    .profile-box h2 { margin-bottom: 18px; }
-    .profile-item { padding: 12px 0; border-bottom: 1px solid #eee; line-height: 1.8; }
-    .proposal-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-bottom: 12px; }
-    .proposal-card .price { color: #16a34a; font-weight: bold; font-size: 17px; }
-    .proposal-card .freelancer-name { font-weight: bold; color: #1e293b; }
-    .proposal-card .msg-text { color: #475569; margin: 8px 0; line-height: 1.7; }
-    .proposal-card .actions { display: flex; gap: 8px; margin-top: 10px; }
-    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; margin-right: 6px; }
+    .page.active {
+      display: block;
+      animation: fadeIn .35s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============ HERO ============ */
+    .hero {
+      text-align: center;
+      padding: 80px 20px;
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(129,140,248,.3), transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(99,102,241,.3), transparent 40%);
+      pointer-events: none;
+    }
+
+    .hero > * { position: relative; z-index: 1; }
+
+    .hero h1 {
+      font-size: 42px;
+      margin-bottom: 16px;
+      font-weight: 800;
+      line-height: 1.3;
+      text-shadow: 0 2px 20px rgba(0,0,0,.2);
+    }
+
+    .hero p {
+      font-size: 18px;
+      margin-bottom: 35px;
+      color: #c7d2fe;
+      font-weight: 400;
+    }
+
+    .search {
+      max-width: 650px;
+      margin: auto;
+      display: flex;
+      background: rgba(255,255,255,.95);
+      padding: 8px;
+      border-radius: 16px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.3);
+      backdrop-filter: blur(20px);
+    }
+
+    .search input {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 13px 16px;
+      font-size: 15px;
+      font-family: inherit;
+      background: transparent;
+      color: var(--dark);
+    }
+
+    .search .btn { padding: 12px 24px; }
+
+    /* ============ CONTAINER ============ */
+    .container { padding: 50px 6%; max-width: 1300px; margin: 0 auto; }
+
+    .title {
+      text-align: center;
+      margin-bottom: 35px;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--dark);
+      position: relative;
+      padding-bottom: 15px;
+    }
+
+    .title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      border-radius: 2px;
+    }
+
+    /* ============ FILTER ============ */
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    .filter-chip {
+      background: white;
+      border: 1px solid var(--border);
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 500;
+      color: var(--gray);
+      transition: all .25s;
+    }
+
+    .filter-chip:hover {
+      border-color: var(--primary-light);
+      color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .filter-chip.active {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 4px 12px rgba(99,102,241,.3);
+    }
+
+    /* ============ CARDS ============ */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 22px;
+    }
+
+    .card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 25px;
+      box-shadow: var(--shadow);
+      transition: all .3s;
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--primary-light));
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform .35s;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .card:hover::before { transform: scaleX(1); }
+
+    .card h3 {
+      margin-bottom: 12px;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .card p {
+      color: var(--gray);
+      line-height: 1.8;
+      font-size: 14px;
+    }
+
+    .card .budget {
+      color: var(--success);
+      font-weight: 700;
+      margin-top: 10px;
+      font-size: 15px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .card .category {
+      color: var(--primary);
+      font-size: 13px;
+      margin-top: 8px;
+      display: inline-block;
+      background: #eef2ff;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+
+    /* ============ PROPOSAL CARDS ============ */
+    .proposal-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow-sm);
+      transition: all .25s;
+    }
+
+    .proposal-card:hover { box-shadow: var(--shadow); }
+
+    .proposal-card .price {
+      color: var(--success);
+      font-weight: 700;
+      font-size: 17px;
+      margin: 8px 0;
+    }
+
+    .proposal-card .freelancer-name {
+      font-weight: 700;
+      color: var(--dark);
+      font-size: 15px;
+    }
+
+    .proposal-card .msg-text {
+      color: var(--gray);
+      margin: 10px 0;
+      line-height: 1.8;
+      font-size: 14px;
+    }
+
+    .proposal-card .actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      margin-right: 6px;
+      font-weight: 600;
+    }
+
     .badge-pending { background: #fef3c7; color: #92400e; }
-    .badge-accepted { background: #dcfce7; color: #166534; }
+    .badge-accepted { background: #d1fae5; color: #065f46; }
     .badge-rejected { background: #fee2e2; color: #991b1b; }
-    .chat-container { background: white; border-radius: 15px; padding: 20px; max-width: 800px; margin: auto; box-shadow: 0 5px 20px rgba(0,0,0,.06); }
-    .chat-list { max-height: 400px; overflow-y: auto; margin-bottom: 15px; padding: 10px; background: #f8fafc; border-radius: 10px; min-height: 200px; }
-    .chat-message { padding: 8px 12px; margin-bottom: 8px; border-radius: 10px; max-width: 70%; line-height: 1.6; font-size: 14px; word-wrap: break-word; }
-    .chat-me { background: #2563eb; color: white; margin-right: auto; margin-left: 0; }
-    .chat-other { background: #e2e8f0; color: #1e293b; margin-left: auto; margin-right: 0; }
-    .chat-input { display: flex; gap: 8px; }
-    .chat-input input { flex: 1; padding: 12px; border: 1px solid #d1d5db; border-radius: 9px; outline: none; }
-    .empty-msg { text-align: center; color: #94a3b8; padding: 30px; }
-    .avatar-sm { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #60a5fa; }
-    .avatar-lg { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 3px solid #2563eb; display: block; margin: 0 auto 12px; background: #e2e8f0; }
-    .avatar-chat { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; margin-left: 6px; vertical-align: middle; }
-    .info-box { background: #dbeafe; color: #1e40af; padding: 10px 12px; border-radius: 8px; font-size: 13px; margin-bottom: 10px; }
-    .notification-item { padding: 12px; border-bottom: 1px solid #eee; cursor: pointer; }
-    .notification-item:hover { background: #f8fafc; }
-    .notification-item.unread { background: #eff6ff; }
-    .notification-title { font-weight: bold; font-size: 14px; margin-bottom: 4px; }
-    .notification-body { color: #64748b; font-size: 13px; }
-    .notification-time { color: #94a3b8; font-size: 11px; margin-top: 4px; }
-    .stars { color: #f59e0b; font-size: 18px; }
-    .star-input { font-size: 32px; cursor: pointer; color: #d1d5db; }
-    .star-input.active { color: #f59e0b; }
-    .rating-card { background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+
+    /* ============ MODAL ============ */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,.7);
+      backdrop-filter: blur(6px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-y: auto;
+      animation: fadeIn .2s;
+    }
+
+    .modal-box {
+      background: white;
+      width: 100%;
+      max-width: 480px;
+      border-radius: 20px;
+      padding: 32px;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 70px rgba(0,0,0,.4);
+      animation: slideUp .3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px) scale(.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-box h2 {
+      margin-bottom: 22px;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .close {
+      position: absolute;
+      left: 18px;
+      top: 16px;
+      background: #f1f5f9;
+      font-size: 20px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray);
+      transition: all .25s;
+    }
+    .close:hover { background: #e2e8f0; transform: rotate(90deg); }
+
+    /* ============ FORMS ============ */
+    .form-group { margin-bottom: 16px; }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--dark-2);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      outline: none;
+      font-family: inherit;
+      font-size: 14px;
+      transition: all .25s;
+      background: #f8fafc;
+      color: var(--dark);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--primary);
+      background: white;
+      box-shadow: 0 0 0 4px rgba(99,102,241,.12);
+    }
+
+    .form-group textarea { resize: vertical; min-height: 85px; }
+
+    .form-button { width: 100%; margin-top: 10px; padding: 13px; font-size: 15px; }
+
+    .switch {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--primary);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .switch:hover { text-decoration: underline; }
+
+    .message {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      display: none;
+      line-height: 1.7;
+      font-size: 14px;
+      animation: fadeIn .25s;
+    }
+
+    .info-box {
+      background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+      color: #3730a3;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      margin-bottom: 12px;
+      border-right: 3px solid var(--primary);
+      font-weight: 500;
+    }
+
+    /* ============ PROFILE ============ */
+    .profile-box {
+      background: white;
+      max-width: 720px;
+      margin: 20px auto;
+      padding: 35px;
+      border-radius: 20px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+    }
+
+    .profile-box h2 {
+      margin-bottom: 25px;
+      text-align: center;
+      font-size: 24px;
+      color: var(--dark);
+    }
+
+    .profile-item {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      line-height: 1.9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+    }
+
+    .profile-item:last-of-type { border-bottom: none; }
+
+    .profile-item strong { color: var(--gray); font-weight: 600; }
+
+    .avatar-lg {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid white;
+      box-shadow: 0 8px 25px rgba(99,102,241,.35);
+      display: block;
+      margin: 0 auto 15px;
+      background: #e2e8f0;
+      transition: transform .3s;
+    }
+
+    .avatar-lg:hover { transform: scale(1.05); }
+
+    .avatar-chat {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-left: 8px;
+      vertical-align: middle;
+      border: 2px solid var(--primary-light);
+    }
+
+    /* ============ CHAT ============ */
+    .chat-container {
+      background: white;
+      border-radius: 18px;
+      padding: 22px;
+      max-width: 850px;
+      margin: auto;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .chat-list {
+      max-height: 420px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+      padding: 15px;
+      background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+      border-radius: var(--radius);
+      min-height: 220px;
+    }
+
+    .chat-message {
+      padding: 10px 14px;
+      margin-bottom: 10px;
+      border-radius: 16px;
+      max-width: 72%;
+      line-height: 1.7;
+      font-size: 14px;
+      word-wrap: break-word;
+      animation: fadeIn .25s;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .chat-me {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      margin-right: auto;
+      margin-left: 0;
+      border-bottom-right-radius: 4px;
+    }
+
+    .chat-other {
+      background: white;
+      color: var(--dark);
+      margin-left: auto;
+      margin-right: 0;
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 4px;
+    }
+
+    .chat-input {
+      display: flex;
+      gap: 8px;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 13px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      outline: none;
+      font-family: inherit;
+      font-size: 14px;
+      transition: all .25s;
+    }
+    .chat-input input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(99,102,241,.12);
+    }
+
+    /* ============ NOTIFICATIONS ============ */
+    .notification-item {
+      padding: 14px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all .25s;
+      border: 1px solid transparent;
+    }
+
+    .notification-item:hover {
+      background: #f8fafc;
+      border-color: var(--border);
+    }
+
+    .notification-item.unread {
+      background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+      border-color: #c7d2fe;
+    }
+
+    .notification-title {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 4px;
+      color: var(--dark);
+    }
+
+    .notification-body {
+      color: var(--gray);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .notification-time {
+      color: var(--gray-light);
+      font-size: 11px;
+      margin-top: 6px;
+    }
+
+    /* ============ RATING ============ */
+    .stars { color: var(--warning); font-size: 18px; }
+
+    .star-input {
+      font-size: 38px;
+      cursor: pointer;
+      color: #d1d5db;
+      transition: all .2s;
+      user-select: none;
+      padding: 0 2px;
+    }
+
+    .star-input:hover { transform: scale(1.15); }
+    .star-input.active { color: var(--warning); text-shadow: 0 0 12px rgba(245,158,11,.5); }
+
+    /* ============ EMPTY ============ */
+    .empty-msg {
+      text-align: center;
+      color: var(--gray-light);
+      padding: 40px 20px;
+      font-size: 14px;
+    }
+
+    /* ============ FOOTER ============ */
+    footer {
+      background: linear-gradient(135deg, var(--dark), #1e1b4b);
+      color: #cbd5e1;
+      text-align: center;
+      padding: 30px;
+      margin-top: 40px;
+      font-size: 14px;
+    }
+
+    /* ============ TOAST ============ */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: white;
+      padding: 14px 22px;
+      border-radius: var(--radius);
+      box-shadow: 0 10px 40px rgba(0,0,0,.2);
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 240px;
+      max-width: 90vw;
+      animation: toastIn .35s ease-out;
+      border-right: 4px solid var(--primary);
+      pointer-events: auto;
+    }
+
+    .toast.success { border-right-color: var(--success); }
+    .toast.error { border-right-color: var(--danger); }
+
+    .toast-icon { font-size: 20px; }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes toastOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(-20px); }
+    }
+
+    /* ============ RESPONSIVE ============ */
     @media(max-width:700px) {
-      header { flex-direction: column; }
+      header { flex-direction: column; padding: 14px 5%; }
       .tabs { justify-content: center; width: 100%; }
+      .tab { padding: 8px 12px; font-size: 13px; }
+      .hero { padding: 55px 18px; }
       .hero h1 { font-size: 26px; }
-      .search { flex-direction: column; gap: 7px; }
+      .hero p { font-size: 15px; }
+      .search { flex-direction: column; gap: 8px; padding: 12px; }
+      .container { padding: 35px 5%; }
+      .title { font-size: 22px; }
+      .cards { grid-template-columns: 1fr; gap: 16px; }
+      .modal-box { padding: 24px 20px; }
+      .profile-box { padding: 25px 20px; }
+      .avatar-lg { width: 100px; height: 100px; }
     }
   </style>
 </head>
 <body>
 
+<div class="toast-container" id="toastContainer"></div>
+
 <header>
-  <div class="logo">کارینو</div>
+  <div class="logo" onclick="showPage('home')">کارینو</div>
   <div class="tabs">
     <button class="tab active" onclick="showPage('home')">خانه</button>
     <button class="tab" onclick="showPage('projects')">پروژه‌ها</button>
@@ -129,7 +888,7 @@
     <p>کارینو؛ جایی برای ارتباط کارفرماها و فریلنسرها</p>
     <div class="search">
       <input id="searchInput" type="text" placeholder="چه کاری می‌خواهید انجام دهید؟" onkeypress="if(event.key==='Enter') searchProjects()">
-      <button class="btn" onclick="searchProjects()">جستجو</button>
+      <button class="btn" onclick="searchProjects()">🔍 جستجو</button>
     </div>
   </section>
   <div class="container">
@@ -154,7 +913,7 @@
       <button class="filter-chip" onclick="filterCategory('دیگر')">دیگر</button>
     </div>
     <div class="cards" id="projectsContainer">
-      <p style="text-align:center; color:#94a3b8;">در حال بارگذاری...</p>
+      <p class="empty-msg">در حال بارگذاری...</p>
     </div>
   </div>
 </div>
@@ -167,9 +926,9 @@
       <p class="empty-msg">برای شروع چت، از بخش پیشنهادها روی «چت» بزنید.</p>
     </div>
     <div class="chat-container" id="activeChatBox" style="display:none;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-        <h3 id="chatWithName" style="font-size:16px;"></h3>
-        <button class="btn btn-sm" onclick="closeChat()">بستن</button>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:12px; border-bottom:1px solid var(--border);">
+        <h3 id="chatWithName" style="font-size:16px; font-weight:700;"></h3>
+        <button class="btn btn-sm btn-red" onclick="closeChat()">بستن</button>
       </div>
       <div class="chat-list" id="chatMessages"></div>
       <div class="chat-input">
@@ -185,7 +944,7 @@
   <div class="container">
     <div class="profile-box">
       <h2>پروفایل من</h2>
-      <div style="text-align:center; margin-bottom:25px;">
+      <div style="text-align:center; margin-bottom:30px;">
         <img id="profileAvatar" class="avatar-lg" src="">
         <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="uploadAvatar(event)">
         <button class="btn btn-sm" onclick="document.getElementById('avatarInput').click()">📷 تغییر عکس پروفایل</button>
@@ -200,8 +959,8 @@
       <div class="profile-item"><strong>درباره من:</strong> <span id="profileBio"></span></div>
       <div class="profile-item"><strong>امتیاز:</strong> <span id="profileRating"></span></div>
 
-      <button class="btn btn-green" onclick="openEditProfile()" style="margin-top:20px; width:100%;">✏️ ویرایش پروفایل</button>
-      <button class="btn btn-red" id="logoutBtn" onclick="logout()" style="display:none; margin-top:10px; width:100%;">خروج از حساب</button>
+      <button class="btn btn-green" onclick="openEditProfile()" style="margin-top:25px; width:100%;">✏️ ویرایش پروفایل</button>
+      <button class="btn btn-red" id="logoutBtn" onclick="logout()" style="display:none; margin-top:12px; width:100%;">خروج از حساب</button>
     </div>
   </div>
 </div>
@@ -307,7 +1066,7 @@
   <div class="modal-box">
     <button class="close" onclick="closeModals()">×</button>
     <h2>ارسال پیشنهاد</h2>
-    <p id="proposalProjectTitle" style="color:#2563eb; margin-bottom:15px; font-weight:bold;"></p>
+    <p id="proposalProjectTitle" style="color:var(--primary); margin-bottom:15px; font-weight:700;"></p>
     <div class="form-group"><label>قیمت پیشنهادی (تومان)</label><input type="text" id="proposalPrice" placeholder="مثلاً ۴,۵۰۰,۰۰۰"></div>
     <div class="form-group"><label>توضیحات پیشنهاد</label><textarea id="proposalMessage" placeholder="چرا شما گزینه مناسبی هستید؟"></textarea></div>
     <button class="btn form-button" onclick="sendProposal()">ارسال پیشنهاد</button>
@@ -317,10 +1076,10 @@
 
 <!-- PROPOSALS LIST MODAL -->
 <div class="modal" id="proposalsListModal">
-  <div class="modal-box" style="max-width:600px;">
+  <div class="modal-box" style="max-width:620px;">
     <button class="close" onclick="closeModals()">×</button>
     <h2>پیشنهادهای دریافتی</h2>
-    <p id="proposalsListTitle" style="color:#2563eb; margin-bottom:15px; font-weight:bold;"></p>
+    <p id="proposalsListTitle" style="color:var(--primary); margin-bottom:18px; font-weight:700;"></p>
     <div id="proposalsListContainer"></div>
   </div>
 </div>
@@ -339,8 +1098,8 @@
   <div class="modal-box">
     <button class="close" onclick="closeModals()">×</button>
     <h2>امتیازدهی</h2>
-    <p id="ratingTargetName" style="color:#2563eb; margin-bottom:15px; font-weight:bold;"></p>
-    <div style="text-align:center; margin-bottom:15px;">
+    <p id="ratingTargetName" style="color:var(--primary); margin-bottom:15px; font-weight:700; text-align:center;"></p>
+    <div style="text-align:center; margin-bottom:20px;">
       <span class="star-input" data-star="1" onclick="setStars(1)">★</span>
       <span class="star-input" data-star="2" onclick="setStars(2)">★</span>
       <span class="star-input" data-star="3" onclick="setStars(3)">★</span>
@@ -371,6 +1130,20 @@ let currentSearch = "";
 let currentCategory = "";
 let notifInterval = null;
 
+/* ============ TOAST ============ */
+function showToast(text, type = "info") {
+  const container = document.getElementById("toastContainer");
+  const toast = document.createElement("div");
+  toast.className = "toast " + type;
+  const icon = type === "success" ? "✅" : type === "error" ? "❌" : "ℹ️";
+  toast.innerHTML = `<span class="toast-icon">${icon}</span><span>${text}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.animation = "toastOut .3s ease-in";
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
 /* ============ PAGE / TABS ============ */
 function showPage(pageName) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
@@ -398,7 +1171,7 @@ function showMessage(id, text, success = false) {
   const box = document.getElementById(id);
   box.style.display = "block";
   box.textContent = text;
-  if (success) { box.style.background = "#dcfce7"; box.style.color = "#166534"; }
+  if (success) { box.style.background = "#d1fae5"; box.style.color = "#065f46"; }
   else { box.style.background = "#fee2e2"; box.style.color = "#991b1b"; }
 }
 
@@ -470,7 +1243,6 @@ async function openNotifications() {
     </div>`;
   }).join("");
 
-  // همه رو خونده کن
   await supabaseClient.from("notifications").update({ is_read: true }).eq("user_id", currentUser.id);
   loadNotificationCount();
 }
@@ -514,8 +1286,8 @@ async function register() {
   });
   if (profileError) { showMessage("registerMessage", "خطا: " + profileError.message); return; }
 
-  showMessage("registerMessage", "ثبت‌نام با موفقیت انجام شد! 🎉", true);
-  setTimeout(() => { closeModals(); loadUser(); }, 1200);
+  showToast("ثبت‌نام با موفقیت انجام شد! 🎉", "success");
+  setTimeout(() => { closeModals(); loadUser(); }, 1000);
 }
 
 /* ============ LOGIN ============ */
@@ -526,7 +1298,7 @@ async function login() {
   showMessage("loginMessage", "در حال ورود...", true);
   const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
   if (error) { showMessage("loginMessage", "ورود ناموفق بود: " + error.message); return; }
-  showMessage("loginMessage", "با موفقیت وارد شدید! 🎉", true);
+  showToast("با موفقیت وارد شدید! 🎉", "success");
   setTimeout(() => { closeModals(); loadUser(); }, 800);
 }
 
@@ -544,7 +1316,7 @@ async function logout() {
   document.getElementById("bellBtn").style.display = "none";
   if (notifInterval) clearInterval(notifInterval);
   showPage("home");
-  alert("از حساب خارج شدید.");
+  showToast("از حساب خارج شدید.", "info");
 }
 
 /* ============ LOAD USER ============ */
@@ -605,7 +1377,8 @@ async function uploadAvatar(event) {
   const avatarUrl = urlData.publicUrl + '?t=' + Date.now();
   const { error: updateError } = await supabaseClient.from('profiles').update({ avatar_url: avatarUrl }).eq('id', currentUser.id);
   if (updateError) { showMessage("avatarMessage", "خطا: " + updateError.message); return; }
-  showMessage("avatarMessage", "عکس با موفقیت تغییر کرد! 🎉", true);
+  showToast("عکس پروفایل تغییر کرد! 🎉", "success");
+  document.getElementById("avatarMessage").style.display = "none";
   document.getElementById("profileAvatar").src = avatarUrl;
   const topAv = document.getElementById("userAvatar");
   topAv.src = avatarUrl;
@@ -646,14 +1419,14 @@ async function saveProfile() {
     full_name: name, age: age, national_id: age >= 18 ? nationalId : null, skills: skills, bio: bio
   }).eq("id", currentUser.id);
   if (error) { showMessage("editProfileMessage", "خطا: " + error.message); return; }
-  showMessage("editProfileMessage", "پروفایل ویرایش شد! 🎉", true);
+  showToast("پروفایل ویرایش شد! 🎉", "success");
   currentProfile.full_name = name;
   currentProfile.age = age;
   currentProfile.national_id = age >= 18 ? nationalId : null;
   currentProfile.skills = skills;
   currentProfile.bio = bio;
   document.getElementById("userName").textContent = "سلام " + name;
-  setTimeout(() => { closeModals(); showProfile(); }, 1200);
+  setTimeout(() => { closeModals(); showProfile(); }, 1000);
 }
 
 /* ============ CREATE PROJECT ============ */
@@ -669,7 +1442,7 @@ async function createProject() {
     employer_id: currentUser.id, title, description, budget, category
   });
   if (error) { showMessage("projectMessage", "خطا: " + error.message); return; }
-  showMessage("projectMessage", "پروژه ثبت شد! 🎉", true);
+  showToast("پروژه ثبت شد! 🎉", "success");
   setTimeout(() => {
     closeModals();
     document.getElementById("projectTitle").value = "";
@@ -699,18 +1472,18 @@ async function loadProjects() {
   }
 
   const { data: projects, error } = await query;
-  if (error) { container.innerHTML = '<p style="text-align:center; color:#991b1b;">خطا: ' + error.message + '</p>'; return; }
+  if (error) { container.innerHTML = '<p class="empty-msg">خطا: ' + error.message + '</p>'; return; }
 
   let banner = "";
   if (currentSearch) {
-    banner = `<div style="grid-column: 1/-1; text-align:center; margin-bottom:10px; padding:12px; background:#dbeafe; border-radius:10px;">
+    banner = `<div style="grid-column: 1/-1; text-align:center; margin-bottom:10px; padding:14px; background:linear-gradient(135deg,#eef2ff,#e0e7ff); border-radius:14px; font-weight:500;">
       🔍 نتایج برای: <strong>${escapeHtml(currentSearch)}</strong>
       <button class="btn btn-sm" onclick="clearSearch()" style="margin-right:10px;">پاک کردن</button>
     </div>`;
   }
 
   if (!projects || projects.length === 0) {
-    container.innerHTML = banner + '<p style="text-align:center; color:#94a3b8;">پروژه‌ای پیدا نشد.</p>';
+    container.innerHTML = banner + '<p class="empty-msg">پروژه‌ای پیدا نشد.</p>';
     return;
   }
 
@@ -730,8 +1503,8 @@ async function loadProjects() {
         <h3>${escapeHtml(p.title)}</h3>
         <p>${escapeHtml(p.description || "")}</p>
         ${p.budget ? '<p class="budget">💰 ' + escapeHtml(p.budget) + ' تومان</p>' : ""}
-        ${p.category ? '<p class="category">دسته: ' + escapeHtml(p.category) + '</p>' : ""}
-        <br>${actionBtn}
+        ${p.category ? '<p class="category">' + escapeHtml(p.category) + '</p>' : ""}
+        <br><br>${actionBtn}
       </div>`;
   }).join("");
 }
@@ -744,7 +1517,7 @@ function clearSearch() {
 
 function searchProjects() {
   const text = document.getElementById("searchInput").value.trim();
-  if (!text) { alert("لطفاً چیزی بنویسید."); return; }
+  if (!text) { showToast("لطفاً چیزی بنویسید.", "error"); return; }
   currentSearch = text;
   showPage("projects");
 }
@@ -752,7 +1525,7 @@ function searchProjects() {
 /* ============ PROPOSAL ============ */
 function openProposal(projectId, projectTitle) {
   if (!currentUser) { openLogin(); return; }
-  if (!currentProfile || currentProfile.role !== "freelancer") { alert("فقط فریلنسرها می‌توانند پیشنهاد ارسال کنند."); return; }
+  if (!currentProfile || currentProfile.role !== "freelancer") { showToast("فقط فریلنسرها می‌توانند پیشنهاد ارسال کنند.", "error"); return; }
   currentProjectForProposal = projectId;
   document.getElementById("proposalProjectTitle").textContent = "پروژه: " + projectTitle;
   document.getElementById("proposalPrice").value = "";
@@ -778,25 +1551,23 @@ async function sendProposal() {
   });
   if (error) { showMessage("proposalMessageBox", "خطا: " + error.message); return; }
 
-  // اعلان به کارفرما
   await createNotification(project.employer_id, "new_proposal",
     "پیشنهاد جدید دریافت کردید",
-    "برای پروژه «" + project.title + "» یک پیشنهاد جدید ثبت شد.",
-    null);
+    "برای پروژه «" + project.title + "» یک پیشنهاد جدید ثبت شد.", null);
 
-  showMessage("proposalMessageBox", "پیشنهاد ارسال شد! 🎉", true);
-  setTimeout(() => { closeModals(); currentProjectForProposal = null; }, 1200);
+  showToast("پیشنهاد ارسال شد! 🎉", "success");
+  setTimeout(() => { closeModals(); currentProjectForProposal = null; }, 1000);
 }
 
 /* ============ PROPOSALS LIST ============ */
 async function openProposalsList(projectId, projectTitle) {
   document.getElementById("proposalsListTitle").textContent = "پروژه: " + projectTitle;
   const container = document.getElementById("proposalsListContainer");
-  container.innerHTML = '<p style="text-align:center; color:#94a3b8;">در حال بارگذاری...</p>';
+  container.innerHTML = '<p class="empty-msg">در حال بارگذاری...</p>';
   closeModals();
   document.getElementById("proposalsListModal").style.display = "flex";
   const { data: proposals, error } = await supabaseClient.from("proposals").select("*").eq("project_id", projectId).order("created_at", { ascending: false });
-  if (error) { container.innerHTML = '<p style="color:#991b1b;">خطا: ' + error.message + '</p>'; return; }
+  if (error) { container.innerHTML = '<p class="empty-msg">خطا: ' + error.message + '</p>'; return; }
   if (!proposals || proposals.length === 0) { container.innerHTML = '<p class="empty-msg">هنوز پیشنهادی دریافت نکرده‌اید.</p>'; return; }
   const freelancerIds = proposals.map(p => p.freelancer_id);
   const { data: profiles } = await supabaseClient.from("profiles").select("id, full_name, skills, avatar_url, age").in("id", freelancerIds);
@@ -824,7 +1595,7 @@ async function openProposalsList(projectId, projectTitle) {
     return `
       <div class="proposal-card">
         <div class="freelancer-name">${av} ${escapeHtml(fr.full_name || "کاربر")}</div>
-        <div style="color:#64748b; font-size:13px; margin-top:3px;">سن: ${fr.age || "-"} | مهارت‌ها: ${escapeHtml(fr.skills || "-")}</div>
+        <div style="color:var(--gray); font-size:13px; margin-top:4px;">سن: ${fr.age || "-"} | مهارت‌ها: ${escapeHtml(fr.skills || "-")}</div>
         <div class="price">💰 ${escapeHtml(p.price || "-")} تومان</div>
         <div class="msg-text">${escapeHtml(p.message || "")}</div>
         ${statusBadge}${actionBtns}
@@ -836,18 +1607,16 @@ async function updateProposalStatus(proposalId, newStatus, projectId, projectTit
   if (!confirm("مطمئن هستید؟")) return;
   const { data: prop } = await supabaseClient.from("proposals").select("freelancer_id").eq("id", proposalId).single();
   const { error } = await supabaseClient.from("proposals").update({ status: newStatus }).eq("id", proposalId);
-  if (error) { alert("خطا: " + error.message); return; }
+  if (error) { showToast("خطا: " + error.message, "error"); return; }
 
-  // اعلان به فریلنسر
   if (prop && prop.freelancer_id) {
     await createNotification(prop.freelancer_id,
       newStatus === "accepted" ? "proposal_accepted" : "proposal_rejected",
       newStatus === "accepted" ? "پیشنهاد شما قبول شد! ✅" : "پیشنهاد شما رد شد",
-      "برای پروژه «" + projectTitle + "»",
-      null);
+      "برای پروژه «" + projectTitle + "»", null);
   }
 
-  alert(newStatus === "accepted" ? "پیشنهاد قبول شد! ✅" : "پیشنهاد رد شد.");
+  showToast(newStatus === "accepted" ? "پیشنهاد قبول شد! ✅" : "پیشنهاد رد شد.", "success");
   openProposalsList(projectId, projectTitle);
 }
 
@@ -857,7 +1626,7 @@ async function loadMyProposals() {
   const container = document.getElementById("myProposalsContainer");
   container.innerHTML = '<p class="empty-msg">در حال بارگذاری...</p>';
   const { data: proposals, error } = await supabaseClient.from("proposals").select("*").eq("freelancer_id", currentUser.id).order("created_at", { ascending: false });
-  if (error) { container.innerHTML = '<p style="color:#991b1b;">خطا: ' + error.message + '</p>'; return; }
+  if (error) { container.innerHTML = '<p class="empty-msg">خطا: ' + error.message + '</p>'; return; }
   if (!proposals || proposals.length === 0) { container.innerHTML = '<p class="empty-msg">هنوز پیشنهادی ارسال نکرده‌اید.</p>'; return; }
   const projectIds = proposals.map(p => p.project_id);
   const { data: projects } = await supabaseClient.from("projects").select("id, title").in("id", projectIds);
@@ -885,7 +1654,7 @@ async function loadMyProposals() {
     return `
       <div class="proposal-card">
         <div class="freelancer-name">${escapeHtml(proj.title || "پروژه")}</div>
-        <div style="color:#64748b; font-size:13px; margin-top:3px;">کارفرما: ${av} ${escapeHtml(emp.full_name || "-")}</div>
+        <div style="color:var(--gray); font-size:13px; margin-top:4px;">کارفرما: ${av} ${escapeHtml(emp.full_name || "-")}</div>
         <div class="price">💰 ${escapeHtml(p.price || "-")} تومان</div>
         <div class="msg-text">${escapeHtml(p.message || "")}</div>
         ${statusBadge}${chatBtn}
@@ -914,7 +1683,7 @@ async function loadChatUsers() {
   const { data: profiles } = await supabaseClient.from("profiles").select("id, full_name, avatar_url").in("id", idsArr);
   const map = {};
   (profiles || []).forEach(p => { map[p.id] = p; });
-  container.innerHTML = '<h3 style="margin-bottom:12px; font-size:16px;">گفتگوها</h3>' + idsArr.map(id => {
+  container.innerHTML = '<h3 style="margin-bottom:15px; font-size:17px; font-weight:700;">گفتگوها</h3>' + idsArr.map(id => {
     const p = map[id] || {};
     const av = p.avatar_url ? `<img src="${p.avatar_url}" class="avatar-chat">` : '👤';
     return `<div class="proposal-card" style="cursor:pointer;" onclick="openChatWith('${id}', '${escapeHtml(p.full_name || "کاربر").replace(/'/g,"&#39;")}')">
@@ -946,7 +1715,7 @@ async function loadMessages() {
   const { data: msgs, error } = await supabaseClient.from("messages").select("*")
     .or(`and(sender_id.eq.${currentUser.id},receiver_id.eq.${currentChatUserId}),and(sender_id.eq.${currentChatUserId},receiver_id.eq.${currentUser.id})`)
     .order("created_at", { ascending: true });
-  if (error) { container.innerHTML = '<p style="color:#991b1b;">خطا: ' + error.message + '</p>'; return; }
+  if (error) { container.innerHTML = '<p class="empty-msg">خطا: ' + error.message + '</p>'; return; }
   if (!msgs || msgs.length === 0) { container.innerHTML = '<p class="empty-msg">شروع به گفتگو کنید...</p>'; return; }
   container.innerHTML = msgs.map(m => {
     const isMe = m.sender_id === currentUser.id;
@@ -964,9 +1733,8 @@ async function sendMessage() {
   const { error } = await supabaseClient.from("messages").insert({
     sender_id: currentUser.id, receiver_id: currentChatUserId, content: content
   });
-  if (error) { alert("خطا: " + error.message); return; }
+  if (error) { showToast("خطا: " + error.message, "error"); return; }
 
-  // اعلان به گیرنده
   await createNotification(currentChatUserId, "new_message",
     "پیام جدید", content.substring(0, 50), null);
 
@@ -1004,7 +1772,6 @@ async function submitRating() {
   if (ratingStars === 0) { showMessage("ratingMessage", "لطفاً ستاره انتخاب کنید."); return; }
   const comment = document.getElementById("ratingComment").value.trim();
 
-  // چک کن قبلاً امتیاز نداده
   const { data: existing } = await supabaseClient.from("ratings").select("id")
     .eq("project_id", ratingProjectId).eq("rater_id", currentUser.id).maybeSingle();
   if (existing) { showMessage("ratingMessage", "شما قبلاً برای این پروژه امتیاز داده‌اید."); return; }
@@ -1019,15 +1786,15 @@ async function submitRating() {
   await createNotification(ratingTargetId, "new_rating",
     "امتیاز جدید دریافت کردید", "⭐ " + ratingStars + " از ۵", null);
 
-  showMessage("ratingMessage", "امتیاز ثبت شد! 🎉", true);
-  setTimeout(() => { closeModals(); }, 1200);
+  showToast("امتیاز ثبت شد! 🎉", "success");
+  setTimeout(() => { closeModals(); }, 1000);
 }
 
 async function loadProfileRating(userId) {
   const { data } = await supabaseClient.from("ratings").select("stars").eq("rated_id", userId);
   if (!data || data.length === 0) return "بدون امتیاز";
   const avg = (data.reduce((s, r) => s + r.stars, 0) / data.length).toFixed(1);
-  return `<span class="stars">⭐</span> ${avg} از ۵ (${data.length} نظر)`;
+  return `<span class="stars">⭐</span> <strong>${avg}</strong> از ۵ (${data.length} نظر)`;
 }
 
 /* ============ PROFILE ============ */
@@ -1047,7 +1814,7 @@ async function showProfile() {
 
   const nidRow = document.getElementById("profileNationalIdRow");
   if (profile.age && profile.age >= 18) {
-    nidRow.style.display = "block";
+    nidRow.style.display = "flex";
     document.getElementById("profileNationalId").textContent = profile.national_id || "-";
   } else {
     nidRow.style.display = "none";
