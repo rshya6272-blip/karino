@@ -4,10 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>کارینو | پلتفرم فریلنسری</title>
+  
+  <!-- تگ‌های سئو و شبکه‌های اجتماعی -->
+  <meta name="description" content="کارینو؛ پلتفرم ارتباط کارفرماها و فریلنسرها. پروژه‌های خود را ثبت کنید و به متخصصین بسپارید.">
+  <meta property="og:title" content="کارینو | پلتفرم فریلنسری">
+  <meta property="og:description" content="پروژه‌ات را به متخصص بسپار. ارتباط امن و سریع بین کارفرما و فریلنسر.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/3233/3233035.png">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
   <style>
     :root {
       --primary: #6366f1; --primary-dark: #4f46e5; --primary-light: #818cf8;
@@ -24,45 +33,12 @@
     }
     
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Vazirmatn', Tahoma, sans-serif; }
-    
-    body { 
-      background: var(--bg); 
-      color: var(--dark); 
-      line-height: 1.6; 
-      min-height: 100vh;
-      padding-bottom: 85px; /* فاصله برای منوی پایین */
-    }
+    body { background: var(--bg); color: var(--dark); line-height: 1.6; min-height: 100vh; padding-bottom: 85px; }
 
     /* ============ HEADER ============ */
-    header { 
-      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); 
-      color: white; 
-      padding: 16px 6%; 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      gap: 15px; 
-      position: sticky; 
-      top: 0; 
-      z-index: 100; 
-      flex-wrap: wrap; 
-      box-shadow: 0 4px 20px rgba(0,0,0,.15); 
-    }
-    
-    .logo { 
-      font-size: 26px; 
-      font-weight: 800; 
-      background: linear-gradient(135deg, #818cf8, #c7d2fe); 
-      -webkit-background-clip: text; 
-      -webkit-text-fill-color: transparent; 
-      background-clip: text; 
-      display: flex; 
-      align-items: center; 
-      gap: 8px; 
-      cursor: pointer; 
-    }
+    header { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); color: white; padding: 16px 6%; display: flex; justify-content: space-between; align-items: center; gap: 15px; position: sticky; top: 0; z-index: 100; flex-wrap: wrap; box-shadow: 0 4px 20px rgba(0,0,0,.15); }
+    .logo { font-size: 26px; font-weight: 800; background: linear-gradient(135deg, #818cf8, #c7d2fe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: flex; align-items: center; gap: 8px; cursor: pointer; }
     .logo::before { content: '◆'; font-size: 22px; -webkit-text-fill-color: #818cf8; }
-    
     .user-area { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 
     /* ============ BUTTONS ============ */
@@ -85,45 +61,10 @@
     #userName { color: #c7d2fe; font-size: 13px; font-weight: 500; }
 
     /* ============ BOTTOM NAVIGATION ============ */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: var(--white);
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      padding: 8px 4px 10px 4px;
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
-      z-index: 1000;
-      border-top: 1px solid var(--border);
-    }
-
-    .bottom-tab {
-      background: transparent;
-      border: none;
-      color: var(--gray);
-      font-size: 11px;
-      font-family: inherit;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      flex: 1;
-      padding: 6px 0;
-      transition: all .25s;
-      border-radius: 12px;
-    }
-
+    .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--white); display: flex; justify-content: space-around; align-items: center; padding: 8px 4px 10px 4px; box-shadow: 0 -4px 20px rgba(0,0,0,0.08); z-index: 1000; border-top: 1px solid var(--border); }
+    .bottom-tab { background: transparent; border: none; color: var(--gray); font-size: 11px; font-family: inherit; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; flex: 1; padding: 6px 0; transition: all .25s; border-radius: 12px; }
     .bottom-tab span:first-child { font-size: 22px; }
-    
-    .bottom-tab.active {
-      color: var(--primary);
-      font-weight: 700;
-      transform: translateY(-3px);
-    }
+    .bottom-tab.active { color: var(--primary); font-weight: 700; transform: translateY(-3px); }
 
     /* ============ PAGES ============ */
     .page { display: none; }
@@ -135,7 +76,6 @@
     .hero > * { position: relative; z-index: 1; }
     .hero h1 { font-size: 38px; margin-bottom: 16px; font-weight: 800; line-height: 1.3; text-shadow: 0 2px 20px rgba(0,0,0,.2); }
     .hero p { font-size: 17px; margin-bottom: 30px; color: #c7d2fe; font-weight: 400; }
-    
     .search { max-width: 650px; margin: auto; display: flex; background: rgba(255,255,255,.95); padding: 8px; border-radius: 16px; box-shadow: 0 20px 50px rgba(0,0,0,.3); backdrop-filter: blur(20px); }
     .search input { flex: 1; border: none; outline: none; padding: 13px 16px; font-size: 15px; font-family: inherit; background: transparent; color: var(--dark); }
     .search .btn { padding: 12px 24px; }
@@ -149,6 +89,7 @@
     .filter-chip:hover { border-color: var(--primary-light); color: var(--primary); transform: translateY(-2px); }
     .filter-chip.active { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border-color: transparent; box-shadow: 0 4px 12px rgba(99,102,241,.3); }
 
+    /* ============ CARDS & SKELETON ============ */
     .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 20px; }
     .card { background: white; border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); transition: all .3s; border: 1px solid var(--border); position: relative; overflow: hidden; }
     .card::before { content: ''; position: absolute; top: 0; right: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--primary), var(--primary-light)); transform: scaleX(0); transform-origin: right; transition: transform .35s; }
@@ -159,6 +100,21 @@
     .card .budget { color: var(--success); font-weight: 700; margin-top: 10px; font-size: 15px; display: inline-flex; align-items: center; gap: 4px; }
     .card .category { color: var(--primary); font-size: 13px; margin-top: 8px; display: inline-block; background: #eef2ff; padding: 4px 12px; border-radius: 20px; font-weight: 500; }
 
+    /* اسکلتون لودینگ */
+    @keyframes shimmer { 0% { background-position: -468px 0; } 100% { background-position: 468px 0; } }
+    .skeleton { background: #f6f7f8; background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%); background-repeat: no-repeat; background-size: 800px 100%; animation: shimmer 1.5s infinite linear forwards; border-radius: 6px; }
+    .skeleton-card { height: 180px; border-radius: var(--radius); }
+    .skeleton-text { height: 16px; margin-bottom: 10px; width: 100%; }
+    .skeleton-text.short { width: 60%; }
+    .skeleton-title { height: 24px; margin-bottom: 15px; width: 40%; }
+
+    /* حالت خالی (Empty State) */
+    .empty-state { text-align: center; padding: 50px 20px; background: white; border-radius: var(--radius); border: 1px dashed var(--border); grid-column: 1/-1; }
+    .empty-state .icon { font-size: 60px; margin-bottom: 15px; opacity: 0.8; }
+    .empty-state h3 { font-size: 18px; margin-bottom: 10px; color: var(--dark); }
+    .empty-state p { color: var(--gray); font-size: 14px; margin-bottom: 20px; }
+
+    /* بقیه استایل‌ها (مودال، پروفایل، چت و...) */
     .proposal-card { background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 14px; box-shadow: var(--shadow-sm); transition: all .25s; }
     .proposal-card:hover { box-shadow: var(--shadow); }
     .proposal-card .price { color: var(--success); font-weight: 700; font-size: 17px; margin: 8px 0; }
@@ -221,7 +177,12 @@
     .star-input.active { color: var(--warning); text-shadow: 0 0 12px rgba(245,158,11,.5); }
 
     .empty-msg { text-align: center; color: var(--gray-light); padding: 40px 20px; font-size: 14px; }
+    
+    /* فوتر */
     footer { background: linear-gradient(135deg, var(--dark), #1e1b4b); color: #cbd5e1; text-align: center; padding: 25px; margin-top: 30px; font-size: 14px; }
+    .footer-links { margin-top: 10px; display: flex; justify-content: center; gap: 15px; }
+    .footer-links a { color: #818cf8; text-decoration: none; cursor: pointer; transition: color 0.2s; }
+    .footer-links a:hover { color: #c7d2fe; text-decoration: underline; }
 
     .toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
     .toast { background: white; padding: 14px 22px; border-radius: var(--radius); box-shadow: 0 10px 40px rgba(0,0,0,.2); font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 10px; min-width: 240px; max-width: 90vw; animation: toastIn .35s ease-out; border-right: 4px solid var(--primary); pointer-events: auto; }
@@ -230,6 +191,11 @@
     .toast-icon { font-size: 20px; }
     @keyframes toastIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes toastOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-20px); } }
+
+    /* صفحات متنی (قوانین و حریم خصوصی) */
+    .text-page { background: white; border-radius: var(--radius); padding: 30px; box-shadow: var(--shadow); line-height: 2; color: var(--dark-2); font-size: 15px; }
+    .text-page h2 { margin-bottom: 20px; color: var(--primary); }
+    .text-page h3 { margin-top: 25px; margin-bottom: 10px; color: var(--dark); }
 
     @media(max-width:700px) {
       header { flex-direction: row; justify-content: space-between; padding: 12px 5%; }
@@ -245,6 +211,7 @@
       .modal-box { padding: 24px 20px; }
       .profile-box { padding: 25px 20px; }
       .avatar-lg { width: 100px; height: 100px; }
+      .text-page { padding: 20px 15px; font-size: 14px; }
     }
   </style>
 </head>
@@ -300,7 +267,7 @@
       <button class="filter-chip" onclick="filterCategory('دیگر')">دیگر</button>
     </div>
     <div class="cards" id="projectsContainer">
-      <p class="empty-msg">در حال بارگذاری...</p>
+      <!-- اسکلتون لودینگ جایگزین می‌شود -->
     </div>
   </div>
 </div>
@@ -310,7 +277,6 @@
   <div class="container">
     <h2 class="title">چت‌های من</h2>
     <div id="chatUsersList" class="chat-container" style="margin-bottom:15px;">
-      <p class="empty-msg">برای شروع چت، از بخش پیشنهادها روی «چت» بزنید.</p>
     </div>
     <div class="chat-container" id="activeChatBox" style="display:none;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:12px; border-bottom:1px solid var(--border);">
@@ -355,46 +321,26 @@
 <!-- صفحه درباره ما -->
 <div class="page" id="page-about">
   <div class="container">
-
     <div style="background: linear-gradient(135deg, #1e1b4b, #4338ca); color: white; border-radius: 20px; padding: 45px 30px; text-align: center; margin-bottom: 30px; box-shadow: 0 12px 40px rgba(99,102,241,.3);">
       <h1 style="font-size: 34px; margin-bottom: 15px; font-weight: 800;">درباره کارینو</h1>
       <p style="font-size: 17px; line-height: 1.9; color: #c7d2fe; max-width: 700px; margin: 0 auto;">
         کارینو یک پلتفرم فریلنسری ایرانی است که هدفش ایجاد محیطی امن، ساده و شفاف برای ارتباط بین کارفرمایان و متخصصان است.
       </p>
     </div>
-
     <div class="cards" style="margin-bottom: 30px;">
       <div class="card">
         <h3>🎯 ماموریت ما</h3>
-        <p>ما می‌خواهیم فریلنسرهای ایرانی بدون واسطه‌های اضافی، به پروژه‌های واقعی وصل بشن و کارفرماها به راحتی متخصص مناسب پیدا کنن. همه چیز ساده، امن و منصفانه.</p>
+        <p>ما می‌خواهیم فریلنسرهای ایرانی بدون واسطه‌های اضافی، به پروژه‌های واقعی وصل بشن و کارفرماها به راحتی متخصص مناسب پیدا کنن.</p>
       </div>
-
       <div class="card">
         <h3>💡 چرا کارینو؟</h3>
-        <p>
-          ✅ ثبت‌نام رایگان برای همه<br>
-          ✅ احراز هویت دقیق کاربران<br>
-          ✅ چت امن بین کارفرما و فریلنسر<br>
-          ✅ سیستم امتیازدهی و نظرات<br>
-          ✅ جلوگیری از معاملات خارج از پلتفرم
-        </p>
+        <p>✅ ثبت‌نام رایگان برای همه<br>✅ احراز هویت دقیق کاربران<br>✅ چت امن بین کارفرما و فریلنسر<br>✅ سیستم امتیازدهی و نظرات</p>
       </div>
-
       <div class="card">
         <h3>🛡️ امنیت کاربران</h3>
-        <p>در کارینو، تمام هماهنگی‌ها باید از طریق پلتفرم انجام بشه. این کار از کلاهبرداری جلوگیری می‌کنه و اگه اختلافی پیش بیاد، پلتفرم می‌تونه داوری کنه.</p>
+        <p>در کارینو، تمام هماهنگی‌ها باید از طریق پلتفرم انجام بشه. این کار از کلاهبرداری جلوگیری می‌کنه.</p>
       </div>
     </div>
-
-    <div class="card" style="max-width: 800px; margin: 0 auto 30px;">
-      <h3 style="text-align: center; margin-bottom: 20px;">📖 داستان کارینو</h3>
-      <p style="line-height: 2; text-align: justify;">
-        کارینو از یک ایده ساده شروع شد: چرا باید پیدا کردن یه فریلنسر خوب یا یه پروژه مناسب این‌قدر سخت باشه؟ ما دیدیم که خیلی از فریلنسرهای با استعداد توی ایران هستن که به دلیل نبود پلتفرم مناسب، نمی‌تونن استعدادشون رو نشون بدن. از اون طرف، کارفرماها هم وقت و انرژی زیادی برای پیدا کردن متخصص مناسب هدر می‌دن.
-        <br><br>
-        کارینو با هدف پر کردن این شکاف ساخته شد. ما باور داریم که با یک پلتفرم امن، ساده و منصفانه، می‌تونیم به رشد اکوسیستم فریلنسری ایران کمک کنیم و مسیر همکاری رو برای همه راحت‌تر کنیم.
-      </p>
-    </div>
-
     <div class="card" style="max-width: 800px; margin: 0 auto 30px;">
       <h3 style="text-align: center; margin-bottom: 20px;">📞 تماس با ما</h3>
       <div style="display: flex; flex-direction: column; gap: 12px;">
@@ -408,13 +354,47 @@
         </div>
       </div>
     </div>
-
     <div class="card" style="text-align: center; background: linear-gradient(135deg, #eef2ff, #e0e7ff); border: none;">
       <h3 style="margin-bottom: 15px;">🚀 آماده شروع هستید؟</h3>
       <p style="margin-bottom: 20px;">همین امروز به کارینو بپیوندید و اولین پروژه‌تون رو شروع کنید.</p>
       <button class="btn btn-green" onclick="showPage('home')" style="padding: 12px 30px;">شروع کنید</button>
     </div>
+  </div>
+</div>
 
+<!-- صفحه قوانین -->
+<div class="page" id="page-terms">
+  <div class="container">
+    <h2 class="title">قوانین و مقررات</h2>
+    <div class="text-page">
+      <p>به کارینو خوش آمدید. با استفاده از این پلتفرم، شما با قوانین زیر موافقت می‌کنید:</p>
+      <h3>۱. ارتباط در پلتفرم</h3>
+      <p>تمامی ارتباطات و هماهنگی‌ها باید از طریق چت کارینو انجام شود. ارسال اطلاعات تماس مانند شماره تلفن، آیدی تلگرام، واتساپ یا ایمیل در چت و پیشنهادها ممنوع است. تخلف از این قانون منجر به مسدودی حساب می‌شود.</p>
+      <h3>۲. پرداخت‌ها</h3>
+      <p>پرداخت‌ها باید از طریق درگاه‌های امن پلتفرم انجام شود. کارینو در قبال معاملات خارج از پلتفرم هیچ‌گونه مسئولیتی نمی‌پذیرد.</p>
+      <h3>۳. احراز هویت</h3>
+      <p>کاربران باید اطلاعات صحیح و واقعی وارد کنند. جعل هویت باعث مسدودی دائمی می‌شود.</p>
+      <h3>۴. رفتار حرفه‌ای</h3>
+      <p>رعایت احترام در گفتگوها الزامی است. هرگونه توهین یا رفتار غیرحرفه‌ای گزارش شده و با متخلف برخورد می‌شود.</p>
+    </div>
+  </div>
+</div>
+
+<!-- صفحه حریم خصوصی -->
+<div class="page" id="page-privacy">
+  <div class="container">
+    <h2 class="title">حریم خصوصی</h2>
+    <div class="text-page">
+      <p>امنیت و حریم خصوصی شما برای ما اهمیت بالایی دارد. این اصول را رعایت می‌کنیم:</p>
+      <h3>۱. جمع‌آوری اطلاعات</h3>
+      <p>ما فقط اطلاعاتی را جمع‌آوری می‌کنیم که برای ارائه خدمات ضروری است (نام، ایمیل، شماره موبایل، کد ملی برای احراز هویت و شماره کارت برای تسویه‌حساب).</p>
+      <h3>۲. استفاده از اطلاعات</h3>
+      <p>اطلاعات شما فقط در داخل پلتفرم استفاده می‌شود. ما اطلاعات شماره کارت یا کد ملی شما را با هیچ شخص ثالثی به اشتراک نمی‌گذاریم.</p>
+      <h3>۳. امنیت داده‌ها</h3>
+      <p>تمامی داده‌ها با پروتکل‌های امنیتی بالا در سرورهای Supabase ذخیره می‌شوند. ارتباط شما با سایت با گواهی SSL (HTTPS) رمزنگاری می‌شود.</p>
+      <h3>۴. حذف حساب</h3>
+      <p>شما می‌توانید در هر زمان درخواست حذف حساب و اطلاعات خود را بدهید. پس از تایید، تمامی اطلاعات شما از سیستم پاک خواهد شد.</p>
+    </div>
   </div>
 </div>
 
@@ -426,7 +406,7 @@
   </div>
 </div>
 
-<!-- LOGIN MODAL -->
+<!-- مودال‌ها (ورود، ثبت‌نام، ویرایش و...) -->
 <div class="modal" id="loginModal">
   <div class="modal-box">
     <button class="close" onclick="closeModals()">×</button>
@@ -439,7 +419,6 @@
   </div>
 </div>
 
-<!-- REGISTER MODAL -->
 <div class="modal" id="registerModal">
   <div class="modal-box">
     <button class="close" onclick="closeModals()">×</button>
@@ -468,7 +447,6 @@
   </div>
 </div>
 
-<!-- EDIT PROFILE MODAL -->
 <div class="modal" id="editProfileModal">
   <div class="modal-box">
     <button class="close" onclick="closeModals()">×</button>
@@ -487,7 +465,6 @@
   </div>
 </div>
 
-<!-- NEW PROJECT MODAL -->
 <div class="modal" id="projectModal">
   <div class="modal-box">
     <button class="close" onclick="closeModals()">×</button>
@@ -511,13 +488,12 @@
   </div>
 </div>
 
-<!-- PROPOSAL MODAL -->
 <div class="modal" id="proposalModal">
   <div class="modal-box">
     <button class="close" onclick="closeModals()">×</button>
     <h2>ارسال پیشنهاد</h2>
     <p id="proposalProjectTitle" style="color:var(--primary); margin-bottom:15px; font-weight:700;"></p>
-    <div class="warn-banner">⚠️ ارسال شماره تماس، ایمیل، آیدی تلگرام یا واتساپ در پیشنهاد <strong>ممنوع</strong> است. تخلف باعث مسدودی حساب می‌شود.</div>
+    <div class="warn-banner">⚠️ ارسال شماره تماس، ایمیل، آیدی تلگرام یا واتساپ در پیشنهاد <strong>ممنوع</strong> است.</div>
     <div class="form-group"><label>قیمت پیشنهادی (تومان)</label><input type="text" id="proposalPrice" placeholder="مثلاً ۴,۵۰۰,۰۰۰"></div>
     <div class="form-group"><label>توضیحات پیشنهاد</label><textarea id="proposalMessage" placeholder="چرا شما گزینه مناسبی هستید؟"></textarea></div>
     <button class="btn form-button" onclick="sendProposal()">ارسال پیشنهاد</button>
@@ -525,7 +501,6 @@
   </div>
 </div>
 
-<!-- PROPOSALS LIST MODAL -->
 <div class="modal" id="proposalsListModal">
   <div class="modal-box" style="max-width:620px;">
     <button class="close" onclick="closeModals()">×</button>
@@ -535,7 +510,6 @@
   </div>
 </div>
 
-<!-- NOTIFICATIONS MODAL -->
 <div class="modal" id="notificationsModal">
   <div class="modal-box" style="max-width:600px;">
     <button class="close" onclick="closeModals()">×</button>
@@ -544,7 +518,6 @@
   </div>
 </div>
 
-<!-- RATING MODAL -->
 <div class="modal" id="ratingModal">
   <div class="modal-box">
     <button class="close" onclick="closeModals()">×</button>
@@ -565,6 +538,10 @@
 
 <footer>
   <p>© 2026 کارینو - تمامی حقوق محفوظ است.</p>
+  <div class="footer-links">
+    <a onclick="showPage('terms')">قوانین و مقررات</a>
+    <a onclick="showPage('privacy')">حریم خصوصی</a>
+  </div>
 </footer>
 
 <!-- ============ نوار ناوبری پایین ============ -->
@@ -648,12 +625,12 @@ function detectContactInfo(text) {
 /* ============ SUPPORT BOT ============ */
 const BOT_RESPONSES = [
   { keys: ["سلام", "سلام علیکم", "درود", "hi", "hello"], reply: "سلام و خوش آمدید به کارینو! 👋\nچطور می‌تونم کمکتون کنم؟\n\nمی‌تونید بپرسید:\n• چطور پروژه ثبت کنم؟\n• چطور پیشنهاد بدم؟\n• پرداخت چطوریه؟\n• چطور پروفایلم رو کامل کنم؟" },
-  { keys: ["ثبت پروژه", "پروژه بذارم", "پروژه جدید", "کارفرما"], reply: "📌 برای ثبت پروژه:\n\n۱. اگر کارفرما هستید، وارد حساب بشید\n۲. روی دکمه سبز «+ ثبت پروژه» بزنید\n۳. عنوان، توضیحات، بودجه و دسته‌بندی رو وارد کنید\n۴. دکمه «ثبت پروژه» رو بزنید\n\nفریلنسرها می‌تونن بلافاصله پروژه‌تون رو ببینن و پیشنهاد بدن. ✅" },
-  { keys: ["پیشنهاد", "پیشنهاد بدم", "فریلنسر"], reply: "🎯 برای ارسال پیشنهاد:\n\n۱. اگر فریلنسر هستید، وارد حساب بشید\n۲. برو به تب «پروژه‌ها»\n۳. روی «ارسال پیشنهاد» پروژه مورد نظر بزنید\n۴. قیمت پیشنهادی و توضیحات رو وارد کنید\n۵. ارسال کنید\n\n⚠️ توجه: ارسال شماره تماس، ایمیل یا آیدی پیام‌رسان در پیشنهاد ممنوعه." },
-  { keys: ["پرداخت", "پول", "کمیسیون", "کارمزد", "تسویه"], reply: "💳 راه‌های پرداخت:\n\nدر حال حاضر درگاه پرداخت آنلاین در دسترس نیست، ولی به زودی فعال می‌شه.\n\nدر آینده:\n• کارفرما مبلغ رو واریز می‌کنه\n• ۱۰٪ کمیسیون پلتفرم کسر می‌شه\n• ۹۰٪ به فریلنسر پرداخت می‌شه\n\nجهت هماهنگی بیشتر با پشتیبانی در تماس باشید. 📞" },
-  { keys: ["پروفایل", "عکس پروفایل", "ویرایش"], reply: "👤 برای کامل کردن پروفایل:\n\n۱. برو به تب «پروفایل»\n۲. روی «📷 تغییر عکس پروفایل» بزن\n۳. برای ویرایش اطلاعات، دکمه سبز «✏️ ویرایش پروفایل» رو بزن\n\nمی‌تونی نام، سن، کد ملی، مهارت‌ها و بیو رو ویرایش کنی. ✅" },
+  { keys: ["ثبت پروژه", "پروژه بذارم", "پروژه جدید", "کارفرما"], reply: "📌 برای ثبت پروژه:\n\n۱. اگر کارفرما هستید، وارد حساب بشید\n۲. روی دکمه سبز «+ ثبت پروژه» بزنید\n۳. عنوان، توضیحات، بودجه و دسته‌بندی رو وارد کنید\n۴. دکمه «ثبت پروژه» رو بزنید\n\nفریلنسرها می‌تونن بلافاصله پروژه‌تون رو ببینن. ✅" },
+  { keys: ["پیشنهاد", "پیشنهاد بدم", "فریلنسر"], reply: "🎯 برای ارسال پیشنهاد:\n\n۱. اگر فریلنسر هستید، وارد حساب بشید\n۲. برو به تب «پروژه‌ها»\n۳. روی «ارسال پیشنهاد» پروژه مورد نظر بزنید\n۴. قیمت پیشنهادی و توضیحات رو وارد کنید\n۵. ارسال کنید" },
+  { keys: ["پرداخت", "پول", "کمیسیون", "کارمزد", "تسویه"], reply: "💳 راه‌های پرداخت:\n\nدر حال حاضر درگاه پرداخت آنلاین در دسترس نیست، ولی به زودی فعال می‌شه.\n\nدر آینده:\n• کارفرما مبلغ رو واریز می‌کنه\n• ۱۰٪ کمیسیون پلتفرم کسر می‌شه\n• ۹۰٪ به فریلنسر پرداخت می‌شه" },
+  { keys: ["پروفایل", "عکس پروفایل", "ویرایش"], reply: "👤 برای کامل کردن پروفایل:\n\n۱. برو به تب «پروفایل»\n۲. روی «📷 تغییر عکس پروفایل» بزن\n۳. برای ویرایش اطلاعات، دکمه سبز «✏️ ویرایش پروفایل» رو بزن" },
   { keys: ["چت", "پیام", "گفتگو"], reply: "💬 چت در کارینو:\n\nوقتی پیشنهاد شما توسط کارفرما قبول بشه، دکمه «شروع چت» ظاهر می‌شه و می‌تونید با هم گفتگو کنید.\n\n⚠️ ارسال اطلاعات تماس در چت ممنوعه." },
-  { keys: ["شماره", "تماس", "آیدی", "تلگرام", "واتساپ", "چرا ممنوع"], reply: "🚫 چرا ارسال اطلاعات تماس ممنوعه؟\n\n• حفظ امنیت کاربران\n• جلوگیری از کلاهبرداری\n• تضمین پرداخت توسط پلتفرم\n• امکان داوری در صورت بروز اختلاف\n\nاگه با کسی معامله خارج از پلتفرم انجام بدید، در صورت مشکل هیچ‌کس نمی‌تونه کمکتون کنه. ⚠️" },
+  { keys: ["شماره", "تماس", "آیدی", "تلگرام", "واتساپ", "چرا ممنوع"], reply: "🚫 چرا ارسال اطلاعات تماس ممنوعه؟\n\n• حفظ امنیت کاربران\n• جلوگیری از کلاهبرداری\n• تضمین پرداخت توسط پلتفرم\n• امکان داوری در صورت بروز اختلاف" },
   { keys: ["امتیاز", "نظر", "نظرات", "رتبه"], reply: "⭐ سیستم امتیازدهی:\n\nبعد از اتمام پروژه، هم کارفرما هم فریلنسر می‌تونن به هم امتیاز بدن (۱ تا ۵ ستاره) + نظر.\n\nامتیاز شما در پروفایل نمایش داده می‌شه. ✅" },
   { keys: ["شکایت", "گزارش", "تخلف", "کلاهبرداری"], reply: "🚨 گزارش تخلف:\n\nاگه با مورد مشکوکی روبرو شدید:\n\n• در چت یا پیشنهاد، تخلف رو گزارش بدید\n• یا با پشتیبانی تماس بگیرید\n\nتیم پشتیبانی در اسرع وقت بررسی می‌کنه. 🙏" },
   { keys: ["سن", "کد ملی", "۱۸", "18"], reply: "🔞 ثبت سن و کد ملی:\n\n• اگر زیر ۱۸ سال هستید → کد ملی لازم نیست\n• اگر بالای ۱۸ سال هستید → کد ملی الزامی است\n\nکد ملی شما به صورت امن ذخیره می‌شه. ✅" },
@@ -881,7 +858,7 @@ async function loadUser() {
       document.getElementById("tabMyProposals").style.display = "none";
     } else {
       document.getElementById("newProjectBtn").style.display = "none";
-      document.getElementById("tabMyProposals").style.display = "flex"; /* نمایش در منوی پایین */
+      document.getElementById("tabMyProposals").style.display = "flex";
     }
   } else {
     document.getElementById("userName").textContent = "سلام کاربر";
@@ -996,11 +973,25 @@ function filterCategory(cat) {
 
 async function loadProjects() {
   const container = document.getElementById("projectsContainer");
+  
+  // ۱. نمایش اسکلتون لودینگ
+  container.innerHTML = `
+    <div class="skeleton skeleton-card"></div>
+    <div class="skeleton skeleton-card"></div>
+    <div class="skeleton skeleton-card"></div>
+  `;
+
   let query = supabaseClient.from("projects").select("*").order("created_at", { ascending: false });
   if (currentSearch) query = query.or(`title.ilike.%${currentSearch}%,description.ilike.%${currentSearch}%,category.ilike.%${currentSearch}%`);
   if (currentCategory) query = query.eq("category", currentCategory);
+  
   const { data: projects, error } = await query;
-  if (error) { container.innerHTML = '<p class="empty-msg">خطا: ' + error.message + '</p>'; return; }
+  
+  if (error) { 
+    container.innerHTML = '<p class="empty-msg">خطا در دریافت اطلاعات.</p>'; 
+    return; 
+  }
+  
   let banner = "";
   if (currentSearch) {
     banner = `<div style="grid-column: 1/-1; text-align:center; margin-bottom:10px; padding:14px; background:linear-gradient(135deg,#eef2ff,#e0e7ff); border-radius:14px; font-weight:500;">
@@ -1008,10 +999,20 @@ async function loadProjects() {
       <button class="btn btn-sm" onclick="clearSearch()" style="margin-right:10px;">پاک کردن</button>
     </div>`;
   }
+
+  // ۲. حالت خالی (Empty State)
   if (!projects || projects.length === 0) {
-    container.innerHTML = banner + '<p class="empty-msg">پروژه‌ای پیدا نشد.</p>';
+    container.innerHTML = banner + `
+      <div class="empty-state">
+        <div class="icon">📭</div>
+        <h3>پروژه‌ای پیدا نشد!</h3>
+        <p>در حال حاضر هیچ پروژه‌ای با این مشخصات ثبت نشده است.</p>
+        ${currentProfile && currentProfile.role === 'employer' ? '<button class="btn btn-green" onclick="openProject()">+ ثبت اولین پروژه</button>' : ''}
+      </div>
+    `;
     return;
   }
+
   container.innerHTML = banner + projects.map(p => {
     let actionBtn = "";
     const isOwner = currentUser && currentUser.id === p.employer_id;
@@ -1096,7 +1097,16 @@ async function openProposalsList(projectId, projectTitle) {
   document.getElementById("proposalsListModal").style.display = "flex";
   const { data: proposals, error } = await supabaseClient.from("proposals").select("*").eq("project_id", projectId).order("created_at", { ascending: false });
   if (error) { container.innerHTML = '<p class="empty-msg">خطا: ' + error.message + '</p>'; return; }
-  if (!proposals || proposals.length === 0) { container.innerHTML = '<p class="empty-msg">هنوز پیشنهادی دریافت نکرده‌اید.</p>'; return; }
+  if (!proposals || proposals.length === 0) { 
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="icon">📭</div>
+        <h3>هنوز پیشنهادی نیامده!</h3>
+        <p>فریلنسرها در حال بررسی پروژه شما هستند.</p>
+      </div>
+    `; 
+    return; 
+  }
   const freelancerIds = proposals.map(p => p.freelancer_id);
   const { data: profiles } = await supabaseClient.from("profiles").select("id, full_name, skills, avatar_url, age").in("id", freelancerIds);
   const profileMap = {};
@@ -1150,10 +1160,28 @@ async function updateProposalStatus(proposalId, newStatus, projectId, projectTit
 async function loadMyProposals() {
   if (!currentUser) { showPage("home"); return; }
   const container = document.getElementById("myProposalsContainer");
-  container.innerHTML = '<p class="empty-msg">در حال بارگذاری...</p>';
+  
+  container.innerHTML = `
+    <div class="skeleton skeleton-title" style="margin: 0 auto 20px;"></div>
+    <div class="skeleton skeleton-card" style="margin-bottom: 15px;"></div>
+    <div class="skeleton skeleton-card" style="margin-bottom: 15px;"></div>
+  `;
+
   const { data: proposals, error } = await supabaseClient.from("proposals").select("*").eq("freelancer_id", currentUser.id).order("created_at", { ascending: false });
   if (error) { container.innerHTML = '<p class="empty-msg">خطا: ' + error.message + '</p>'; return; }
-  if (!proposals || proposals.length === 0) { container.innerHTML = '<p class="empty-msg">هنوز پیشنهادی ارسال نکرده‌اید.</p>'; return; }
+  
+  if (!proposals || proposals.length === 0) { 
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="icon">📨</div>
+        <h3>هنوز پیشنهادی نفرستادی!</h3>
+        <p>برو به تب پروژه‌ها و اولین پیشنهادت رو بفرست.</p>
+        <button class="btn" onclick="showPage('projects')">مشاهده پروژه‌ها</button>
+      </div>
+    `; 
+    return; 
+  }
+  
   const projectIds = proposals.map(p => p.project_id);
   const { data: projects } = await supabaseClient.from("projects").select("id, title").in("id", projectIds);
   const projectMap = {};
@@ -1162,6 +1190,7 @@ async function loadMyProposals() {
   const { data: employers } = await supabaseClient.from("profiles").select("id, full_name, avatar_url").in("id", employerIds);
   const employerMap = {};
   (employers || []).forEach(e => { employerMap[e.id] = e; });
+  
   container.innerHTML = proposals.map(p => {
     const proj = projectMap[p.project_id] || {};
     const emp = employerMap[p.employer_id] || {};
@@ -1193,14 +1222,17 @@ async function loadChatUsers() {
   if (!currentUser) { showPage("home"); return; }
   const container = document.getElementById("chatUsersList");
   container.innerHTML = '<p class="empty-msg">در حال بارگذاری...</p>';
+  
   let html = `<h3 style="margin-bottom:15px; font-size:17px; font-weight:700;">گفتگوها</h3>
     <div class="proposal-card" style="cursor:pointer; background:linear-gradient(135deg,#d1fae5,#a7f3d0); border-color:#6ee7b7;" onclick="openBotChat()">
       <div class="freelancer-name">🤖 ${BOT_NAME} <span style="font-size:11px; color:#059669; margin-right:6px;">(همیشه در دسترس)</span></div>
       <div style="color:#065f46; font-size:12px; margin-top:4px;">پاسخ خودکار به سوالات رایج</div>
     </div>`;
+    
   const { data: msgs } = await supabaseClient.from("messages").select("*")
     .or(`sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`)
     .order("created_at", { ascending: false });
+    
   if (msgs && msgs.length > 0) {
     const userIds = new Set();
     msgs.forEach(m => {
@@ -1220,6 +1252,14 @@ async function loadChatUsers() {
         </div>`;
       }).join("");
     }
+  } else {
+    html += `
+      <div class="empty-state" style="margin-top:20px; padding:30px;">
+        <div class="icon" style="font-size:40px;">💬</div>
+        <h3>هنوز چتی نداری!</h3>
+        <p>وقتی پیشنهادت قبول بشه، چت با کارفرما باز میشه.</p>
+      </div>
+    `;
   }
   container.innerHTML = html;
 }
