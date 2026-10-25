@@ -9,7 +9,6 @@
   <meta name="description" content="کارینو؛ پلتفرم ارتباط کارفرماها و فریلنسرها. پروژه‌های خود را ثبت کنید و به متخصصین بسپارید.">
   <meta property="og:title" content="کارینو | پلتفرم فریلنسری">
   <meta property="og:description" content="پروژه‌ات را به متخصص بسپار. ارتباط امن و سریع بین کارفرما و فریلنسر.">
-  <meta property="og:type" content="website">
   <meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/3233/3233035.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -100,21 +99,16 @@
     .card .budget { color: var(--success); font-weight: 700; margin-top: 10px; font-size: 15px; display: inline-flex; align-items: center; gap: 4px; }
     .card .category { color: var(--primary); font-size: 13px; margin-top: 8px; display: inline-block; background: #eef2ff; padding: 4px 12px; border-radius: 20px; font-weight: 500; }
 
-    /* اسکلتون لودینگ */
     @keyframes shimmer { 0% { background-position: -468px 0; } 100% { background-position: 468px 0; } }
     .skeleton { background: #f6f7f8; background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%); background-repeat: no-repeat; background-size: 800px 100%; animation: shimmer 1.5s infinite linear forwards; border-radius: 6px; }
     .skeleton-card { height: 180px; border-radius: var(--radius); }
-    .skeleton-text { height: 16px; margin-bottom: 10px; width: 100%; }
-    .skeleton-text.short { width: 60%; }
     .skeleton-title { height: 24px; margin-bottom: 15px; width: 40%; }
 
-    /* حالت خالی (Empty State) */
     .empty-state { text-align: center; padding: 50px 20px; background: white; border-radius: var(--radius); border: 1px dashed var(--border); grid-column: 1/-1; }
     .empty-state .icon { font-size: 60px; margin-bottom: 15px; opacity: 0.8; }
     .empty-state h3 { font-size: 18px; margin-bottom: 10px; color: var(--dark); }
     .empty-state p { color: var(--gray); font-size: 14px; margin-bottom: 20px; }
 
-    /* بقیه استایل‌ها (مودال، پروفایل، چت و...) */
     .proposal-card { background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 14px; box-shadow: var(--shadow-sm); transition: all .25s; }
     .proposal-card:hover { box-shadow: var(--shadow); }
     .proposal-card .price { color: var(--success); font-weight: 700; font-size: 17px; margin: 8px 0; }
@@ -178,7 +172,6 @@
 
     .empty-msg { text-align: center; color: var(--gray-light); padding: 40px 20px; font-size: 14px; }
     
-    /* فوتر */
     footer { background: linear-gradient(135deg, var(--dark), #1e1b4b); color: #cbd5e1; text-align: center; padding: 25px; margin-top: 30px; font-size: 14px; }
     .footer-links { margin-top: 10px; display: flex; justify-content: center; gap: 15px; }
     .footer-links a { color: #818cf8; text-decoration: none; cursor: pointer; transition: color 0.2s; }
@@ -192,7 +185,6 @@
     @keyframes toastIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes toastOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-20px); } }
 
-    /* صفحات متنی (قوانین و حریم خصوصی) */
     .text-page { background: white; border-radius: var(--radius); padding: 30px; box-shadow: var(--shadow); line-height: 2; color: var(--dark-2); font-size: 15px; }
     .text-page h2 { margin-bottom: 20px; color: var(--primary); }
     .text-page h3 { margin-top: 25px; margin-bottom: 10px; color: var(--dark); }
@@ -267,7 +259,6 @@
       <button class="filter-chip" onclick="filterCategory('دیگر')">دیگر</button>
     </div>
     <div class="cards" id="projectsContainer">
-      <!-- اسکلتون لودینگ جایگزین می‌شود -->
     </div>
   </div>
 </div>
@@ -281,7 +272,10 @@
     <div class="chat-container" id="activeChatBox" style="display:none;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:12px; border-bottom:1px solid var(--border);">
         <h3 id="chatWithName" style="font-size:16px; font-weight:700;"></h3>
-        <button class="btn btn-sm btn-red" onclick="closeChat()">بستن</button>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-sm btn-red" id="chatReportBtn" onclick="openReportModal()">🚨 گزارش</button>
+          <button class="btn btn-sm btn-red" onclick="closeChat()">بستن</button>
+        </div>
       </div>
       <div class="chat-list" id="chatMessages"></div>
       <div class="chat-input">
@@ -387,7 +381,7 @@
     <div class="text-page">
       <p>امنیت و حریم خصوصی شما برای ما اهمیت بالایی دارد. این اصول را رعایت می‌کنیم:</p>
       <h3>۱. جمع‌آوری اطلاعات</h3>
-      <p>ما فقط اطلاعاتی را جمع‌آوری می‌کنیم که برای ارائه خدمات ضروری است (نام، ایمیل، شماره موبایل، کد ملی برای احراز هویت و شماره کارت برای تسویه‌حساب).</p>
+      <p>ما فقط اطلاعاتی را جمع‌آوری می‌کنیم که برای ارائه خدمات ضروری است (نام، ایمیل، شماره موبایل، کد ملی برای احراز هویت).</p>
       <h3>۲. استفاده از اطلاعات</h3>
       <p>اطلاعات شما فقط در داخل پلتفرم استفاده می‌شود. ما اطلاعات شماره کارت یا کد ملی شما را با هیچ شخص ثالثی به اشتراک نمی‌گذاریم.</p>
       <h3>۳. امنیت داده‌ها</h3>
@@ -406,7 +400,7 @@
   </div>
 </div>
 
-<!-- مودال‌ها (ورود، ثبت‌نام، ویرایش و...) -->
+<!-- مودال‌ها -->
 <div class="modal" id="loginModal">
   <div class="modal-box">
     <button class="close" onclick="closeModals()">×</button>
@@ -536,6 +530,31 @@
   </div>
 </div>
 
+<!-- REPORT MODAL -->
+<div class="modal" id="reportModal">
+  <div class="modal-box">
+    <button class="close" onclick="closeModals()">×</button>
+    <h2 style="color: var(--danger);">🚨 گزارش تخلف</h2>
+    <p style="font-size: 14px; color: var(--gray); margin-bottom: 15px;">اگر این کاربر قوانین را نقض کرده است، لطفاً به ما اطلاع دهید. گزارش شما محرمانه خواهد ماند.</p>
+    <div class="form-group">
+      <label>دلیل گزارش</label>
+      <select id="reportReason">
+        <option value="ارسال اطلاعات تماس">ارسال اطلاعات تماس (شماره/آیدی)</option>
+        <option value="کلاهبرداری و فریب">کلاهبرداری و فریب</option>
+        <option value="توهین و رفتار نامناسب">توهین و رفتار نامناسب</option>
+        <option value="اسپم و تبلیغات">اسپم و تبلیغات</option>
+        <option value="سایر موارد">سایر موارد</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>توضیحات بیشتر (اختیاری)</label>
+      <textarea id="reportDetails" placeholder="توضیح دهید چه اتفاقی افتاده است..."></textarea>
+    </div>
+    <button class="btn btn-red form-button" onclick="submitReport()">ثبت گزارش</button>
+    <div class="message" id="reportMessage"></div>
+  </div>
+</div>
+
 <footer>
   <p>© 2026 کارینو - تمامی حقوق محفوظ است.</p>
   <div class="footer-links">
@@ -544,7 +563,7 @@
   </div>
 </footer>
 
-<!-- ============ نوار ناوبری پایین ============ -->
+<!-- نوار ناوبری پایین -->
 <nav class="bottom-nav">
   <button class="bottom-tab active" onclick="showPage('home')">
     <span>🏠</span>
@@ -581,11 +600,14 @@ let currentUser = null;
 let currentProfile = null;
 let currentProjectForProposal = null;
 let currentChatUserId = null;
+let currentChatUserName = "";
 let chatInterval = null;
 let currentSearch = "";
 let currentCategory = "";
 let notifInterval = null;
 let isBotChat = false;
+let currentReportTargetId = null;
+let currentReportContext = "";
 
 const BOT_ID = "00000000-0000-0000-0000-000000000001";
 const BOT_NAME = "پشتیبانی کارینو";
@@ -624,16 +646,17 @@ function detectContactInfo(text) {
 
 /* ============ SUPPORT BOT ============ */
 const BOT_RESPONSES = [
-  { keys: ["سلام", "سلام علیکم", "درود", "hi", "hello"], reply: "سلام و خوش آمدید به کارینو! 👋\nچطور می‌تونم کمکتون کنم؟\n\nمی‌تونید بپرسید:\n• چطور پروژه ثبت کنم؟\n• چطور پیشنهاد بدم؟\n• پرداخت چطوریه؟\n• چطور پروفایلم رو کامل کنم؟" },
+  { keys: ["سلام", "سلام علیکم", "درود", "hi", "hello"], reply: "سلام و خوش آمدید به کارینو! 👋\nچطور می‌تونم کمکتون کنم؟\n\nمی‌تونید بپرسید:\n• چطور پروژه ثبت کنم؟\n• چطور پیشنهاد بدم؟\n• پرداخت چطوریه؟\n• قوانین سایت چیه؟" },
+  { keys: ["قوانین", "قانون", "مقررات", "چیجوریه", "شرایط"], reply: "📜 قوانین مهم کارینو:\n\n۱. ارسال شماره تماس، ایمیل یا آیدی پیام‌رسان ممنوع است.\n۲. تمام هماهنگی‌ها باید از طریق پلتفرم انجام شود.\n۳. معامله خارج از پلتفرم ریسک کلاهبرداری دارد.\n۴. رعایت احترام الزامی است." },
   { keys: ["ثبت پروژه", "پروژه بذارم", "پروژه جدید", "کارفرما"], reply: "📌 برای ثبت پروژه:\n\n۱. اگر کارفرما هستید، وارد حساب بشید\n۲. روی دکمه سبز «+ ثبت پروژه» بزنید\n۳. عنوان، توضیحات، بودجه و دسته‌بندی رو وارد کنید\n۴. دکمه «ثبت پروژه» رو بزنید\n\nفریلنسرها می‌تونن بلافاصله پروژه‌تون رو ببینن. ✅" },
   { keys: ["پیشنهاد", "پیشنهاد بدم", "فریلنسر"], reply: "🎯 برای ارسال پیشنهاد:\n\n۱. اگر فریلنسر هستید، وارد حساب بشید\n۲. برو به تب «پروژه‌ها»\n۳. روی «ارسال پیشنهاد» پروژه مورد نظر بزنید\n۴. قیمت پیشنهادی و توضیحات رو وارد کنید\n۵. ارسال کنید" },
-  { keys: ["پرداخت", "پول", "کمیسیون", "کارمزد", "تسویه"], reply: "💳 راه‌های پرداخت:\n\nدر حال حاضر درگاه پرداخت آنلاین در دسترس نیست، ولی به زودی فعال می‌شه.\n\nدر آینده:\n• کارفرما مبلغ رو واریز می‌کنه\n• ۱۰٪ کمیسیون پلتفرم کسر می‌شه\n• ۹۰٪ به فریلنسر پرداخت می‌شه" },
+  { keys: ["پرداخت", "پول", "کمیسیون", "کارمزد", "تسویه"], reply: "💳 راه‌های پرداخت:\n\nدر حال حاضر درگاه پرداخت آنلاین در دسترس نیست، ولی به زودی فعال می‌شه." },
   { keys: ["پروفایل", "عکس پروفایل", "ویرایش"], reply: "👤 برای کامل کردن پروفایل:\n\n۱. برو به تب «پروفایل»\n۲. روی «📷 تغییر عکس پروفایل» بزن\n۳. برای ویرایش اطلاعات، دکمه سبز «✏️ ویرایش پروفایل» رو بزن" },
-  { keys: ["چت", "پیام", "گفتگو"], reply: "💬 چت در کارینو:\n\nوقتی پیشنهاد شما توسط کارفرما قبول بشه، دکمه «شروع چت» ظاهر می‌شه و می‌تونید با هم گفتگو کنید.\n\n⚠️ ارسال اطلاعات تماس در چت ممنوعه." },
+  { keys: ["چت", "پیام", "گفتگو"], reply: "💬 چت در کارینو:\n\nوقتی پیشنهاد شما توسط کارفرما قبول بشه، دکمه «شروع چت» ظاهر می‌شه و می‌تونید با هم گفتگو کنید." },
   { keys: ["شماره", "تماس", "آیدی", "تلگرام", "واتساپ", "چرا ممنوع"], reply: "🚫 چرا ارسال اطلاعات تماس ممنوعه؟\n\n• حفظ امنیت کاربران\n• جلوگیری از کلاهبرداری\n• تضمین پرداخت توسط پلتفرم\n• امکان داوری در صورت بروز اختلاف" },
-  { keys: ["امتیاز", "نظر", "نظرات", "رتبه"], reply: "⭐ سیستم امتیازدهی:\n\nبعد از اتمام پروژه، هم کارفرما هم فریلنسر می‌تونن به هم امتیاز بدن (۱ تا ۵ ستاره) + نظر.\n\nامتیاز شما در پروفایل نمایش داده می‌شه. ✅" },
-  { keys: ["شکایت", "گزارش", "تخلف", "کلاهبرداری"], reply: "🚨 گزارش تخلف:\n\nاگه با مورد مشکوکی روبرو شدید:\n\n• در چت یا پیشنهاد، تخلف رو گزارش بدید\n• یا با پشتیبانی تماس بگیرید\n\nتیم پشتیبانی در اسرع وقت بررسی می‌کنه. 🙏" },
-  { keys: ["سن", "کد ملی", "۱۸", "18"], reply: "🔞 ثبت سن و کد ملی:\n\n• اگر زیر ۱۸ سال هستید → کد ملی لازم نیست\n• اگر بالای ۱۸ سال هستید → کد ملی الزامی است\n\nکد ملی شما به صورت امن ذخیره می‌شه. ✅" },
+  { keys: ["امتیاز", "نظر", "نظرات", "رتبه"], reply: "⭐ سیستم امتیازدهی:\n\nبعد از اتمام پروژه، هم کارفرما هم فریلنسر می‌تونن به هم امتیاز بدن (۱ تا ۵ ستاره) + نظر." },
+  { keys: ["شکایت", "گزارش", "تخلف", "کلاهبرداری"], reply: "🚨 گزارش تخلف:\n\nاگه با مورد مشکوکی روبرو شدید، در چت یا صفحه پیشنهادها روی دکمه «🚨 گزارش» بزنید تا تیم پشتیبانی بررسی کنه." },
+  { keys: ["سن", "کد ملی", "۱۸", "18"], reply: "🔞 ثبت سن و کد ملی:\n\n• اگر زیر ۱۸ سال هستید → کد ملی لازم نیست\n• اگر بالای ۱۸ سال هستید → کد ملی الزامی است" },
   { keys: ["ممنون", "مرسی", "تشکر", "سپاس", "thanks"], reply: "خواهش می‌کنم! 😊\nاگه سوال دیگه‌ای داشتید، در خدمتم." },
   { keys: ["خداحافظ", "بای", "خدانگهدار"], reply: "خدانگهدار! 👋\nموفق باشید و روز خوبی داشته باشید." }
 ];
@@ -642,14 +665,57 @@ function getBotResponse(text) {
   const t = text.toLowerCase().trim();
   const contactType = detectContactInfo(text);
   if (contactType) {
-    return { text: `⚠️ ارسال ${contactType} در چت ممنوعه!\n\nلطفاً اطلاعات تماس خودتون رو نفرستید. تمام هماهنگی‌ها باید از طریق کارینو انجام بشه.\n\nتکرار این تخلف منجر به مسدودی حساب شما می‌شه.`, warning: true };
+    return { text: `⚠️ ارسال ${contactType} در چت ممنوعه!\n\nلطفاً اطلاعات تماس خودتون رو نفرستید.\nتکرار این تخلف منجر به مسدودی حساب شما می‌شه.`, warning: true };
   }
   for (const r of BOT_RESPONSES) {
     for (const k of r.keys) {
       if (t.includes(k)) return { text: r.reply, warning: false };
     }
   }
-  return { text: "متوجه سوال شما نشدم. 🤔\n\nمی‌تونید از این موضوعات بپرسید:\n• ثبت پروژه\n• ارسال پیشنهاد\n• پرداخت\n• پروفایل\n• چت\n• قوانین\n\nیا اگه سوال خاصی دارید، به پشتیبانی انسانی اطلاع بدید.", warning: false };
+  return { text: "متوجه سوال شما نشدم. 🤔\n\nمی‌تونید از این موضوعات بپرسید:\n• ثبت پروژه\n• ارسال پیشنهاد\n• پرداخت\n• پروفایل\n• چت\n• قوانین", warning: false };
+}
+
+/* ============ REPORT ============ */
+function openReportModal(userId, userName, context) {
+  if (!currentUser) return;
+  
+  currentReportTargetId = userId || currentChatUserId;
+  currentReportContext = context || "chat";
+  
+  if (!currentReportTargetId || currentReportTargetId === BOT_ID) {
+    showToast("امکان گزارش ربات وجود ندارد.", "error");
+    return;
+  }
+
+  document.getElementById("reportReason").value = "ارسال اطلاعات تماس";
+  document.getElementById("reportDetails").value = "";
+  document.getElementById("reportMessage").style.display = "none";
+  closeModals();
+  document.getElementById("reportModal").style.display = "flex";
+}
+
+async function submitReport() {
+  if (!currentUser || !currentReportTargetId) return;
+  const reason = document.getElementById("reportReason").value;
+  const details = document.getElementById("reportDetails").value.trim();
+
+  showMessage("reportMessage", "در حال ثبت گزارش...", true);
+
+  const { error } = await supabaseClient.from("reports").insert({
+    reporter_id: currentUser.id,
+    reported_id: currentReportTargetId,
+    context: currentReportContext,
+    reason: reason,
+    details: details
+  });
+
+  if (error) {
+    showMessage("reportMessage", "خطا در ثبت گزارش: " + error.message);
+    return;
+  }
+
+  showMessage("reportMessage", "گزارش شما با موفقیت ثبت شد. تیم پشتیبانی به زودی بررسی می‌کند. 🙏", true);
+  setTimeout(() => { closeModals(); }, 2000);
 }
 
 /* ============ PAGE / TABS ============ */
@@ -963,7 +1029,7 @@ async function createProject() {
   }, 1000);
 }
 
-/* ============ LOAD PROJECTS + SEARCH + FILTER ============ */
+/* ============ LOAD PROJECTS ============ */
 function filterCategory(cat) {
   currentCategory = cat;
   document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
@@ -974,7 +1040,6 @@ function filterCategory(cat) {
 async function loadProjects() {
   const container = document.getElementById("projectsContainer");
   
-  // ۱. نمایش اسکلتون لودینگ
   container.innerHTML = `
     <div class="skeleton skeleton-card"></div>
     <div class="skeleton skeleton-card"></div>
@@ -987,10 +1052,7 @@ async function loadProjects() {
   
   const { data: projects, error } = await query;
   
-  if (error) { 
-    container.innerHTML = '<p class="empty-msg">خطا در دریافت اطلاعات.</p>'; 
-    return; 
-  }
+  if (error) { container.innerHTML = '<p class="empty-msg">خطا در دریافت اطلاعات.</p>'; return; }
   
   let banner = "";
   if (currentSearch) {
@@ -1000,7 +1062,6 @@ async function loadProjects() {
     </div>`;
   }
 
-  // ۲. حالت خالی (Empty State)
   if (!projects || projects.length === 0) {
     container.innerHTML = banner + `
       <div class="empty-state">
@@ -1122,6 +1183,7 @@ async function openProposalsList(projectId, projectTitle) {
       actionBtns = `<div class="actions">
           <button class="btn btn-green btn-sm" onclick="updateProposalStatus('${p.id}', 'accepted', '${projectId}', '${projectTitle.replace(/'/g, "\\'")}')">قبول</button>
           <button class="btn btn-red btn-sm" onclick="updateProposalStatus('${p.id}', 'rejected', '${projectId}', '${projectTitle.replace(/'/g, "\\'")}')">رد</button>
+          <button class="btn btn-red btn-sm" onclick="openReportModal('${p.freelancer_id}', '${escapeHtml(fr.full_name || "کاربر").replace(/'/g,"&#39;")}', 'proposal')">🚨 گزارش</button>
         </div>`;
     } else if (p.status === "accepted") {
       actionBtns = `<div class="actions">
@@ -1269,6 +1331,7 @@ function openBotChat() {
   currentChatUserId = BOT_ID;
   document.getElementById("activeChatBox").style.display = "block";
   document.getElementById("chatWithName").textContent = "🤖 " + BOT_NAME;
+  document.getElementById("chatReportBtn").style.display = "none"; 
   showPage("chat");
   renderBotChat();
   if (chatInterval) clearInterval(chatInterval);
@@ -1291,8 +1354,10 @@ function renderBotChat() {
 function openChatWith(userId, userName) {
   isBotChat = false;
   currentChatUserId = userId;
+  currentChatUserName = userName;
   document.getElementById("activeChatBox").style.display = "block";
   document.getElementById("chatWithName").textContent = "چت با " + userName;
+  document.getElementById("chatReportBtn").style.display = "inline-block"; 
   showPage("chat");
   loadMessages();
   if (chatInterval) clearInterval(chatInterval);
