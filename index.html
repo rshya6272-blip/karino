@@ -297,12 +297,19 @@
         <div id="avatarMessage" class="message" style="margin-top:10px;"></div>
       </div>
       <div class="profile-item"><strong>نام:</strong> <span id="profileName"></span></div>
+      <div class="profile-item"><strong>نام نمایشی در چت:</strong> <span id="profileDisplayName"></span></div>
       <div class="profile-item"><strong>ایمیل:</strong> <span id="profileEmail"></span></div>
       <div class="profile-item"><strong>نوع حساب:</strong> <span id="profileRole"></span></div>
       <div class="profile-item"><strong>سن:</strong> <span id="profileAge"></span></div>
       <div class="profile-item" id="profileNationalIdRow"><strong>کد ملی:</strong> <span id="profileNationalId"></span></div>
+      <div class="profile-item"><strong>شماره تلفن:</strong> <span id="profilePhone"></span></div>
+      <div class="profile-item"><strong>شماره کارت:</strong> <span id="profileCard"></span></div>
+      <div class="profile-item"><strong>تحصیلات:</strong> <span id="profileEducation"></span></div>
+      <div class="profile-item"><strong>عنوان شغلی:</strong> <span id="profileJobTitle"></span></div>
       <div class="profile-item"><strong>مهارت‌ها:</strong> <span id="profileSkills"></span></div>
       <div class="profile-item"><strong>درباره من:</strong> <span id="profileBio"></span></div>
+      <div class="profile-item"><strong>نمونه کار:</strong> <a id="profilePortfolio" href="#" target="_blank" style="color:var(--primary);">مشاهده</a></div>
+      <div class="profile-item"><strong>ویدیو معرف:</strong> <a id="profileVideo" href="#" target="_blank" style="color:var(--primary);">مشاهده</a></div>
       <div class="profile-item"><strong>امتیاز:</strong> <span id="profileRating"></span></div>
 
       <button class="btn btn-green" onclick="openEditProfile()" style="margin-top:25px; width:100%;">✏️ ویرایش پروفایل</button>
@@ -445,14 +452,21 @@
     <button class="close" onclick="closeModals()">×</button>
     <h2>ویرایش پروفایل</h2>
     <div class="form-group"><label>نام و نام خانوادگی</label><input type="text" id="editName"></div>
+    <div class="form-group"><label>نام نمایشی در چت (اختیاری)</label><input type="text" id="editDisplayName"></div>
     <div class="form-group"><label>سن</label><input type="number" id="editAge" min="5" max="100" oninput="toggleEditNationalId()"></div>
     <div class="form-group" id="editNationalIdGroup" style="display:none;">
       <div class="info-box">🔒 چون سن شما بالای ۱۸ سال است، کد ملی الزامی است.</div>
       <label>کد ملی (۱۰ رقم)</label>
       <input type="text" id="editNationalId" placeholder="۱۰ رقم" maxlength="10">
     </div>
+    <div class="form-group"><label>شماره تلفن</label><input type="text" id="editPhone" placeholder="مثلاً 09123456789"></div>
+    <div class="form-group"><label>شماره کارت (۱۶ رقم)</label><input type="text" id="editCardNumber" placeholder="شماره کارت ۱۶ رقمی" maxlength="16"></div>
+    <div class="form-group"><label>تحصیلات</label><input type="text" id="editEducation" placeholder="مثلاً کارشناسی کامپیوتر"></div>
+    <div class="form-group"><label>عنوان شغلی</label><input type="text" id="editJobTitle" placeholder="مثلاً طراح گرافیک"></div>
     <div class="form-group"><label>مهارت‌ها</label><input type="text" id="editSkills"></div>
     <div class="form-group"><label>درباره من</label><textarea id="editBio"></textarea></div>
+    <div class="form-group"><label>لینک نمونه کار (پورتفولیو)</label><input type="text" id="editPortfolio" placeholder="لینک سایت، گیت‌هاب یا..."></div>
+    <div class="form-group"><label>لینک ویدیو معرف (اختیاری)</label><input type="text" id="editVideo" placeholder="لینک آپارات یا یوتیوب"></div>
     <button class="btn form-button" onclick="saveProfile()">ذخیره تغییرات</button>
     <div class="message" id="editProfileMessage"></div>
   </div>
@@ -911,7 +925,7 @@ async function loadUser() {
   const { data: profile } = await supabaseClient.from("profiles").select("*").eq("id", user.id).maybeSingle();
   currentProfile = profile;
   if (profile) {
-    document.getElementById("userName").textContent = "سلام " + profile.full_name;
+    document.getElementById("userName").textContent = "سلام " + (profile.display_name || profile.full_name);
     const av = document.getElementById("userAvatar");
     if (profile.avatar_url) { av.src = profile.avatar_url; av.style.display = "inline-block"; }
     else { av.style.display = "none"; }
@@ -959,10 +973,18 @@ async function uploadAvatar(event) {
 function openEditProfile() {
   if (!currentUser || !currentProfile) { openLogin(); return; }
   document.getElementById("editName").value = currentProfile.full_name || "";
+  document.getElementById("editDisplayName").value = currentProfile.display_name || "";
   document.getElementById("editAge").value = currentProfile.age || "";
   document.getElementById("editNationalId").value = currentProfile.national_id || "";
+  document.getElementById("editPhone").value = currentProfile.phone_number || "";
+  document.getElementById("editCardNumber").value = currentProfile.card_number || "";
+  document.getElementById("editEducation").value = currentProfile.education || "";
+  document.getElementById("editJobTitle").value = currentProfile.job_title || "";
   document.getElementById("editSkills").value = currentProfile.skills || "";
   document.getElementById("editBio").value = currentProfile.bio || "";
+  document.getElementById("editPortfolio").value = currentProfile.portfolio || "";
+  document.getElementById("editVideo").value = currentProfile.intro_video || "";
+  
   document.getElementById("editProfileMessage").style.display = "none";
   toggleEditNationalId();
   closeModals();
@@ -972,10 +994,18 @@ function openEditProfile() {
 async function saveProfile() {
   if (!currentUser) return;
   const name = document.getElementById("editName").value.trim();
+  const displayName = document.getElementById("editDisplayName").value.trim();
   const ageStr = document.getElementById("editAge").value.trim();
   const nationalId = document.getElementById("editNationalId").value.trim();
+  const phone = document.getElementById("editPhone").value.trim();
+  const cardNumber = document.getElementById("editCardNumber").value.trim();
+  const education = document.getElementById("editEducation").value.trim();
+  const jobTitle = document.getElementById("editJobTitle").value.trim();
   const skills = document.getElementById("editSkills").value.trim();
   const bio = document.getElementById("editBio").value.trim();
+  const portfolio = document.getElementById("editPortfolio").value.trim();
+  const video = document.getElementById("editVideo").value.trim();
+
   if (!name) { showMessage("editProfileMessage", "نام الزامی است."); return; }
   const age = parseInt(ageStr);
   if (isNaN(age) || age < 5 || age > 100) { showMessage("editProfileMessage", "سن معتبر وارد کنید."); return; }
@@ -983,18 +1013,40 @@ async function saveProfile() {
     if (!nationalId) { showMessage("editProfileMessage", "کد ملی الزامی است."); return; }
     if (!validateIranianNationalId(nationalId)) { showMessage("editProfileMessage", "کد ملی معتبر نیست."); return; }
   }
+  
   showMessage("editProfileMessage", "در حال ذخیره...", true);
   const { error } = await supabaseClient.from("profiles").update({
-    full_name: name, age: age, national_id: age >= 18 ? nationalId : null, skills: skills, bio: bio
+    full_name: name, 
+    display_name: displayName || null,
+    age: age, 
+    national_id: age >= 18 ? nationalId : null, 
+    phone_number: phone || null,
+    card_number: cardNumber || null,
+    education: education || null,
+    job_title: jobTitle || null,
+    skills: skills, 
+    bio: bio,
+    portfolio: portfolio || null,
+    intro_video: video || null
   }).eq("id", currentUser.id);
+  
   if (error) { showMessage("editProfileMessage", "خطا: " + error.message); return; }
   showToast("پروفایل ویرایش شد! 🎉", "success");
+  
   currentProfile.full_name = name;
+  currentProfile.display_name = displayName;
   currentProfile.age = age;
   currentProfile.national_id = age >= 18 ? nationalId : null;
+  currentProfile.phone_number = phone;
+  currentProfile.card_number = cardNumber;
+  currentProfile.education = education;
+  currentProfile.job_title = jobTitle;
   currentProfile.skills = skills;
   currentProfile.bio = bio;
-  document.getElementById("userName").textContent = "سلام " + name;
+  currentProfile.portfolio = portfolio;
+  currentProfile.intro_video = video;
+  
+  document.getElementById("userName").textContent = "سلام " + (displayName || name);
   setTimeout(() => { closeModals(); showProfile(); }, 1000);
 }
 
@@ -1165,11 +1217,12 @@ async function openProposalsList(projectId, projectTitle) {
     return; 
   }
   const freelancerIds = proposals.map(p => p.freelancer_id);
-  const { data: profiles } = await supabaseClient.from("profiles").select("id, full_name, skills, avatar_url, age").in("id", freelancerIds);
+  const { data: profiles } = await supabaseClient.from("profiles").select("id, full_name, display_name, skills, avatar_url, age, job_title").in("id", freelancerIds);
   const profileMap = {};
   (profiles || []).forEach(pr => { profileMap[pr.id] = pr; });
   container.innerHTML = proposals.map(p => {
     const fr = profileMap[p.freelancer_id] || {};
+    const frName = fr.display_name || fr.full_name || "کاربر";
     let statusBadge = "";
     if (p.status === "accepted") statusBadge = '<span class="badge badge-accepted">قبول شده</span>';
     else if (p.status === "rejected") statusBadge = '<span class="badge badge-rejected">رد شده</span>';
@@ -1179,19 +1232,19 @@ async function openProposalsList(projectId, projectTitle) {
       actionBtns = `<div class="actions">
           <button class="btn btn-green btn-sm" onclick="updateProposalStatus('${p.id}', 'accepted', '${projectId}', '${projectTitle.replace(/'/g, "\\'")}')">قبول</button>
           <button class="btn btn-red btn-sm" onclick="updateProposalStatus('${p.id}', 'rejected', '${projectId}', '${projectTitle.replace(/'/g, "\\'")}')">رد</button>
-          <button class="btn btn-red btn-sm" onclick="openReportModal('${p.freelancer_id}', '${escapeHtml(fr.full_name || "کاربر").replace(/'/g,"&#39;")}', 'proposal')">🚨 گزارش</button>
+          <button class="btn btn-red btn-sm" onclick="openReportModal('${p.freelancer_id}', '${escapeHtml(frName).replace(/'/g,"&#39;")}', 'proposal')">🚨 گزارش</button>
         </div>`;
     } else if (p.status === "accepted") {
       actionBtns = `<div class="actions">
-        <button class="btn btn-sm" onclick="openChatWith('${p.freelancer_id}', '${escapeHtml(fr.full_name || "کاربر").replace(/'/g,"&#39;")}')">شروع چت</button>
-        <button class="btn btn-green btn-sm" onclick="openRating('${p.freelancer_id}', '${escapeHtml(fr.full_name || "کاربر").replace(/'/g,"&#39;")}', '${projectId}')">⭐ امتیازدهی</button>
+        <button class="btn btn-sm" onclick="openChatWith('${p.freelancer_id}', '${escapeHtml(frName).replace(/'/g,"&#39;")}')">شروع چت</button>
+        <button class="btn btn-green btn-sm" onclick="openRating('${p.freelancer_id}', '${escapeHtml(frName).replace(/'/g,"&#39;")}', '${projectId}')">⭐ امتیازدهی</button>
       </div>`;
     }
     const av = fr.avatar_url ? `<img src="${fr.avatar_url}" class="avatar-chat">` : '';
     return `
       <div class="proposal-card">
-        <div class="freelancer-name">${av} ${escapeHtml(fr.full_name || "کاربر")}</div>
-        <div style="color:var(--gray); font-size:13px; margin-top:4px;">سن: ${fr.age || "-"} | مهارت‌ها: ${escapeHtml(fr.skills || "-")}</div>
+        <div class="freelancer-name">${av} ${escapeHtml(frName)}</div>
+        <div style="color:var(--gray); font-size:13px; margin-top:4px;">عنوان شغلی: ${escapeHtml(fr.job_title || "-")} | مهارت‌ها: ${escapeHtml(fr.skills || "-")}</div>
         <div class="price">💰 ${escapeHtml(p.price || "-")} تومان</div>
         <div class="msg-text">${escapeHtml(p.message || "")}</div>
         ${statusBadge}${actionBtns}
@@ -1245,13 +1298,14 @@ async function loadMyProposals() {
   const projectMap = {};
   (projects || []).forEach(pr => { projectMap[pr.id] = pr; });
   const employerIds = proposals.map(p => p.employer_id);
-  const { data: employers } = await supabaseClient.from("profiles").select("id, full_name, avatar_url").in("id", employerIds);
+  const { data: employers } = await supabaseClient.from("profiles").select("id, full_name, display_name, avatar_url").in("id", employerIds);
   const employerMap = {};
   (employers || []).forEach(e => { employerMap[e.id] = e; });
   
   container.innerHTML = proposals.map(p => {
     const proj = projectMap[p.project_id] || {};
     const emp = employerMap[p.employer_id] || {};
+    const empName = emp.display_name || emp.full_name || "کارفرما";
     let statusBadge = "";
     if (p.status === "accepted") statusBadge = '<span class="badge badge-accepted">قبول شده ✅</span>';
     else if (p.status === "rejected") statusBadge = '<span class="badge badge-rejected">رد شده</span>';
@@ -1259,15 +1313,15 @@ async function loadMyProposals() {
     let chatBtn = "";
     if (p.status === "accepted") {
       chatBtn = `<div class="actions">
-        <button class="btn btn-sm" onclick="openChatWith('${p.employer_id}', '${escapeHtml(emp.full_name || "کارفرما").replace(/'/g,"&#39;")}')">شروع چت</button>
-        <button class="btn btn-green btn-sm" onclick="openRating('${p.employer_id}', '${escapeHtml(emp.full_name || "کارفرما").replace(/'/g,"&#39;")}', '${p.project_id}')">⭐ امتیازدهی</button>
+        <button class="btn btn-sm" onclick="openChatWith('${p.employer_id}', '${escapeHtml(empName).replace(/'/g,"&#39;")}')">شروع چت</button>
+        <button class="btn btn-green btn-sm" onclick="openRating('${p.employer_id}', '${escapeHtml(empName).replace(/'/g,"&#39;")}', '${p.project_id}')">⭐ امتیازدهی</button>
       </div>`;
     }
     const av = emp.avatar_url ? `<img src="${emp.avatar_url}" class="avatar-chat">` : '';
     return `
       <div class="proposal-card">
         <div class="freelancer-name">${escapeHtml(proj.title || "پروژه")}</div>
-        <div style="color:var(--gray); font-size:13px; margin-top:4px;">کارفرما: ${av} ${escapeHtml(emp.full_name || "-")}</div>
+        <div style="color:var(--gray); font-size:13px; margin-top:4px;">کارفرما: ${av} ${escapeHtml(empName)}</div>
         <div class="price">💰 ${escapeHtml(p.price || "-")} تومان</div>
         <div class="msg-text">${escapeHtml(p.message || "")}</div>
         ${statusBadge}${chatBtn}
@@ -1299,14 +1353,15 @@ async function loadChatUsers() {
     });
     const idsArr = Array.from(userIds).filter(id => id !== BOT_ID);
     if (idsArr.length > 0) {
-      const { data: profiles } = await supabaseClient.from("profiles").select("id, full_name, avatar_url").in("id", idsArr);
+      const { data: profiles } = await supabaseClient.from("profiles").select("id, full_name, display_name, avatar_url").in("id", idsArr);
       const map = {};
       (profiles || []).forEach(p => { map[p.id] = p; });
       html += idsArr.map(id => {
         const p = map[id] || {};
+        const pName = p.display_name || p.full_name || "کاربر";
         const av = p.avatar_url ? `<img src="${p.avatar_url}" class="avatar-chat">` : '👤';
-        return `<div class="proposal-card" style="cursor:pointer;" onclick="openChatWith('${id}', '${escapeHtml(p.full_name || "کاربر").replace(/'/g,"&#39;")}')">
-          <div class="freelancer-name">${av} ${escapeHtml(p.full_name || "کاربر")}</div>
+        return `<div class="proposal-card" style="cursor:pointer;" onclick="openChatWith('${id}', '${escapeHtml(pName).replace(/'/g,"&#39;")}')">
+          <div class="freelancer-name">${av} ${escapeHtml(pName)}</div>
         </div>`;
       }).join("");
     }
@@ -1478,11 +1533,34 @@ async function showProfile() {
   const pAv = document.getElementById("profileAvatar");
   if (profile.avatar_url) { pAv.src = profile.avatar_url; pAv.style.background = "transparent"; }
   else { pAv.src = ""; pAv.style.background = "#e2e8f0"; }
+  
   document.getElementById("avatarMessage").style.display = "none";
+  
+  // اطلاعات پایه
   document.getElementById("profileName").textContent = profile.full_name || "-";
+  document.getElementById("profileDisplayName").textContent = profile.display_name || "ثبت نشده";
   document.getElementById("profileEmail").textContent = currentUser.email || "-";
   document.getElementById("profileRole").textContent = profile.role === "freelancer" ? "فریلنسر" : "کارفرما";
   document.getElementById("profileAge").textContent = profile.age || "-";
+
+  // اطلاعات تماس و کارت
+  document.getElementById("profilePhone").textContent = profile.phone_number || "ثبت نشده";
+  document.getElementById("profileCard").textContent = profile.card_number || "ثبت نشده";
+  document.getElementById("profileEducation").textContent = profile.education || "ثبت نشده";
+  document.getElementById("profileJobTitle").textContent = profile.job_title || "ثبت نشده";
+  document.getElementById("profileSkills").textContent = profile.skills || "ثبت نشده";
+  document.getElementById("profileBio").textContent = profile.bio || "ثبت نشده";
+
+  // لینک‌ها
+  const portLink = document.getElementById("profilePortfolio");
+  if (profile.portfolio) { portLink.href = profile.portfolio; portLink.style.display = "inline"; }
+  else { portLink.style.display = "none"; }
+
+  const vidLink = document.getElementById("profileVideo");
+  if (profile.intro_video) { vidLink.href = profile.intro_video; vidLink.style.display = "inline"; }
+  else { vidLink.style.display = "none"; }
+
+  // کد ملی
   const nidRow = document.getElementById("profileNationalIdRow");
   if (profile.age && profile.age >= 18) {
     nidRow.style.display = "flex";
@@ -1490,8 +1568,8 @@ async function showProfile() {
   } else {
     nidRow.style.display = "none";
   }
-  document.getElementById("profileSkills").textContent = profile.skills || "-";
-  document.getElementById("profileBio").textContent = profile.bio || "-";
+
+  // امتیاز
   document.getElementById("profileRating").innerHTML = await loadProfileRating(currentUser.id);
 }
 
