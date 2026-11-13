@@ -306,17 +306,13 @@
       <div class="profile-item"><strong>درباره من:</strong> <span id="profileBio"></span></div>
       <div class="profile-item"><strong>امتیاز:</strong> <span id="profileRating"></span></div>
       
-      <div class="profile-item">
-        <strong>لینک نمونه کار:</strong> 
-        <a id="profilePortfolio" href="#" target="_blank" style="color:var(--primary); font-weight:600;">مشاهده لینک</a>
-      </div>
       <div class="profile-item" style="flex-direction: column; align-items: flex-start;">
         <strong style="margin-bottom: 10px;">عکس نمونه کار:</strong> 
         <img id="profilePortfolioImage" src="" style="max-width: 100%; border-radius: 10px; display: none; border: 1px solid var(--border);">
       </div>
-      <div class="profile-item">
-        <strong>ویدیو معرف:</strong> 
-        <a id="profileVideo" href="#" target="_blank" style="color:var(--primary); font-weight:600;">مشاهده ویدیو</a>
+      <div class="profile-item" style="flex-direction: column; align-items: flex-start;">
+        <strong style="margin-bottom: 10px;">ویدیو معرف:</strong> 
+        <video id="profileVideoTag" controls style="width: 100%; max-width: 400px; border-radius: 10px; display: none; border: 1px solid var(--border);"></video>
       </div>
 
       <button class="btn btn-green" onclick="openEditProfile()" style="margin-top:25px; width:100%;">✏️ ویرایش پروفایل</button>
@@ -483,9 +479,6 @@
     <!-- بخش نمونه کار -->
     <div class="form-group" style="background: #f8fafc; padding: 15px; border-radius: 10px; border: 1px solid var(--border);">
       <label style="color: var(--primary); font-size: 15px; margin-bottom: 10px;">نمونه کار</label>
-      <label>لینک نمونه کار (پورتفولیو)</label>
-      <input type="text" id="editPortfolio" placeholder="لینک سایت، گیت‌هاب و..." style="margin-bottom: 10px;">
-      
       <label>عکس نمونه کار (آپلود از گوشی)</label>
       <input type="file" id="portfolioImageInput" accept="image/*" style="display:none" onchange="uploadPortfolioImage(event)">
       <button type="button" class="btn btn-sm" onclick="document.getElementById('portfolioImageInput').click()" style="width:100%;">📷 انتخاب و آپلود عکس</button>
@@ -493,7 +486,15 @@
       <img id="editPortfolioPreview" src="" style="width:100%; border-radius:10px; object-fit:cover; display:none; margin-top:10px; border: 1px solid var(--border);">
     </div>
 
-    <div class="form-group"><label>لینک ویدیو معرف</label><input type="text" id="editVideo" placeholder="لینک آپارات یا یوتیوب"></div>
+    <!-- بخش ویدیو معرف -->
+    <div class="form-group" style="background: #f8fafc; padding: 15px; border-radius: 10px; border: 1px solid var(--border);">
+      <label style="color: var(--primary); font-size: 15px; margin-bottom: 10px;">ویدیو معرف</label>
+      <input type="file" id="videoInput" accept="video/mp4,video/x-m4v,video/*" style="display:none" onchange="uploadIntroVideo(event)">
+      <button type="button" class="btn btn-sm" onclick="document.getElementById('videoInput').click()" style="width:100%;">🎥 انتخاب و آپلود ویدیو</button>
+      <div id="videoMessage" class="message" style="margin-top:8px;"></div>
+      <video id="editVideoPreview" controls style="width:100%; border-radius:10px; display:none; margin-top:10px; border: 1px solid var(--border);"></video>
+    </div>
+
     <div class="form-group"><label>مهارت‌ها</label><input type="text" id="editSkills"></div>
     <div class="form-group"><label>درباره من</label><textarea id="editBio"></textarea></div>
     <button class="btn form-button" onclick="saveProfile()">ذخیره تغییرات</button>
@@ -645,7 +646,8 @@ let notifInterval = null;
 let isBotChat = false;
 let currentReportTargetId = null;
 let currentReportContext = "";
-let tempPortfolioImageUrl = null; // ذخیره موقت عکس نمونه کار
+let tempPortfolioImageUrl = null; 
+let tempVideoUrl = null;
 
 const BOT_ID = "00000000-0000-0000-0000-000000000001";
 const BOT_NAME = "پشتیبانی کارینو";
@@ -915,7 +917,6 @@ async function uploadAvatar(event) {
   currentProfile.avatar_url = avatarUrl;
 }
 
-// تابع آپلود عکس نمونه کار
 async function uploadPortfolioImage(event) {
   if (!currentUser) return;
   const file = event.target.files[0];
@@ -924,7 +925,7 @@ async function uploadPortfolioImage(event) {
   showMessage("portfolioImageMessage", "در حال آپلود...", true);
   
   const fileExt = file.name.split('.').pop();
-  const filePath = currentUser.id + '/portfolio_' + Date.now() + '.' + fileExt; // نام یکتا برای جلوگیری از کش شدن
+  const filePath = currentUser.id + '/portfolio_' + Date.now() + '.' + fileExt;
   
   const { error: uploadError } = await supabaseClient.storage.from('avatars').upload(filePath, file);
   if (uploadError) { showMessage("portfolioImageMessage", "خطا در آپلود: " + uploadError.message); return; }
@@ -937,6 +938,29 @@ async function uploadPortfolioImage(event) {
   showMessage("portfolioImageMessage", "عکس آپلود شد. برای ذخیره نهایی دکمه «ذخیره تغییرات» را بزنید.", true);
 }
 
+async function uploadIntroVideo(event) {
+  if (!currentUser) return;
+  const file = event.target.files[0];
+  if (!file) return;
+  if (file.size > 10 * 1024 * 1024) { showMessage("videoMessage", "حجم ویدیو باید کمتر از ۱۰ مگابایت باشد. لطفاً ویدیو را فشرده کنید."); return; }
+  showMessage("videoMessage", "در حال آپلود ویدیو... (ممکن است کمی طول بکشد)", true);
+  
+  const fileExt = file.name.split('.').pop();
+  const filePath = currentUser.id + '/video_' + Date.now() + '.' + fileExt;
+  
+  const { error: uploadError } = await supabaseClient.storage.from('avatars').upload(filePath, file);
+  if (uploadError) { showMessage("videoMessage", "خطا در آپلود: " + uploadError.message); return; }
+  
+  const { data: urlData } = supabaseClient.storage.from('avatars').getPublicUrl(filePath);
+  tempVideoUrl = urlData.publicUrl;
+  
+  const preview = document.getElementById("editVideoPreview");
+  preview.src = tempVideoUrl;
+  preview.style.display = "block";
+  
+  showMessage("videoMessage", "ویدیو آپلود شد. برای ذخیره نهایی دکمه «ذخیره تغییرات» را بزنید.", true);
+}
+
 function openEditProfile() {
   if (!currentUser || !currentProfile) { openLogin(); return; }
   document.getElementById("editName").value = currentProfile.full_name || "";
@@ -947,23 +971,22 @@ function openEditProfile() {
   document.getElementById("editCard").value = currentProfile.card_number || "";
   document.getElementById("editJobTitle").value = currentProfile.job_title || "";
   document.getElementById("editEducation").value = currentProfile.education || "";
-  document.getElementById("editPortfolio").value = currentProfile.portfolio || "";
-  document.getElementById("editVideo").value = currentProfile.intro_video || "";
   document.getElementById("editSkills").value = currentProfile.skills || "";
   document.getElementById("editBio").value = currentProfile.bio || "";
   
   tempPortfolioImageUrl = currentProfile.portfolio_image || null;
-  const preview = document.getElementById("editPortfolioPreview");
-  if (tempPortfolioImageUrl) {
-    preview.src = tempPortfolioImageUrl;
-    preview.style.display = "block";
-  } else {
-    preview.src = "";
-    preview.style.display = "none";
-  }
+  const pPreview = document.getElementById("editPortfolioPreview");
+  if (tempPortfolioImageUrl) { pPreview.src = tempPortfolioImageUrl; pPreview.style.display = "block"; } 
+  else { pPreview.src = ""; pPreview.style.display = "none"; }
   document.getElementById("portfolioImageMessage").style.display = "none";
+
+  tempVideoUrl = currentProfile.intro_video || null;
+  const vPreview = document.getElementById("editVideoPreview");
+  if (tempVideoUrl) { vPreview.src = tempVideoUrl; vPreview.style.display = "block"; } 
+  else { vPreview.src = ""; vPreview.style.display = "none"; }
+  document.getElementById("videoMessage").style.display = "none";
+
   document.getElementById("editProfileMessage").style.display = "none";
-  
   toggleEditNationalId();
   closeModals();
   document.getElementById("editProfileModal").style.display = "flex";
@@ -979,8 +1002,6 @@ async function saveProfile() {
   const card = document.getElementById("editCard").value.trim();
   const jobTitle = document.getElementById("editJobTitle").value.trim();
   const education = document.getElementById("editEducation").value.trim();
-  const portfolio = document.getElementById("editPortfolio").value.trim();
-  const video = document.getElementById("editVideo").value.trim();
   const skills = document.getElementById("editSkills").value.trim();
   const bio = document.getElementById("editBio").value.trim();
   
@@ -993,14 +1014,14 @@ async function saveProfile() {
   const { error } = await supabaseClient.from("profiles").update({
     full_name: name, display_name: displayName || null, age: age, national_id: age >= 18 ? nationalId : null,
     phone_number: phone || null, card_number: card || null, job_title: jobTitle || null,
-    education: education || null, portfolio: portfolio || null, intro_video: video || null,
-    portfolio_image: tempPortfolioImageUrl || null, // ذخیره لینک عکس آپلود شده
+    education: education || null, intro_video: tempVideoUrl || null,
+    portfolio_image: tempPortfolioImageUrl || null,
     skills: skills, bio: bio
   }).eq("id", currentUser.id);
   
   if (error) { showMessage("editProfileMessage", "خطا: " + error.message); return; }
   showToast("پروفایل ویرایش شد! 🎉", "success");
-  Object.assign(currentProfile, { full_name: name, display_name: displayName, age: age, national_id: age >= 18 ? nationalId : null, phone_number: phone, card_number: card, job_title: jobTitle, education: education, portfolio: portfolio, intro_video: video, portfolio_image: tempPortfolioImageUrl, skills: skills, bio: bio });
+  Object.assign(currentProfile, { full_name: name, display_name: displayName, age: age, national_id: age >= 18 ? nationalId : null, phone_number: phone, card_number: card, job_title: jobTitle, education: education, intro_video: tempVideoUrl, portfolio_image: tempPortfolioImageUrl, skills: skills, bio: bio });
   document.getElementById("userName").textContent = "سلام " + (displayName || name);
   setTimeout(() => { closeModals(); showProfile(); }, 1000);
 }
@@ -1366,14 +1387,17 @@ async function showProfile() {
   document.getElementById("profileBio").textContent = profile.bio || "-";
   document.getElementById("profileRating").innerHTML = await loadProfileRating(currentUser.id);
   
-  const portLink = document.getElementById("profilePortfolio");
-  if (profile.portfolio) { portLink.href = profile.portfolio; portLink.style.display = "inline"; } else { portLink.style.display = "none"; }
-  
   const portImg = document.getElementById("profilePortfolioImage");
-  if (profile.portfolio_image) { portImg.src = profile.portfolio_image; portImg.style.display = "block"; } else { portImg.style.display = "none"; }
+  if (profile.portfolio_image) { portImg.src = profile.portfolio_image; portImg.style.display = "block"; } 
+  else { portImg.style.display = "none"; }
   
-  const vidLink = document.getElementById("profileVideo");
-  if (profile.intro_video) { vidLink.href = profile.intro_video; vidLink.style.display = "inline"; } else { vidLink.style.display = "none"; }
+  const vidTag = document.getElementById("profileVideoTag");
+  if (profile.intro_video) { 
+    vidTag.src = profile.intro_video; 
+    vidTag.style.display = "block"; 
+  } else { 
+    vidTag.style.display = "none"; 
+  }
 
   await loadCompletedProjects(currentUser.id);
 }
