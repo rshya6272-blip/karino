@@ -78,7 +78,7 @@
     .title { text-align: center; margin-bottom: 30px; font-size: 26px; font-weight: 700; color: var(--dark); position: relative; padding-bottom: 15px; }
     .title::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 60px; height: 4px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); border-radius: 2px; }
 
-    .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 30px; }
+    .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; }
     .filter-chip { background: white; border: 1px solid var(--border); padding: 8px 18px; border-radius: 30px; font-size: 13px; cursor: pointer; font-family: inherit; font-weight: 500; color: var(--gray); transition: all .25s; }
     .filter-chip:hover { border-color: var(--primary-light); color: var(--primary); transform: translateY(-2px); }
     .filter-chip.active { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border-color: transparent; box-shadow: 0 4px 12px rgba(99,102,241,.3); }
@@ -243,14 +243,30 @@
 <div class="page" id="page-projects">
   <div class="container">
     <h2 class="title">پروژه‌ها</h2>
-    <div style="text-align: left; margin-bottom: 15px;">
-  <select id="sortFilter" onchange="loadProjects()" style="padding: 8px; border-radius: 8px; border: 1px solid var(--border); font-family: inherit;">
-    <option value="newest">جدیدترین</option>
-    <option value="budget">بیشترین بودجه</option>
-  </select>
-</div>
-    <div class="cards" id="projectsContainer">
+    <div class="filter-bar" id="filterBar">
+      <button class="filter-chip active" onclick="filterCategory('')">همه</button>
+      <button class="filter-chip" onclick="filterCategory('طراحی سایت')">طراحی سایت</button>
+      <button class="filter-chip" onclick="filterCategory('طراحی گرافیک')">طراحی گرافیک</button>
+      <button class="filter-chip" onclick="filterCategory('تولید محتوا')">تولید محتوا</button>
+      <button class="filter-chip" onclick="filterCategory('برنامه‌نویسی')">برنامه‌نویسی</button>
+      <button class="filter-chip" onclick="filterCategory('ترجمه')">ترجمه</button>
+      <button class="filter-chip" onclick="filterCategory('دیگر')">دیگر</button>
     </div>
+    <div style="text-align: left; margin-bottom: 15px;">
+      <select id="sortFilter" onchange="loadProjects()" style="padding: 8px; border-radius: 8px; border: 1px solid var(--border); font-family: inherit;">
+        <option value="newest">جدیدترین</option>
+        <option value="budget">بیشترین بودجه</option>
+      </select>
+    </div>
+    <div class="cards" id="projectsContainer"></div>
+  </div>
+</div>
+
+<!-- صفحه متخصصین -->
+<div class="page" id="page-freelancers">
+  <div class="container">
+    <h2 class="title">متخصصین کارینو</h2>
+    <div class="cards" id="freelancersContainer"></div>
   </div>
 </div>
 
@@ -258,8 +274,7 @@
 <div class="page" id="page-chat">
   <div class="container">
     <h2 class="title">چت‌های من</h2>
-    <div id="chatUsersList" class="chat-container" style="margin-bottom:15px;">
-    </div>
+    <div id="chatUsersList" class="chat-container" style="margin-bottom:15px;"></div>
     <div class="chat-container" id="activeChatBox" style="display:none;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:12px; border-bottom:1px solid var(--border);">
         <h3 id="chatWithName" style="font-size:16px; font-weight:700;"></h3>
@@ -307,6 +322,7 @@
         <strong style="margin-bottom: 10px;">عکس نمونه کار:</strong> 
         <img id="profilePortfolioImage" src="" style="max-width: 100%; border-radius: 10px; display: none; border: 1px solid var(--border);">
       </div>
+      
       <div class="profile-item" style="flex-direction: column; align-items: flex-start;">
         <strong style="margin-bottom: 10px;">ویدیو معرف:</strong> 
         <video id="profileVideoTag" controls style="width: 100%; max-width: 400px; border-radius: 10px; display: none; border: 1px solid var(--border);"></video>
@@ -316,13 +332,22 @@
       <button class="btn" onclick="openExamModal()" style="margin-top:12px; width:100%;">📝 شرکت در آزمون‌های کارینو</button>
       <button class="btn btn-red" id="logoutBtn" onclick="logout()" style="display:none; margin-top:12px; width:100%;">خروج از حساب</button>
 
-      <!-- لیست پروژه‌های تمام شده -->
       <div style="margin-top:40px; border-top:2px dashed var(--border); padding-top:20px;">
         <h3 style="text-align:center; color:var(--success); margin-bottom:15px;">✅ پروژه‌های تمام شده</h3>
         <div id="completedProjectsList">
           <p class="empty-msg">هنوز پروژه‌ای به اتمام نرسیده است.</p>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- صفحه مدیریت -->
+<div class="page" id="page-admin">
+  <div class="container">
+    <h2 class="title" style="color:var(--danger);">👑 پنل مدیریت کارینو</h2>
+    <div id="adminReportsContainer">
+      <p class="empty-msg">در حال بارگذاری گزارش‌ها...</p>
     </div>
   </div>
 </div>
@@ -406,23 +431,7 @@
     </div>
   </div>
 </div>
-  <!-- صفحه متخصصین -->
-<div class="page" id="page-freelancers">
-  <div class="container">
-    <h2 class="title">متخصصین کارینو</h2>
-    <div class="cards" id="freelancersContainer"></div>
-  </div>
-</div>
 
-<!-- صفحه مدیریت -->
-<div class="page" id="page-admin">
-  <div class="container">
-    <h2 class="title" style="color:var(--danger);">👑 پنل مدیریت کارینو</h2>
-    <div id="adminReportsContainer">
-      <p class="empty-msg">در حال بارگذاری گزارش‌ها...</p>
-    </div>
-  </div>
-</div>
 <!-- صفحه پیشنهادهای من -->
 <div class="page" id="page-myProposals">
   <div class="container">
@@ -489,7 +498,6 @@
     <div class="form-group"><label>عنوان شغلی</label><input type="text" id="editJobTitle" placeholder="مثلاً طراح گرافیک"></div>
     <div class="form-group"><label>تحصیلات</label><input type="text" id="editEducation" placeholder="مثلاً کارشناسی کامپیوتر"></div>
     
-    <!-- بخش نمونه کار -->
     <div class="form-group" style="background: #f8fafc; padding: 15px; border-radius: 10px; border: 1px solid var(--border);">
       <label style="color: var(--primary); font-size: 15px; margin-bottom: 10px;">نمونه کار</label>
       <label>عکس نمونه کار (آپلود از گوشی)</label>
@@ -499,7 +507,6 @@
       <img id="editPortfolioPreview" src="" style="width:100%; border-radius:10px; object-fit:cover; display:none; margin-top:10px; border: 1px solid var(--border);">
     </div>
 
-    <!-- بخش ویدیو معرف -->
     <div class="form-group" style="background: #f8fafc; padding: 15px; border-radius: 10px; border: 1px solid var(--border);">
       <label style="color: var(--primary); font-size: 15px; margin-bottom: 10px;">ویدیو معرف</label>
       <input type="file" id="videoInput" accept="video/mp4,video/x-m4v,video/*" style="display:none" onchange="uploadIntroVideo(event)">
@@ -586,7 +593,6 @@
   </div>
 </div>
 
-<!-- REPORT MODAL -->
 <div class="modal" id="reportModal">
   <div class="modal-box">
     <button class="close" onclick="closeModals()">×</button>
@@ -611,7 +617,6 @@
   </div>
 </div>
 
-<!-- EXAM MODAL -->
 <div class="modal" id="examModal">
   <div class="modal-box" style="text-align:center;">
     <button class="close" onclick="closeModals()">×</button>
@@ -875,6 +880,7 @@ async function logout() {
   document.getElementById("newProjectBtn").style.display = "none";
   document.getElementById("logoutBtn").style.display = "none";
   document.getElementById("tabMyProposals").style.display = "none";
+  document.getElementById("tabAdmin").style.display = "none";
   document.getElementById("bellBtn").style.display = "none";
   if (notifInterval) clearInterval(notifInterval);
   showPage("home");
@@ -883,7 +889,6 @@ async function logout() {
 
 async function loadUser() {
   const { data: { user } } = await supabaseClient.auth.getUser();
-  
   if (!user) {
     currentUser = null; currentProfile = null;
     document.getElementById("loginBtn").style.display = "inline-block";
@@ -896,34 +901,23 @@ async function loadUser() {
     document.getElementById("bellBtn").style.display = "none";
     return;
   }
-  
   currentUser = user;
   document.getElementById("loginBtn").style.display = "none";
   document.getElementById("registerBtn").style.display = "none";
   document.getElementById("logoutBtn").style.display = "inline-block";
   document.getElementById("bellBtn").style.display = "inline-block";
-
+  
   const { data: profile } = await supabaseClient.from("profiles").select("*").eq("id", user.id).maybeSingle();
   currentProfile = profile;
   
   if (profile) {
     document.getElementById("userName").textContent = "سلام " + (profile.display_name || profile.full_name);
     const av = document.getElementById("userAvatar");
-    if (profile.avatar_url) { av.src = profile.avatar_url; av.style.display = "inline-block"; } 
-    else { av.style.display = "none"; }
-    
-    if (profile.role === "employer") { 
-      document.getElementById("newProjectBtn").style.display = "inline-block"; 
-      document.getElementById("tabMyProposals").style.display = "none"; 
-    } else { 
-      document.getElementById("newProjectBtn").style.display = "none"; 
-      document.getElementById("tabMyProposals").style.display = "flex"; 
-    }
-  } else { 
-    document.getElementById("userName").textContent = "سلام کاربر"; 
-  }
-
-  // --- بخش جدید (اعلان‌ها و پنل ادمین) ---
+    if (profile.avatar_url) { av.src = profile.avatar_url; av.style.display = "inline-block"; } else { av.style.display = "none"; }
+    if (profile.role === "employer") { document.getElementById("newProjectBtn").style.display = "inline-block"; document.getElementById("tabMyProposals").style.display = "none"; }
+    else { document.getElementById("newProjectBtn").style.display = "none"; document.getElementById("tabMyProposals").style.display = "flex"; }
+  } else { document.getElementById("userName").textContent = "سلام کاربر"; }
+  
   loadNotificationCount();
   
   if (window.notifChannel) supabaseClient.removeChannel(window.notifChannel);
@@ -938,24 +932,6 @@ async function loadUser() {
   } else {
     document.getElementById("tabAdmin").style.display = "none";
   }
-}
-  currentUser = user;
-  document.getElementById("loginBtn").style.display = "none";
-  document.getElementById("registerBtn").style.display = "none";
-  document.getElementById("logoutBtn").style.display = "inline-block";
-  document.getElementById("bellBtn").style.display = "inline-block";
-  const { data: profile } = await supabaseClient.from("profiles").select("*").eq("id", user.id).maybeSingle();
-  currentProfile = profile;
-  if (profile) {
-    document.getElementById("userName").textContent = "سلام " + (profile.display_name || profile.full_name);
-    const av = document.getElementById("userAvatar");
-    if (profile.avatar_url) { av.src = profile.avatar_url; av.style.display = "inline-block"; } else { av.style.display = "none"; }
-    if (profile.role === "employer") { document.getElementById("newProjectBtn").style.display = "inline-block"; document.getElementById("tabMyProposals").style.display = "none"; }
-    else { document.getElementById("newProjectBtn").style.display = "none"; document.getElementById("tabMyProposals").style.display = "flex"; }
-  } else { document.getElementById("userName").textContent = "سلام کاربر"; }
-  loadNotificationCount();
-  if (notifInterval) clearInterval(notifInterval);
-  notifInterval = setInterval(loadNotificationCount, 10000);
 }
 
 async function uploadAvatar(event) {
@@ -987,16 +963,12 @@ async function uploadPortfolioImage(event) {
   if (!file) return;
   if (file.size > 5 * 1024 * 1024) { showMessage("portfolioImageMessage", "حجم عکس باید کمتر از ۵ مگابایت باشد."); return; }
   showMessage("portfolioImageMessage", "در حال آپلود...", true);
-  
   const fileExt = file.name.split('.').pop();
   const filePath = currentUser.id + '/portfolio_' + Date.now() + '.' + fileExt;
-  
   const { error: uploadError } = await supabaseClient.storage.from('avatars').upload(filePath, file);
   if (uploadError) { showMessage("portfolioImageMessage", "خطا در آپلود: " + uploadError.message); return; }
-  
   const { data: urlData } = supabaseClient.storage.from('avatars').getPublicUrl(filePath);
   tempPortfolioImageUrl = urlData.publicUrl;
-  
   document.getElementById("editPortfolioPreview").src = tempPortfolioImageUrl;
   document.getElementById("editPortfolioPreview").style.display = "block";
   showMessage("portfolioImageMessage", "عکس آپلود شد. برای ذخیره نهایی دکمه «ذخیره تغییرات» را بزنید.", true);
@@ -1008,20 +980,15 @@ async function uploadIntroVideo(event) {
   if (!file) return;
   if (file.size > 10 * 1024 * 1024) { showMessage("videoMessage", "حجم ویدیو باید کمتر از ۱۰ مگابایت باشد. لطفاً ویدیو را فشرده کنید."); return; }
   showMessage("videoMessage", "در حال آپلود ویدیو... (ممکن است کمی طول بکشد)", true);
-  
   const fileExt = file.name.split('.').pop();
   const filePath = currentUser.id + '/video_' + Date.now() + '.' + fileExt;
-  
   const { error: uploadError } = await supabaseClient.storage.from('avatars').upload(filePath, file);
   if (uploadError) { showMessage("videoMessage", "خطا در آپلود: " + uploadError.message); return; }
-  
   const { data: urlData } = supabaseClient.storage.from('avatars').getPublicUrl(filePath);
   tempVideoUrl = urlData.publicUrl;
-  
   const preview = document.getElementById("editVideoPreview");
   preview.src = tempVideoUrl;
   preview.style.display = "block";
-  
   showMessage("videoMessage", "ویدیو آپلود شد. برای ذخیره نهایی دکمه «ذخیره تغییرات» را بزنید.", true);
 }
 
@@ -1039,15 +1006,13 @@ function openEditProfile() {
   document.getElementById("editBio").value = currentProfile.bio || "";
   
   tempPortfolioImageUrl = currentProfile.portfolio_image || null;
-  const pPreview = document.getElementById("editPortfolioPreview");
-  if (tempPortfolioImageUrl) { pPreview.src = tempPortfolioImageUrl; pPreview.style.display = "block"; } 
-  else { pPreview.src = ""; pPreview.style.display = "none"; }
+  const preview = document.getElementById("editPortfolioPreview");
+  if (tempPortfolioImageUrl) { preview.src = tempPortfolioImageUrl; preview.style.display = "block"; } else { preview.src = ""; preview.style.display = "none"; }
   document.getElementById("portfolioImageMessage").style.display = "none";
-
+  
   tempVideoUrl = currentProfile.intro_video || null;
   const vPreview = document.getElementById("editVideoPreview");
-  if (tempVideoUrl) { vPreview.src = tempVideoUrl; vPreview.style.display = "block"; } 
-  else { vPreview.src = ""; vPreview.style.display = "none"; }
+  if (tempVideoUrl) { vPreview.src = tempVideoUrl; vPreview.style.display = "block"; } else { vPreview.src = ""; vPreview.style.display = "none"; }
   document.getElementById("videoMessage").style.display = "none";
 
   document.getElementById("editProfileMessage").style.display = "none";
@@ -1116,15 +1081,18 @@ function filterCategory(cat) {
 async function loadProjects() {
   const container = document.getElementById("projectsContainer");
   container.innerHTML = `<div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div>`;
+  
   const sortVal = document.getElementById("sortFilter")?.value || "newest";
-let query = supabaseClient.from("projects").select("*").neq("status", "canceled");
-if (sortVal === "budget") {
-  query = query.order("budget", { ascending: false });
-} else {
-  query = query.order("created_at", { ascending: false });
-}
+  let query = supabaseClient.from("projects").select("*").neq("status", "canceled");
+  if (sortVal === "budget") {
+    query = query.order("budget", { ascending: false });
+  } else {
+    query = query.order("created_at", { ascending: false });
+  }
+  
   if (currentSearch) query = query.or(`title.ilike.%${currentSearch}%,description.ilike.%${currentSearch}%,category.ilike.%${currentSearch}%`);
   if (currentCategory) query = query.eq("category", currentCategory);
+  
   const { data: projects, error } = await query;
   if (error) { container.innerHTML = '<p class="empty-msg">خطا در دریافت اطلاعات.</p>'; return; }
   let banner = "";
@@ -1462,20 +1430,12 @@ async function showProfile() {
   else { portImg.style.display = "none"; }
   
   const vidTag = document.getElementById("profileVideoTag");
-  if (profile.intro_video) { 
-    vidTag.src = profile.intro_video; 
-    vidTag.style.display = "block"; 
-  } else { 
-    vidTag.style.display = "none"; 
-  }
+  if (profile.intro_video) { vidTag.src = profile.intro_video; vidTag.style.display = "block"; } 
+  else { vidTag.style.display = "none"; }
 
   await loadCompletedProjects(currentUser.id);
 }
 
-function escapeHtml(text) {
-  if (text === null || text === undefined) return "";
-  return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-}
 async function loadAdminReports() {
   const container = document.getElementById("adminReportsContainer");
   container.innerHTML = '<p class="empty-msg">در حال دریافت...</p>';
@@ -1523,8 +1483,14 @@ async function toggleBookmark(projectId) {
     showToast("به ذخیره‌ها اضافه شد! 🔖", "success");
   }
 }
+
+function escapeHtml(text) {
+  if (text === null || text === undefined) return "";
+  return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
+
 supabaseClient.auth.onAuthStateChange((event, session) => { loadUser(); });
-// loadUser();
+loadUser();
 </script>
 
 </body>
