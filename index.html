@@ -1116,7 +1116,13 @@ function filterCategory(cat) {
 async function loadProjects() {
   const container = document.getElementById("projectsContainer");
   container.innerHTML = `<div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div>`;
-  let query = supabaseClient.from("projects").select("*").neq("status", "canceled").order("created_at", { ascending: false });
+  const sortVal = document.getElementById("sortFilter")?.value || "newest";
+let query = supabaseClient.from("projects").select("*").neq("status", "canceled");
+if (sortVal === "budget") {
+  query = query.order("budget", { ascending: false });
+} else {
+  query = query.order("created_at", { ascending: false });
+}
   if (currentSearch) query = query.or(`title.ilike.%${currentSearch}%,description.ilike.%${currentSearch}%,category.ilike.%${currentSearch}%`);
   if (currentCategory) query = query.eq("category", currentCategory);
   const { data: projects, error } = await query;
@@ -1140,7 +1146,7 @@ async function loadProjects() {
         actionBtn = `<button class="btn btn-green" onclick="openProposalsList('${p.id}', '${escapeHtml(p.title).replace(/'/g,"&#39;")}')">مشاهده پیشنهادها</button> <button class="btn btn-red btn-sm" onclick="cancelProject('${p.id}')">لغو</button>`;
       }
     } else if (isFreelancer) {
-      actionBtn = `<button class="btn" onclick="openProposal('${p.id}', '${escapeHtml(p.title).replace(/'/g,"&#39;")}')">ارسال پیشنهاد</button>`;
+      actionBtn = `<button class="btn" onclick="openProposal('${p.id}', '${escapeHtml(p.title).replace(/'/g,"&#39;")}')">ارسال پیشنهاد</button> <button class="btn btn-sm" style="background:#f59e0b; color:white;" onclick="toggleBookmark('${p.id}')">🔖 ذخیره</button>`;
     } else {
       actionBtn = `<button class="btn" onclick="openLogin()">برای پیشنهاد وارد شوید</button>`;
     }
@@ -1470,7 +1476,53 @@ function escapeHtml(text) {
   if (text === null || text === undefined) return "";
   return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
+async function loadAdminReports() {
+  const container = document.getElementById("adminReportsContainer");
+  container.innerHTML = '<p class="empty-msg">در حال دریافت...</p>';
+  const { data, error } = await supabaseClient.from("reports").select("*").order("created_at", { ascending: false });
+  if (error || !data || data.length === 0) { container.innerHTML = '<p class="empty-msg">هیچ گزارشی ثبت نشده است.</p>'; return; }
+  const userIds = new Set();
+  data.forEach(r => { userIds.add(r.reporter_id); userIds.add(r.reported_id); });
+  const { data: profiles } = await supabaseClient.from("profiles").select("id, full_name").in("id", Array.from(userIds));
+  const profileMap = {};
+  (profiles || []).forEach(p => { profileMap[p.id] = p.full_name; });
+  container.innerHTML = data.map(r => `
+    <div class="card" style="border-right: 4px solid var(--danger); margin-bottom: 15px;">
+      <h3 style="font-size: 16px;">دلیل: ${escapeHtml(r.reason)}</h3>
+      <p style="font-size: 13px; margin: 5px 0;"><strong>گزارش‌دهنده:</strong> ${profileMap[r.reporter_id] || "ناشناس"}</p>
+      <p style="font-size: 13px; margin: 5px 0;"><strong>متخلف:</strong> ${profileMap[r.reported_id] || "ناشناس"}</p>
+      <p style="font-size: 13px; color: var(--gray); background: #f8fafc; padding: 10px; border-radius: 8px;">${escapeHtml(r.details || "بدون توضیح")}</p>
+    </div>
+  `).join("");
+}
 
+async function loadFreelancers() {
+  const container = document.getElementById("freelancersContainer");
+  container.innerHTML = '<div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div>';
+  const { data, error } = await supabaseClient.from("profiles").select("*").eq("role", "freelancer").order("created_at", { ascending: false });
+  if (error || !data || data.length === 0) { container.innerHTML = '<p class="empty-msg">هنوز فریلنسری ثبت‌نام نکرده است.</p>'; return; }
+  container.innerHTML = data.map(f => {
+    const av = f.avatar_url ? `<img src="${f.avatar_url}" class="avatar-chat" style="width:40px;height:40px;">` : '👤';
+    return `
+      <div class="card">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">${av}<h3 style="margin:0;">${escapeHtml(f.display_name || f.full_name)}</h3></div>
+        <p style="font-size:13px; color:var(--primary);">${escapeHtml(f.job_title || "فریلنسر")}</p>
+        <p style="font-size:13px;">${escapeHtml(f.skills || "مهارتی ثبت نشده")}</p>
+      </div>`;
+  }).join("");
+}
+
+async function toggleBookmark(projectId) {
+  if (!currentUser) { openLogin(); return; }
+  const { data } = await supabaseClient.from("bookmarks").select("id").eq("user_id", currentUser.id).eq("project_id", projectId).maybeSingle();
+  if (data) {
+    await supabaseClient.from("bookmarks").delete().eq("id", data.id);
+    showToast("از ذخیره‌ها حذف شد.", "info");
+  } else {
+    await supabaseClient.from("bookmarks").insert({ user_id: currentUser.id, project_id: projectId });
+    showToast("به ذخیره‌ها اضافه شد! 🔖", "success");
+  }
+}
 supabaseClient.auth.onAuthStateChange((event, session) => { loadUser(); });
 loadUser();
 </script>
